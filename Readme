@@ -1,12 +1,13 @@
+
 # Backend setup
 ### TypeScript + NodeJS + GraphQL + Redis + Docker + MongoDB + ExpressJS
-![Sample Image]([https://example.com/sample-image.jpg](https://cdn-icons-png.flaticon.com/512/5968/5968381.png)) 
+
 clone backend repo 
-``` shell
+```shell
 git clone https://github.com/coder-Rit/nodeServer-basic-auth
 ```
 
-install these packages install packages 
+install these packages install packeges 
 ```JSON
  "scripts": {
     "start": "node build/index.js",
@@ -30,9 +31,9 @@ install these packages install packages
   }
 ```
 
-configure typescripts support
+congfiger typescripts spport
 
-``` shell
+```shell
 npm tsc --init
 ```
 
