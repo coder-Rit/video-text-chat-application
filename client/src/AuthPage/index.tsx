@@ -1,8 +1,11 @@
 import { CSSProperties, useState } from "react";
 
+
 import valley from "../assets/valley.jpeg";
 import SignUpForm from "./SignUpForm";
 import LogInForm from "./LogInForm";
+ 
+ 
 
 const AuthPage = () => {
   const [hasAccount, setHasAccount] = useState(false);
@@ -12,7 +15,7 @@ const AuthPage = () => {
   } as CSSProperties;
 
   return (
-    <div className="background-image" style={backgroundImage}>
+    <div className="background-image" style={backgroundImage}> 
       <div className="background-gradient-dark">
         <div style={styles.formContainerStyle}>
           <div style={styles.titleStyle}>Pretty</div>

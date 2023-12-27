@@ -1,8 +1,8 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import axios from "axios";
-
-import { PersonObject } from "react-chat-engine-advanced";
+import { useMutation } from "@apollo/client";
+import gql from "graphql-tag";
 
 import { useIsMobile } from "../functions/isMobile";
 import { Context } from "../functions/context";
@@ -16,57 +16,90 @@ import Link from "./components/Link";
 interface SignUpFormProps {
   onHasAccount: () => void;
 }
+interface PersonObject {
+  userName: string;
+  password: string | null;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  
+}
+
+const CREATE_USER = gql`
+  mutation CreateUser(
+    $userName: String
+    $firstName: String!
+    $lastName: String
+    $email: String!
+    $password: String!
+  ) {
+    createUser(
+      userName: $userName
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      password: $password
+    ) {
+      email
+      firstName
+      id
+      lastName
+      userName
+      token 
+    }
+  }
+`;
+
+
 
 const SignUpForm = (props: SignUpFormProps) => {
   // State
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [userName, setuserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [avatar, setAvatar] = useState<File | undefined>(undefined);
+  const [profileImageUrl, setprofileImageUrl] = useState("//");
   // Hooks
   const { setUser } = useContext(Context);
   const isMobile: boolean = useIsMobile();
+  const [createUser, { loading, error, data }] = useMutation(CREATE_USER, {
+    variables: {
+      userName,
+      firstName,
+      lastName,
+      email,
+      password
+    }
+  });
+ 
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const userJson: PersonObject = {
-      email: email,
-      username: email,
-      first_name: firstName,
-      last_name: lastName,
-      secret: password,
-      avatar: null,
-      custom_json: {},
-      is_online: true,
+      userName: email,
+      firstName: firstName,
+      lastName: lastName,
+      email: email, 
+      password: password,
+      // is_online: true,
     };
 
-    let formData = new FormData();
-    formData.append("email", email);
-    formData.append("username", email);
-    formData.append("first_name", firstName);
-    formData.append("last_name", lastName);
-    formData.append("secret", password);
-    if (avatar) {
-      formData.append("avatar", avatar, avatar.name);
-    }
+    console.log(userJson);
+    
+    await createUser()
 
-    const headers = { "Private-Key": privateKey };
-
-    axios
-      .post("https://api.chatengine.io/users/", formData, {
-        headers,
-      })
-      .then((r) => {
-        if (r.status === 201) {
-          userJson.avatar = r.data.avatar;
-          setUser(userJson);
-        }
-      })
-      .catch((e) => console.log("Error", e));
   };
 
+
+  useEffect(() => {
+    console.log(data);
+    console.log(error);
+    
+  }, [ data ,error])
+  
   return (
     <div>
       <div className="form-title">Create an account</div>
@@ -79,7 +112,7 @@ const SignUpForm = (props: SignUpFormProps) => {
       <form onSubmit={onSubmit}>
         <TextInput
           label="First name"
-          name="first_name"
+          name="firstName"
           placeholder="Adam"
           style={{ width: isMobile ? "100%" : "calc(50% - 6px)" }}
           onChange={(e) => setFirstName(e.target.value)}
@@ -87,7 +120,7 @@ const SignUpForm = (props: SignUpFormProps) => {
 
         <TextInput
           label="Last name"
-          name="last_name"
+          name="lastName"
           placeholder="La Morre"
           style={{
             width: isMobile ? "100%" : "calc(50% - 6px)",
@@ -123,7 +156,7 @@ const SignUpForm = (props: SignUpFormProps) => {
           style={{ width: isMobile ? "100%" : "calc(50% - 6px)" }}
           onChange={(e) => {
             if (e.target.files !== null) {
-              setAvatar(e.target.files[0]);
+              setprofileImageUrl("");
             }
           }}
         />

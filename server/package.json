@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node backend/server.js",
-    "dev": "nodemon server.js"
+    "start": "node build/server.js",
+    "dev": "tsc-watch --onSuccess \"npm start\""
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@apollo/server": "^4.9.5",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
     "cookie-parser": "^1.4.6",
@@ -25,8 +25,12 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/node": "^20.4.3",
+    "ts-node": "^10.9.1",
     "tsc-watch": "^6.0.4",
-    "typescript": "^5.3.3"
+    "typescript": "^5.1.6"
   }
 }
