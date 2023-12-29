@@ -1,38 +1,77 @@
-import { useContext } from "react";
+import UserSearchDisplay from "./UserSearchDisplay";
+import { User } from "../Interfaces/user";
+import { useEffect, useState } from "react";
+import gql from "graphql-tag";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { useDispatch } from "react-redux";
+import { userList } from "../actions/userActions";
 
-import {
-  LogoutOutlined,
-  HomeFilled,
-  MessageFilled,
-  SettingFilled,
-} from "@ant-design/icons";
 
-import { Avatar } from "react-chat-engine-advanced";
+const FIND_USER = gql`
+query SearchFriend($userName: String!) {
+  searchFriend(userName: $userName) {
+    profileImageURL
+    userName
+  }
+}
 
-import { Context } from "../functions/context";
+`
+
 
 const Sidebar = () => {
-  const { user, setUser } = useContext(Context);
+
+
+
+  // const { setUser } = useContext(Context);
+  const Dispatch: any = useDispatch()
+
+  const [UserList, setUserList] = useState([{
+  }])
+  const [userName, setuserName] = useState("")
+
+  const [searchFriend, { data, error, loading }] = useLazyQuery(FIND_USER, {
+    variables: {
+      userName: userName
+    },
+   
+  })
+
+
+
+
+  useEffect(() => {
+
+    console.log(userName);
+      searchFriend()
+
+  }, [userName])
+  
+
+  useEffect(() => {
+    console.log(UserList);
+    Dispatch(userList(UserList))
+  }, [UserList])
+
+
+
+
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <div className="ce-sidebar-menu">
-        <HomeFilled className="ce-sidebar-icon" />
-        <MessageFilled className="ce-sidebar-icon ce-sidebar-icon-active" />
-        <SettingFilled className="ce-sidebar-icon" />
+    <div >
+      <div className="user-profile">
+        <img src="https://api.multiavatar.com/Binx Bond.svg" alt="User Avatar" className="avatar" />
+        <p className="username">John Doe</p>
       </div>
+      <div className="friends-list">
+        <h2>Friends</h2>
+        <ul>
+          <UserSearchDisplay  ></UserSearchDisplay>
+        </ul>
+      </div>
+      <div  >
+        <input type="text" name="userName" value={userName} id="" onChange={(e) => setuserName(e.target.value)} placeholder="enter you friends email" />
 
-      <Avatar
-        className="sidebar-avatar"
-        avatarUrl={typeof user?.avatar === "string" ? user.avatar : undefined}
-        username={user?.username}
-        isOnline={true}
-      />
-
-      <LogoutOutlined
-        onClick={() => setUser(undefined)}
-        className="signout-icon"
-      />
+      </div>
     </div>
   );
 };

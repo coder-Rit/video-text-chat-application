@@ -1,14 +1,28 @@
-import { CSSProperties, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 
 
 import valley from "../assets/valley.jpeg";
 import SignUpForm from "./SignUpForm";
 import LogInForm from "./LogInForm";
+import {  userInterface } from "../Interfaces/user";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { rootState } from "../Interfaces";
  
  
 
 const AuthPage = () => {
   const [hasAccount, setHasAccount] = useState(false);
+  let navigate = useNavigate();
+
+  const { isAuthenticated} = useSelector<rootState,userInterface>((state) => state.user);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("chatt")
+    }
+  }, [isAuthenticated])
+  
 
   const backgroundImage = {
     backgroundImage: `url(${valley})`, // Here due to variable
@@ -23,7 +37,7 @@ const AuthPage = () => {
           {hasAccount ? (
             <LogInForm onHasNoAccount={() => setHasAccount(false)} />
           ) : (
-            <SignUpForm onHasAccount={() => setHasAccount(true)} />
+            <SignUpForm onHasNoAccount={() => setHasAccount(true)} />
           )}
         </div>
       </div>

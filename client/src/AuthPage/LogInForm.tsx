@@ -1,14 +1,34 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
-import axios from "axios";
 
 import TextInput from "./components/TextInput";
 import Button from "./components/Button";
 import Link from "./components/Link";
 
-import { Context } from "../functions/context";
 import { projectId } from "../functions/constants";
-import { PersonObject } from "react-chat-engine-advanced";
+import gql from "graphql-tag";
+import { useLazyQuery } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { LoginAction } from "../actions/userActions";
+
+
+const LOGIN = gql`
+query Query($email: String!, $password: String!) {
+  userLogin(email: $email, password: $password) {
+    userName
+    token
+    profileImageURL
+    lastName
+    id
+    firstName
+    email
+  }
+}
+
+`
+
+
 
 interface LogInFormProps {
   onHasNoAccount: () => void;
@@ -19,38 +39,34 @@ const LogInForm = (props: LogInFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // Hooks
-  const { setUser } = useContext(Context);
+  let navigate = useNavigate();
+
+  // const { setUser } = useContext(Context);
+   const Dispatch: any = useDispatch()
+
+  const [loginUser, { loading, error, data }] = useLazyQuery(LOGIN, {
+    variables: {
+      email,
+      password, 
+    }
+  });
+
+  
+
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    const headers = {
-      "Project-ID": projectId,
-      "User-Name": email,
-      "User-Secret": password,
-    };
-
-    axios
-      .get("https://api.chatengine.io/users/me/", {
-        headers,
-      })
-      .then((r) => {
-        if (r.status === 200) {
-          const user: PersonObject = {
-            first_name: r.data.first_name,
-            last_name: r.data.last_name,
-            email: email,
-            username: email,
-            secret: password,
-            avatar: r.data.avatar,
-            custom_json: {},
-            is_online: true,
-          };
-          setUser(user);
-        }
-      })
-      .catch((e) => console.log("Error", e));
+    loginUser()
   };
+
+
+  useEffect(() => {
+    if (data) {
+       Dispatch(LoginAction(data.userLogin,true))
+       navigate('chatt')
+    }
+  }, [data ])
+  
 
   return (
     <div>

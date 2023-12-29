@@ -14,7 +14,10 @@ async function init() {
   const app = express();
   const PORT = Number(process.env.PORT) || 8000;
 
-  app.use(cors())
+  app.use(cors({
+    credentials:true,
+    origin:"http://localhost:3000"
+  }))
 
   app.use(express.json());
   connectToDatabase(); 
@@ -24,6 +27,7 @@ async function init() {
   app.get("/", (req, res) => {
     res.json({ message: "Server is up and running" });
   });
+  
 
   app.use("/graphql", expressMiddleware(await createApolloGraphqlServer()));
 

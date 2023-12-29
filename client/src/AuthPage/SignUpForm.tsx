@@ -1,67 +1,62 @@
 import { useContext, useEffect, useState } from "react";
 
-import axios from "axios";
 import { useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 
 import { useIsMobile } from "../functions/isMobile";
-import { Context } from "../functions/context";
+// import { Context } from "../functions/context";
 import { privateKey } from "../functions/constants";
+import Cookies from "js-cookie";
 
 import TextInput from "./components/TextInput";
 import PhotoInput from "./components/PhotoInput";
 import Button from "./components/Button";
 import Link from "./components/Link";
+import { User,  userInterface } from "../Interfaces/user";
+import { } from "../functions/context";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { register } from "../actions/userActions";
+import { useSelector } from "react-redux";
 
-interface SignUpFormProps {
-  onHasAccount: () => void;
-}
-interface PersonObject {
-  userName: string;
-  password: string | null;
-  email: string | null;
-  firstName: string | null;
-  lastName: string | null;
-  
-}
+
+
+
+
 
 const CREATE_USER = gql`
-  mutation CreateUser(
-    $userName: String
-    $firstName: String!
-    $lastName: String
-    $email: String!
-    $password: String!
-  ) {
-    createUser(
-      userName: $userName
-      firstName: $firstName
-      lastName: $lastName
-      email: $email
-      password: $password
-    ) {
-      email
-      firstName
-      id
-      lastName
-      userName
-      token 
-    }
+ 
+mutation CreateUser($firstName: String!, $email: String!, $password: String!, $profileImageURL: String!, $lastName: String, $userName: String) {
+  createUser(firstName: $firstName, email: $email, password: $password, profileImageURL: $profileImageURL, lastName: $lastName, userName: $userName) {
+    userName
+    profileImageURL
+    lastName
+    firstName
+    email
+    token
   }
+}
 `;
 
+interface LogInFormProps {
+  onHasNoAccount: () => void;
+}
 
-
-const SignUpForm = (props: SignUpFormProps) => {
+const SignUpForm = (props: LogInFormProps) => {
   // State
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [userName, setuserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [profileImageUrl, setprofileImageUrl] = useState("//");
+  const [profileImageURL, setprofileImageURL] = useState("//");
   // Hooks
-  const { setUser } = useContext(Context);
+  let navigate = useNavigate();
+
+  // const { setUser } = useContext(Context);
+   const Dispatch: any = useDispatch()
+
+
   const isMobile: boolean = useIsMobile();
   const [createUser, { loading, error, data }] = useMutation(CREATE_USER, {
     variables: {
@@ -69,44 +64,52 @@ const SignUpForm = (props: SignUpFormProps) => {
       firstName,
       lastName,
       email,
-      password
+      password,
+      profileImageURL
     }
   });
- 
+
 
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const userJson: PersonObject = {
-      userName: email,
+    const userJson: User = {
+      userName: userName,
       firstName: firstName,
       lastName: lastName,
-      email: email, 
+      email: email,
       password: password,
+      profileImageURL: profileImageURL
+
       // is_online: true,
     };
 
     console.log(userJson);
-    
+
     await createUser()
 
   };
 
-
   useEffect(() => {
     console.log(data);
-    console.log(error);
-    
-  }, [ data ,error])
-  
+
+    if (data) {
+      Cookies.set('authToken', data.createUser.token, { expires: 7 })
+      navigate("chatt")
+      Dispatch(register(data.createUser,true));
+
+    }
+
+  }, [data])
+
   return (
     <div>
       <div className="form-title">Create an account</div>
 
       <div className="form-subtitle">
         Already a member?{" "}
-        <Link onClick={() => props.onHasAccount()}>Log in</Link>
+        <Link onClick={() => props.onHasNoAccount()}>Log in</Link>
       </div>
 
       <form onSubmit={onSubmit}>
@@ -137,6 +140,8 @@ const SignUpForm = (props: SignUpFormProps) => {
           onChange={(e) => setEmail(e.target.value)}
         />
 
+
+
         <TextInput
           label="Password"
           name="password"
@@ -149,16 +154,23 @@ const SignUpForm = (props: SignUpFormProps) => {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <PhotoInput
+        {/* <PhotoInput
           label="Profile picture"
           name="avatar"
           id="avatar-picker"
           style={{ width: isMobile ? "100%" : "calc(50% - 6px)" }}
           onChange={(e) => {
             if (e.target.files !== null) {
-              setprofileImageUrl("");
+              setprofileImageURL("");
             }
           }}
+        /> */}
+        <TextInput
+          label="text"
+          name="userName"
+          placeholder="cavin456"
+          style={{ width: isMobile ? "100%" : "calc(50% - 6px)" }}
+          onChange={(e) => setuserName(e.target.value)}
         />
 
         <Button

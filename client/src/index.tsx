@@ -5,6 +5,8 @@ import App from "./App";
 import "./assets/VisbyRoundCF-Regular.woff";
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
+import store from './store';
+import { Provider } from 'react-redux';
 
 
 const client = new ApolloClient({
@@ -15,7 +17,10 @@ const client = new ApolloClient({
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <App />
+      <Provider store={store}>
+
+        <App />
+      </Provider>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')

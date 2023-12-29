@@ -2,14 +2,14 @@ import { useContext, useState } from "react";
 
 import { CaretUpFilled } from "@ant-design/icons";
 
-import { MessageObject, MessageFormProps } from "react-chat-engine-advanced";
+// import { MessageObject, MessageFormProps } from "react-chat-engine-advanced";
 
 import { nowTimeStamp } from "../functions/dates";
-import { Context } from "../functions/context";
+// import { Context } from "../functions/context";
 
-const MessageForm = (props: MessageFormProps) => {
+const MessageForm = () => {
   const [text, setText] = useState<string>("");
-  const { user } = useContext(Context);
+  // const { user } = useContext(Context);
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -17,21 +17,21 @@ const MessageForm = (props: MessageFormProps) => {
     if (text.trim().length === 0) {
       return;
     }
-    if (!user || user.email === null) {
-      return;
-    }
+    // if (!user || user.email === null) {
+    //   return;
+    // }
 
     setText("");
 
-    const message: MessageObject = {
-      text: text,
-      sender_username: user.email,
-      created: nowTimeStamp(),
-      custom_json: {},
-      attachments: [],
-    };
+    // const message: MessageObject = {
+    //   text: text,
+    //   sender_username: user.email,
+    //   created: nowTimeStamp(),
+    //   custom_json: {},
+    //   attachments: [],
+    // };
 
-    props.onSubmit && props.onSubmit(message);
+    // props.onSubmit && props.onSubmit(message);
   };
 
   return (

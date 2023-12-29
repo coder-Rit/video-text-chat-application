@@ -2,37 +2,33 @@ import { useContext, CSSProperties } from "react";
 
 import valley from "../assets/valley.jpeg";
 
-import { useIsMobile } from "../functions/isMobile";
-import { Context } from "../functions/context";
 
-import {
-  MultiChatWindow,
-  MultiChatSocket,
-  useMultiChatLogic,
-  MessageFormProps,
-  ChatCardProps,
-  ChatHeaderProps,
-} from "react-chat-engine-advanced";
 
 import "../theme.css";
+import { useSelector } from "react-redux";
+import {   userInterface } from "../Interfaces/user";
+import { redirect, useNavigate } from "react-router-dom";
 
+import { useDispatch } from "react-redux";
+import { logOut } from "../actions/userActions";
+import FriendsDispay from "./UserSearchDisplay";
 import Sidebar from "./Sidebar";
-import MessageForm from "./MessageForm";
-import UserSearch from "./UserSearch";
-import ChatCard from "./ChatCard";
-import ChatHeader from "./ChatHeader";
+import { rootState } from "../Interfaces";
 
-import { projectId } from "../functions/constants";
+
+
 
 const ChatsPage = () => {
-  // Hooks
-  const { user } = useContext(Context);
-  const isMobile: boolean = useIsMobile();
 
-  // Chat Engine Hooks
-  const username: string = user ? user.username : "";
-  const secret: string = user && user.secret !== null ? user.secret : "";
-  const chatProps = useMultiChatLogic(projectId, username, secret);
+  const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
+
+  let navigate = useNavigate();
+  const Dispatch: any = useDispatch()
+
+  const onSubmit = () => [
+
+  ]
+
 
   const backgroundImage = {
     backgroundImage: `url(${valley})`, // Here due to variable
@@ -40,81 +36,35 @@ const ChatsPage = () => {
 
   return (
     <div className="background-image" style={backgroundImage}>
-      <div className="background-gradient-light">
-        <div
-          style={{
-            position: "relative",
-            top: isMobile ? "0px" : "10vh",
-            left: isMobile ? "0px" : "calc(50vw - 3vw - 1.5vw - 35vw)",
-            height: isMobile ? "100vh" : "80vh",
-            width: isMobile ? "100vw" : "calc(100vw - 10.5vw - 10.5vw)",
-            backgroundColor: "grey",
-          }}
-        >
-          <div
-            style={{
-              width: "6vw",
-              height: "100%",
-              position: "absolute",
-              top: "0px",
-              left: "0px",
-              backgroundColor: "rgb(40,43,54)",
-            }}
-          >
-            <Sidebar />
+
+
+      <div className="chat-app">
+        <div className="sidebar">
+          <Sidebar></Sidebar>
+          <div>
+          
           </div>
 
-          <div
-            style={{
-              width: isMobile ? "100vw" : "calc(100vw - 6vw)",
-              position: "absolute",
-              top: "0px",
-              left: isMobile ? "0px" : "6vw",
-              height: "100%", // Fill parent height
-            }}
-          >
-            <MultiChatSocket {...chatProps} />
+          <button onClick={() => {
+            Dispatch(logOut())
+            navigate("/")
+          }}>logout</button>
+        </div>
 
-            <MultiChatWindow
-              {...chatProps}
-              renderChatForm={() => (
-                <UserSearch
-                  username={chatProps.username}
-                  secret={chatProps.secret}
-                  onSelect={(chatId: number) =>
-                    chatProps.onChatCardClick(chatId)
-                  }
-                />
-              )}
-              renderChatCard={(props: ChatCardProps) => (
-                <ChatCard
-                  {...props}
-                  username={chatProps.username}
-                  onChatCardClick={chatProps.onChatCardClick}
-                  isActive={
-                    props.chat !== undefined &&
-                    chatProps.activeChatId === props.chat.id
-                  }
-                  chat={props.chat}
-                />
-              )}
-              renderChatHeader={(props: ChatHeaderProps) => (
-                <ChatHeader
-                  {...props}
-                  chat={chatProps.chat}
-                  username={chatProps.username}
-                  secret={chatProps.secret}
-                />
-              )}
-              renderMessageForm={(props: MessageFormProps) => (
-                <MessageForm {...props} />
-              )}
-              renderChatSettings={() => <div className="ce-empty-settings" />}
-              style={{ height: "100%" }}
-            />
+        <div className="chat-container">
+          <div className="chat-header">
+            <p className="friend-name">Friend 1</p>
+          </div>
+          <div className="chats">
+          </div>
+          <div className="message-input">
+            <input type="text" placeholder="Type your message..." />
+            <button>Send</button>
           </div>
         </div>
       </div>
+
+
     </div>
   );
 };
