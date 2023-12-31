@@ -8,9 +8,10 @@ import {
   LOGOUT_USER_REQUEST,
   USER_LIST
 } from "../constants/userConstants";
-import cookie from "js-cookie";
+import Cookies from "js-cookie";
 export const register = (userData,success) => (dispatch) => {
   if (success) {
+    Cookies.set('authToken', userData.token, { expires: 7 })
      
     dispatch({ type: REGISTER_USER_REQUEST });
     dispatch({ type: REGISTER_USER_SUCCESS, payload: userData });
@@ -23,7 +24,9 @@ export const register = (userData,success) => (dispatch) => {
   
 };
 export const loadUser = (userData,success) => (dispatch) => {
+
   if (success) {
+    Cookies.set('authToken', userData.token, { expires: 7 })
     dispatch({ type: LOAD_USER_REQUEST });
     dispatch({ type: LOAD_USER_SUCCESS, payload: userData });
   }else{
@@ -36,6 +39,8 @@ export const loadUser = (userData,success) => (dispatch) => {
   
 export const LoginAction = (userData,success) => (dispatch) => {
   if (success) {
+    Cookies.set('authToken', userData.token, { expires: 7 })
+    
     dispatch({ type: LOAD_USER_REQUEST });
     dispatch({ type: LOAD_USER_SUCCESS, payload: userData });
   }else{
@@ -46,9 +51,20 @@ export const LoginAction = (userData,success) => (dispatch) => {
   }
   
 }; 
+
+
 export const logOut = () => (dispatch) => {
-  cookie.remove('authToken')
+  Cookies.remove('authToken')
     dispatch({ type: LOGOUT_USER_REQUEST });
+  
+};
+
+export const updateFriendList = (userData ,newFriendList) => (dispatch) => {
+  let upUserData =JSON.parse(JSON.stringify(userData))
+  console.log(upUserData);
+  console.log(newFriendList);
+  upUserData.friendList = newFriendList
+    dispatch({ type: LOAD_USER_SUCCESS ,payload:upUserData});
   
 };
 export const userList = (list) => (dispatch) => {

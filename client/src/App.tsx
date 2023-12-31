@@ -16,14 +16,20 @@ import { loadUser, register } from "./actions/userActions";
 
 const LOAD_USER = gql`
 
-query Query($token: String!) {
+query LoadUser($token: String!) {
   loadUser(token: $token) {
     userName
+    token
     profileImageURL
     lastName
-    firstName
     id
+    firstName
     email
+    friendList {
+      userName
+      profileImageURL
+      id
+    }
   }
 }
 
@@ -32,7 +38,7 @@ query Query($token: String!) {
 
 function App() {
 
-   const { loading, data, error } = useQuery(LOAD_USER, {
+   const [loadUserQ,{ loading, data, error }] = useLazyQuery(LOAD_USER, {
     variables: {
       token: Cookies.get('authToken')
     }
@@ -42,10 +48,17 @@ function App() {
 
   useEffect(() => {
     if (data) {
-      Dispatch(loadUser(data.createUser, true));
+      console.log(data);
+      
+      Dispatch(loadUser(data.loadUser, true));
       
     }
   }, [data])
+
+  useEffect(() => {
+    loadUserQ()
+  }, [ ])
+  
  
 
   return (

@@ -24,6 +24,13 @@ export const LOGOUT_USER_REQUEST ="LOGOUT_USER_REQUEST"
 export const USER_LIST ="USER_LIST" 
 
 
+export const OPEN_SIDER ="OPEN_SIDER" 
+export const CLOSE_SIDER ="CLOSE_SIDER" 
+
+
+export const FRIEND_NOT_SELECTED ="FRIEND_NOT_SELECTED" 
+export const FRIEND_SELECTED ="FRIEND_SELECTED" 
+
  
 
 

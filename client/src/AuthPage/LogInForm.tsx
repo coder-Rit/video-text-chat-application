@@ -14,15 +14,20 @@ import { LoginAction } from "../actions/userActions";
 
 
 const LOGIN = gql`
-query Query($email: String!, $password: String!) {
+query UserLogin($email: String!, $password: String!) {
   userLogin(email: $email, password: $password) {
-    userName
+     userName
     token
     profileImageURL
     lastName
     id
     firstName
     email
+    friendList {
+      userName
+      profileImageURL
+      id
+    }
   }
 }
 

@@ -34,6 +34,7 @@ mutation CreateUser($firstName: String!, $email: String!, $password: String!, $p
     firstName
     email
     token
+    friendList
   }
 }
 `;
@@ -80,10 +81,13 @@ const SignUpForm = (props: LogInFormProps) => {
       lastName: lastName,
       email: email,
       password: password,
-      profileImageURL: profileImageURL
-
+      profileImageURL: profileImageURL,
+ 
       // is_online: true,
     };
+
+
+
 
     console.log(userJson);
 
@@ -95,7 +99,6 @@ const SignUpForm = (props: LogInFormProps) => {
     console.log(data);
 
     if (data) {
-      Cookies.set('authToken', data.createUser.token, { expires: 7 })
       navigate("chatt")
       Dispatch(register(data.createUser,true));
 

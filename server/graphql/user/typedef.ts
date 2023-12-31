@@ -8,6 +8,8 @@ export const typeDefs = `#graphql
         password:String
         profileImageURL: String!
         token:String
+        friendList:[User]
+        idList:[ID]
     }
 
  

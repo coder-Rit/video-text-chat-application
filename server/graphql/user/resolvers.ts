@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { User, UserModel } from "../../model/userModel";
 import jwt from "jsonwebtoken";
 
@@ -24,7 +25,11 @@ const queries = {
         throw new Error("user not found")
       }
 
-      console.log(user);
+      const Friends = await UserModel.find({ _id: { $in: user.idList } })
+
+
+      user.token = payload.token
+      user.friendList = Friends
       return user;
 
     } catch (error: any) {
@@ -38,6 +43,7 @@ const queries = {
     payload: { email: string, password: string }
   ) => {
     try {
+      console.log(payload);
 
       if (!payload.email || !payload.password) {
         throw new Error("Please provide email and password")
@@ -47,13 +53,15 @@ const queries = {
       if (!user) {
         throw new Error("User or Password is incorrect.")
       }
-
-
       const isReady = await user.comparePassword(payload.password)
+
+      const Friends = await UserModel.find({ _id: { $in: user.idList } })
+
 
       if (isReady) {
         const token = user.getJWTtoken();
         user.token = token
+        user.friendList = Friends
         return user;
       } else {
         throw new Error("User or Password is incorrect")
@@ -65,22 +73,26 @@ const queries = {
     }
 
   },
-  searchFriend: async (_: any, payload: { userName: string }) => {
+  searchFriend: async (_: any, payload: { userName: string, load: number }) => {
 
     try {
       const regex = new RegExp(payload.userName, 'i')
-      const users = await UserModel.find({ userName: regex }).exec()
+      const users = await UserModel.find({ userName: regex })
+        .limit(payload.load).exec()
 
       console.log(regex);
 
       return users
 
     } catch (error) {
+      throw new Error("Unable to find the Users")
+
     }
 
 
 
-  }
+  },
+
 };
 
 const mutations = {
@@ -98,6 +110,74 @@ const mutations = {
       throw new Error('Failed to create user');
     }
   },
+  addFriend: async (_: any, payload: { Fid: Types.ObjectId, Mid: Types.ObjectId }) => {
+
+
+    try {
+
+      const MidUser = await UserModel.findById(payload.Mid)
+
+
+
+      let isFriendExist = false;
+
+      if (MidUser?.idList.indexOf(payload.Fid) !== -1) {
+        isFriendExist = true;
+      }
+
+      let newUser: any;
+
+      // remove friend
+      if (!isFriendExist) {
+        newUser = await UserModel.findByIdAndUpdate({
+          _id: payload.Mid
+        }, {
+          $push: { idList: payload.Fid }
+        }, {
+          new: true
+        })
+
+        await UserModel.findByIdAndUpdate({
+          _id: payload.Fid
+        }, {
+          $push: { idList: payload.Mid }
+        })
+
+
+
+      } else {
+
+        newUser = await UserModel.findByIdAndUpdate({
+          _id: payload.Mid
+        }, {
+          $pull: { idList: payload.Fid }
+        }, {
+          new: true
+        })
+        await UserModel.findByIdAndUpdate({
+          _id: payload.Fid
+        }, {
+          $pull: { idList: payload.Mid }
+        })
+
+      }
+
+      const Friends = await UserModel.find({ _id: { $in: newUser.idList } })
+
+      newUser.friendList = Friends
+
+      return newUser
+
+
+    } catch (error) {
+
+      throw new Error('Failed to add friend user');
+    }
+
+
+  }
+
+
 };
 
 

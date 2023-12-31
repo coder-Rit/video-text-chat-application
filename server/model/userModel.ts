@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const validator = require("validator")
 
 
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 
 interface User {
   userName: string;
@@ -12,13 +12,16 @@ interface User {
   email?: string;
   password?: string;
   profileImageURL?: string;
-  token:string;
+  token: string;
+  idList: Types.ObjectId[];
+  friendList?:User[]
+
 
   comparePassword(password: string): Promise<boolean>;
   getJWTtoken(): string;
 }
 
-interface UserDocument extends User, Document {}
+interface UserDocument extends User, Document { }
 
 const userSchema = new Schema<UserDocument>({
   userName: { type: String, required: true },
@@ -27,33 +30,37 @@ const userSchema = new Schema<UserDocument>({
   email: { type: String },
   password: { type: String },
   profileImageURL: { type: String },
+  idList:[ {
+    type:  Types.ObjectId,
+    ref:"User",
+  }]
 });
 
 
 // converting password into hash
 userSchema.pre('save', async function (this: UserDocument, next) {
-    if (!this.isModified('password')) {
-      return next();
-    }
-    this.password = await bcrypt.hash(this.password, 10);
-    next();
-  });
+  if (!this.isModified('password')) {
+    return next();
+  }
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
 
 
 // compairing password
-userSchema.methods.comparePassword = async function (password:string) {
+userSchema.methods.comparePassword = async function (password: string) {
 
   console.log(this);
-  
-    
-    return await bcrypt.compare(password, this.password);
-  };
+
+
+  return await bcrypt.compare(password, this.password);
+};
 
 //josn web token genrator
-userSchema.methods.getJWTtoken =  function () {
-    return jwt.sign({ id: this._id }, process.env.JWT_SECREATE as string, {
-        expiresIn: process.env.JWT_EXPIRE as string
-    })
+userSchema.methods.getJWTtoken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECREATE as string, {
+    expiresIn: process.env.JWT_EXPIRE as string
+  })
 }
 
 

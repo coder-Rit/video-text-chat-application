@@ -7,7 +7,9 @@ import {
   LOAD_USER_FAIL,
   LOAD_USER_REQUEST,
   LOGOUT_USER_REQUEST,
-  USER_LIST
+  USER_LIST,
+  OPEN_SIDER,
+  CLOSE_SIDER
 } from "../constants/userConstants";
 
 export const userReducer = (state = { user: {} }, action) => {
@@ -65,6 +67,25 @@ export const userList = (state = { users: {} }, action) => {
         ...state,
         error: null,
       };
+    default:
+      return state;
+  }
+};
+
+
+export const changeSiderState = (state = { isSiderOpen: false }, action) => {
+  switch (action.type) {
+    
+    case OPEN_SIDER:
+      return {
+        isSiderOpen: true,
+      };
+    case CLOSE_SIDER:
+      return {
+        isSiderOpen: false,
+      };
+  
+   
     default:
       return state;
   }

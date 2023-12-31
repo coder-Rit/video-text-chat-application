@@ -1,10 +1,13 @@
 export interface User {
+  id?:string;
   userName: string;
   password: string;
   email: string;
   firstName: string;
   lastName: string | null;
   profileImageURL: string;
+  friendList?:User[]
+
 }
 export interface userInterface {
   user: User,
@@ -12,7 +15,7 @@ export interface userInterface {
   isAuthenticated: boolean
 }
 
-export interface UsersList {
+export interface UserListInterface {
   users:[User]
 }
 

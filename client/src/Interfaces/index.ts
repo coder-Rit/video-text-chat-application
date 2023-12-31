@@ -1,6 +1,9 @@
-import { User, UsersList, userInterface } from "./user";
+import { FriendInterface, siderStateInterface } from "./common";
+import { UserListInterface, userInterface } from "./user";
 
 export interface rootState {
-    user: userInterface,
-    users:UsersList
-  }
+  user: userInterface,
+  userList: UserListInterface,
+  siderState: siderStateInterface,
+  selectedFriend:FriendInterface
+}
