@@ -25,6 +25,8 @@ query UserLogin($email: String!, $password: String!) {
     email
     friendList {
       userName
+    lastName
+    firstName
       profileImageURL
       id
     }

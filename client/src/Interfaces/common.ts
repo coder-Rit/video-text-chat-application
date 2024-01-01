@@ -11,3 +11,4 @@ export interface siderStateInterface {
     isFriendSelected: boolean,
     selectedFriend:User
   }
+

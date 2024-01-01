@@ -29,7 +29,13 @@ export const CLOSE_SIDER ="CLOSE_SIDER"
 
 
 export const FRIEND_NOT_SELECTED ="FRIEND_NOT_SELECTED" 
-export const FRIEND_SELECTED ="FRIEND_SELECTED" 
+export const FRIEND_SELECTED ="FRIEND_SELECTED"
+
+
+
+
+
+export const UPDATE_CHATS ="UPDATE_CHATS" 
 
  
 

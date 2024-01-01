@@ -42,6 +42,7 @@ body {
     background-color: rgb(139, 139, 139);
     border-radius: 20px;
 }
+
 #users::-webkit-scrollbar {
     width: 2px;
 }
@@ -54,6 +55,7 @@ body {
     background-color: rgb(139, 139, 139);
     border-radius: 20px;
 }
+
 .form-title {
     font-size: 42px;
     font-family: 'VisbyRoundCF-Heavy';
@@ -116,7 +118,8 @@ body {
 
 #chat {
     background: var(--chat-background);
-    max-width: 1200px;
+    max-width: 1100px;
+    
     margin: 25px auto;
     box-sizing: border-box;
     padding: 1em;
@@ -124,6 +127,7 @@ body {
     position: relative;
     overflow: hidden;
     display: flex;
+    justify-content: space-evenly;
     gap: 3em;
 }
 
@@ -156,7 +160,7 @@ body {
 
 #chat .chat__conversation-board {
     padding: 1em 0 2em;
-    height: calc(100vh - 55px - 2em - 25px * 2 - .5em - 3em);
+    height: calc(100vh - 155px - 2em - 25px * 2 - .5em - 3em);
     overflow: auto;
 }
 
@@ -384,6 +388,44 @@ body {
     resize: none;
 }
 
+.chat_conversation-header {
+    width: 100%;
+    padding: 10px;
+    color: white;
+    display: grid;
+    width: 40vw;
+    max-width: 800px;
+    background-color: #31434d;
+    border-radius: 10px;
+    grid-template-columns: 70px 1fr 70px;
+    grid-template-rows: auto;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+
+}
+
+.chat_conversation-header-image {
+    width: 50px;
+}
+
+.chat_conversation-header-details>h3 {
+    margin: 0;
+    padding: 0;
+}
+.chat_conversation-header-details>span {
+   color: #ffffff69;
+   font-size: 11px;
+}
+
+.chat_conversation-header-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+
+
 @media only screen and (max-width: 600px) {
     #chat {
         margin: 0;
@@ -403,7 +445,9 @@ body {
 /* //my css */
 
 
-h1,h2,h3{
+h1,
+h2,
+h3 {
     color: rgb(255, 255, 255);
 }
 
@@ -416,7 +460,7 @@ h1,h2,h3{
     min-width: 30%;
 
 }
- 
+
 .users {
     min-height: 650px;
     overflow-y: scroll;
@@ -474,27 +518,31 @@ h1,h2,h3{
     text-shadow: rgba(67, 176, 0, 0.919) 0px 0px 5px;
 }
 
-.detailsDiv_findUser{
+.detailsDiv_findUser {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
 
 }
-.detailsDiv_findUser>div:nth-child(1){
+
+.detailsDiv_findUser>div:nth-child(1) {
     display: flex;
     flex-direction: column;
     gap: 2px;
 
 }
+
 .detailsDiv_findUser>div:nth-child(1)>span:nth-child(1) {
     font-size: 17px;
     color: #ffffffca;
 }
+
 .detailsDiv_findUser>div:nth-child(1)>span:nth-child(2) {
     font-size: 14px;
     color: #a3a3a3;
 }
+
 .detailsDiv_findUser>div:nth-child(1)>div:nth-child(3) {
     height: 10px;
 }
@@ -521,16 +569,19 @@ h1,h2,h3{
     padding: 20px;
 
 }
-.friends-list{
+
+.friends-list {
     overflow-y: scroll;
     height: 600px;
 }
-.loadingDiv{
+
+.loadingDiv {
     width: 100%;
     height: 80px;
 
 }
-.laoderClass{
+
+.laoderClass {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -549,45 +600,48 @@ h1,h2,h3{
     display: inline-block;
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
+}
+
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
     }
 
-
-    @keyframes rotation {
-        0% {
-            transform: rotate(0deg);
-        }
-        100% {
-            transform: rotate(360deg);
-        }
-        } 
-
-        
-    .searchUserheader{
-        color: white;
+    100% {
+        transform: rotate(360deg);
     }
+}
 
 
-    .userNameInput{
-        width: 100%;
-        background-color: transparent;
-        color: rgba(255, 255, 255, 0.794);
-        border: none;
-        margin: 10px;
-        outline: none;
-        border-bottom: 1px solid #8147fc;
-        
-    }
-    .searchGrp{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-    }
+.searchUserheader {
+    color: white;
+}
 
 
-    .deselectedUser{
-        background-color: rgba(75, 75, 75, 0.045);
-    }
-    .selectedUser{
-        background-color: #8147fc;
-    }
+.userNameInput {
+    width: 100%;
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.794);
+    border: none;
+    margin: 10px;
+    outline: none;
+    border-bottom: 1px solid #8147fc;
+
+}
+
+.searchGrp {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+
+.deselectedUser {
+    background-color: rgba(75, 75, 75, 0.045);
+}
+
+.selectedUser {
+    background-color: #8147fc;
+}

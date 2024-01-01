@@ -10,6 +10,9 @@ import { useSelector } from "react-redux";
 import { rootState } from "../Interfaces";
 import { userInterface } from "../Interfaces/user";
 import { FriendInterface } from "../Interfaces/common";
+import { allFriendsChatI, allfriendsTriI, friendChatI, messageI, state_allFrineds } from "../Interfaces/message";
+import { useDispatch } from "react-redux";
+import { appendMsg } from "../actions/chatAction";
 // import { Context } from "../functions/context";
 
 
@@ -17,22 +20,34 @@ import { FriendInterface } from "../Interfaces/common";
 
 
 const MessageForm = (props: any) => {
+
+
+  const Dispatch: any = useDispatch()
+
   const [text, setText] = useState<string>("");
   const { socket } = props
   // const { user } = useContext(Context);
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
   const { selectedFriend, isFriendSelected } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
+  // const stateChat = useSelector<rootState,allFriendsChatI[] >((state) => state.chats);
+  const {chatState} = useSelector<rootState,state_allFrineds>((state) => state.chats);
 
+  const [messageQ, setmessageQ] = useState<messageI[]>([])
+  const [chatStateHook, setchatStateHook] = useState<allfriendsTriI>({})
+  
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 
     event.preventDefault()
 
-    socket.emit('send_msg', {
+    const msg = {
       msg: text,
-      senderId: user.id,
-      reciverId: selectedFriend.id,
-    })
-    setText('')
+      senderId: user.id as string,
+      reciverId: selectedFriend.id as string,
+    }
+    if (isFriendSelected) {
+      socket.emit('send_msg', msg)
+      setText('')
+    }
 
 
   };
@@ -52,15 +67,29 @@ const MessageForm = (props: any) => {
   }, [isAuthenticated, isFriendSelected])
 
   useEffect(() => {
-
-    console.log(socket);
-
-    socket.on('recive_msg', (data: any) => {
-      console.log(data.msg);
+ 
+    socket.on('recive_msg', (data: messageI) => {
+       
+      
+      console.log(chatStateHook);
+      
+        // Dispatch(appendMsg(AllfriendChats,selectedFriend.id as string,data))
+        Dispatch(appendMsg(chatStateHook,selectedFriend.id as string,data))
+      
 
     })
-  }, [socket])
 
+    return () => socket.off('receive_message');
+  }, [chatState,chatStateHook])
+
+  useEffect(() => {
+    console.log(messageQ);
+  }, [messageQ])
+  
+  useEffect(() => {
+   setchatStateHook(chatState)
+  }, [chatState])
+  
 
 
 

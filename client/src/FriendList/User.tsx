@@ -9,6 +9,8 @@ import { updateFriendList } from '../actions/userActions';
 import { useDispatch } from 'react-redux';
 import { selectFriend } from '../actions/selectAction';
 import { FriendInterface } from '../Interfaces/common';
+import { chatInit } from '../actions/chatAction';
+import { allFriendsChatI, friendChatI } from '../Interfaces/message';
 
 
 
@@ -31,12 +33,13 @@ const User = (props: any) => {
 
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
   const { selectedFriend, isFriendSelected } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
+  // const AllfriendChats = useSelector<rootState, allFriendsChatI[]>((state) => state.chats);
 
   const Dispatch: any = useDispatch()
 
 
   const [userId, setuserId] = useState("")
-  const userDiv  = useRef<HTMLInputElement>(null)
+  const userDiv = useRef<HTMLInputElement>(null)
 
   const [add_friend, { loading, error, data }] = useMutation(ADD_FRIEND, {
     variables: {
@@ -74,23 +77,26 @@ const User = (props: any) => {
 
   }, [data])
 
+  
+
+
 
   useEffect(() => {
     if (isFriendSelected && selectedFriend.id === props.user.id) {
       userDiv.current?.classList.add("selectedUser")
       userDiv.current?.classList.remove("deselectedUser")
-    }else{
+    } else {
       userDiv.current?.classList.remove("selectedUser")
       userDiv.current?.classList.add("deselectedUser")
 
     }
-  }, [ selectedFriend])
-  
+  }, [selectedFriend])
+
 
 
 
   return (
-    <div className="user" onClick={selectFriendFunc}  ref={userDiv} >
+    <div className="user" onClick={selectFriendFunc} ref={userDiv} >
       <div className="imageDiv">
         <img src={`https://api.multiavatar.com/${props.user.userName}.png`} alt={props.user.userName} loading="lazy" />
       </div>

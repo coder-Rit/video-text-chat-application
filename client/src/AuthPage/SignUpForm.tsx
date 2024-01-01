@@ -29,12 +29,19 @@ const CREATE_USER = gql`
 mutation CreateUser($firstName: String!, $email: String!, $password: String!, $profileImageURL: String!, $lastName: String, $userName: String) {
   createUser(firstName: $firstName, email: $email, password: $password, profileImageURL: $profileImageURL, lastName: $lastName, userName: $userName) {
     userName
+    token
     profileImageURL
     lastName
+    id
     firstName
     email
-    token
-    friendList
+    friendList {
+      userName
+    lastName
+    firstName
+      profileImageURL
+      id
+    }
   }
 }
 `;

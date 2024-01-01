@@ -27,6 +27,8 @@ query LoadUser($token: String!) {
     email
     friendList {
       userName
+    lastName
+    firstName
       profileImageURL
       id
     }
@@ -38,7 +40,7 @@ query LoadUser($token: String!) {
 
 function App() {
 
-   const [loadUserQ,{ loading, data, error }] = useLazyQuery(LOAD_USER, {
+  const [loadUserQ, { loading, data, error }] = useLazyQuery(LOAD_USER, {
     variables: {
       token: Cookies.get('authToken')
     }
@@ -49,17 +51,17 @@ function App() {
   useEffect(() => {
     if (data) {
       console.log(data);
-      
+
       Dispatch(loadUser(data.loadUser, true));
-      
+
     }
   }, [data])
 
   useEffect(() => {
     loadUserQ()
-  }, [ ])
-  
- 
+  }, [])
+
+
 
   return (
     <Router>
