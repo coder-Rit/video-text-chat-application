@@ -56,6 +56,19 @@ body {
     border-radius: 20px;
 }
 
+#chatboard::-webkit-scrollbar {
+    width: 2px;
+}
+
+#chatboard::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0);
+}
+
+#chatboard ::-webkit-scrollbar-thumb {
+    background-color: rgb(139, 139, 139);
+    border-radius: 20px;
+}
+
 .form-title {
     font-size: 42px;
     font-family: 'VisbyRoundCF-Heavy';
@@ -424,6 +437,34 @@ body {
     gap: 15px;
 }
 
+.chat__conversation-board-default{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 600px;
+}
+
+.chat__conversation-board_message_box{
+     display: flex;
+    flex-direction: column;
+    background-color: #070000;
+    padding: 10px;
+    border-radius: 10px;
+
+    
+}
+.chat__conversation-board_message_box>span:nth-child(1){
+    font-size: 14px;
+    color: #afafaf;
+    
+}
+.chat__conversation-board_message_box>span:nth-child(2){
+    color: #54575c;
+    font-size: 8px;
+    font-weight: bold;
+    text-align: right;
+
+}
 
 
 @media only screen and (max-width: 600px) {
@@ -512,10 +553,17 @@ h3 {
 
 .detailsDiv>div:nth-child(3) {
     width: auto;
-    color: rgb(72, 255, 0);
     font-size: 11px;
     text-align: right;
+}
+.offline{
+    color: #31434d;
+
+}
+.online{
+    color: rgb(72, 255, 0);
     text-shadow: rgba(67, 176, 0, 0.919) 0px 0px 5px;
+
 }
 
 .detailsDiv_findUser {

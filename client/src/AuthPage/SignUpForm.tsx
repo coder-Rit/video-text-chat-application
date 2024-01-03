@@ -82,7 +82,7 @@ const SignUpForm = (props: LogInFormProps) => {
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const userJson: User = {
+    const userJson = {
       userName: userName,
       firstName: firstName,
       lastName: lastName,

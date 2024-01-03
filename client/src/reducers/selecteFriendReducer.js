@@ -11,12 +11,14 @@ import {
       case FRIEND_SELECTED:
         return {
           isFriendSelected: true,
+          idx:action.idx,
           selectedFriend:action.payload
         };
       
       case FRIEND_NOT_SELECTED:
         return {
           isFriendSelected: false,
+          idx:null,
           selectedFriend:{}
         };
       

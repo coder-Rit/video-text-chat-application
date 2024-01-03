@@ -9,25 +9,28 @@ import createApolloGraphqlServer from "./graphql";
 import { Socket, Server } from 'socket.io';
 import { createServer } from "http";
 import { ObjectId } from "mongoose";
+import { messageI, messageModel } from "./model/messageModel";
 
 dotenv.config({ path: "./config/config.env" });
 
-interface messageI {
-  msg: string,
-  senderId: string,
-  reciverId: string,
+
+
+interface onlineStatusChecker_I {
+  myId: string,
+  friendsIds: string[]
 }
 
-const getRoomNameBydata = (data: messageI):string => {
 
-   if (data.senderId > data.reciverId) {
-    return  data.senderId + data.reciverId
+const getRoomNameBydata = (data: messageI): string => {
+
+  if (data.senderId > data.receiverId) {
+    return data.senderId + data.receiverId
   } else {
-    return  data.reciverId + data.senderId
+    return data.receiverId + data.senderId
 
   }
 
-    
+
 }
 
 async function init() {
@@ -62,38 +65,66 @@ async function init() {
 
 
 
-  let roomname = ''
-  let allUser = []
+  let onlineUser: string[] = []
+  let userBysocketId = {
 
-  httpserver.listen(PORT, () => {
+  }
+
+  function findCommonArray(arr1: string[], arr2: string[]) {
+    const set2 = new Set(arr2);
+    return arr1.filter(value => set2.has(value));
+  }
+
+  httpserver.listen(PORT, async () => {
     console.log(`Server started at PORT:${PORT}`);
 
     io.on('connection', (socket: Socket) => {
       console.log(`User connected ${socket.id}`);
 
+
+
+      socket.on('set_online_status', (data: onlineStatusChecker_I) => {
+
+        if (!onlineUser.includes(data.myId)) {
+          onlineUser.push(data.myId)
+        }
+        socket.join(data.myId)
+
+        const commonArray = findCommonArray(onlineUser, data.friendsIds);
+        console.log(commonArray);
+
+        io.in(data.myId).emit('online_status_avil', commonArray)
+      })
+
+
+
       socket.on('startChat', (data: messageI) => {
         console.log("room created by ", data);
-        const room  = getRoomNameBydata(data)
+        const room = getRoomNameBydata(data)
         console.log(room)
-        
-        socket.join(room)
 
-
-
-        socket.to(room).emit('recive_msg', {
-          msg: `${data.reciverId} has joined the chat`,
-          senderId: data.senderId,
-          reciverId:data.reciverId
-        })
+        socket.join(room) 
 
       })
 
-      socket.on('send_msg', (data: messageI) => {
-        const room =  getRoomNameBydata(data)
-        console.log(room)
+      socket.on('send_msg', async (data: messageI) => {
+ 
+        const room = getRoomNameBydata(data)
         
-        io.in(room).emit('recive_msg', data)
-        
+
+        try {
+          const message = await messageModel.create(data)
+          await message.save()
+          console.log(data);
+
+          io.in(room).emit('recive_msg', message)
+
+        } catch (error: any) {
+          new Error(`unable to send data to db ${error}`)
+        }
+
+
+
       })
     });
   });

@@ -6,7 +6,7 @@ export interface User {
   firstName: string;
   lastName: string | null;
   profileImageURL: string;
-  friendList?:User[]
+  friendList:User[]
 
 }
 export interface userInterface {

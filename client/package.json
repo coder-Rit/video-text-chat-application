@@ -18,6 +18,7 @@
     "@types/react-dom": "^18.0.0",
     "@types/react-redux": "^7.1.33",
     "antd": "4.21.5",
+    "framer-motion": "^10.16.16",
     "graphql": "^15.8.0",
     "graphql-tag": "^2.12.6",
     "js-cookie": "^3.0.5",

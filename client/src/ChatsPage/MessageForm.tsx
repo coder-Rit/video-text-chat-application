@@ -10,10 +10,11 @@ import { useSelector } from "react-redux";
 import { rootState } from "../Interfaces";
 import { userInterface } from "../Interfaces/user";
 import { FriendInterface } from "../Interfaces/common";
-import { allFriendsChatI, allfriendsTriI, friendChatI, messageI, state_allFrineds } from "../Interfaces/message";
+import { allFriendsChatI, friendChatI, messageI } from "../Interfaces/message";
 import { useDispatch } from "react-redux";
 import { appendMsg } from "../actions/chatAction";
 // import { Context } from "../functions/context";
+import { motion } from "framer-motion"
 
 
 
@@ -28,23 +29,25 @@ const MessageForm = (props: any) => {
   const { socket } = props
   // const { user } = useContext(Context);
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
-  const { selectedFriend, isFriendSelected } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
-  // const stateChat = useSelector<rootState,allFriendsChatI[] >((state) => state.chats);
-  const {chatState} = useSelector<rootState,state_allFrineds>((state) => state.chats);
+  const { selectedFriend, isFriendSelected ,idx} = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
+  const { AllfriendChats } = useSelector<rootState, allFriendsChatI>((state) => state.chats);
+ 
+  const [messageQ, setmessageQ] = useState<messageI>( )
 
-  const [messageQ, setmessageQ] = useState<messageI[]>([])
-  const [chatStateHook, setchatStateHook] = useState<allfriendsTriI>({})
-  
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 
     event.preventDefault()
 
+    const createdAt = new Date().toISOString()
     const msg = {
       msg: text,
       senderId: user.id as string,
-      reciverId: selectedFriend.id as string,
+      receiverId: selectedFriend.id as string,
+      createdAt
     }
     if (isFriendSelected) {
+      console.log(msg);
+      
       socket.emit('send_msg', msg)
       setText('')
     }
@@ -52,49 +55,65 @@ const MessageForm = (props: any) => {
 
   };
 
+
   useEffect(() => {
-    if (isAuthenticated && isFriendSelected
+    console.log("idx", idx);
+    
+    if (isAuthenticated && idx
     ) {
 
+      
+      
       socket.emit("startChat", {
         msg: user.userName,
         senderId: user.id,
-        reciverId: selectedFriend.id,
-
+        receiverId: selectedFriend.id,
+        createdAt:new Date().toISOString
       })
     }
 
-  }, [isAuthenticated, isFriendSelected])
+  }, [isAuthenticated, idx])
 
   useEffect(() => {
- 
+
     socket.on('recive_msg', (data: messageI) => {
-       
-      
-      console.log(chatStateHook);
-      
-        // Dispatch(appendMsg(AllfriendChats,selectedFriend.id as string,data))
-        Dispatch(appendMsg(chatStateHook,selectedFriend.id as string,data))
-      
+
+      setmessageQ(data)
+      console.log(data);
+
 
     })
 
     return () => socket.off('receive_message');
-  }, [chatState,chatStateHook])
+  }, [socket, AllfriendChats])
+
 
   useEffect(() => {
-    console.log(messageQ);
+    
+    if (messageQ) {
+       console.log(AllfriendChats);
+      
+      Dispatch(appendMsg(AllfriendChats, selectedFriend.id as string, messageQ))
+    }
+
   }, [messageQ])
-  
-  useEffect(() => {
-   setchatStateHook(chatState)
-  }, [chatState])
-  
+
+
+
+
 
 
 
   return (
-    <form onSubmit={onSubmit}  >
+    <motion.form onSubmit={onSubmit} 
+    initial={{ opacity: 0, y:150 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ 
+      duration: 0.5 ,
+      repeatType: 'reverse', // Reverse the animation on each repeat
+      ease: 'easeInOut', // You 
+    }}
+    >
 
       <div className="chat__conversation-panel">
         <div className="chat__conversation-panel__container"><button
@@ -128,7 +147,7 @@ const MessageForm = (props: any) => {
       </div>
 
 
-    </form>
+    </motion.form>
   );
 };
 

@@ -1,13 +1,13 @@
 import { FRIEND_NOT_SELECTED, FRIEND_SELECTED } from "../constants/userConstants";
 
-export const selectFriend = (friend) => (dispatch) => {
+export const selectFriend = (friend,idx) => (dispatch) => {
   
-    dispatch({ type: FRIEND_SELECTED,payload:friend });
+    dispatch({ type: FRIEND_SELECTED,payload:friend,idx});
  
  
 };
 
-export const selectNotFriend = (friend) => (dispatch) => {
+export const selectNotFriend = ( ) => (dispatch) => {
   
     dispatch({ type: FRIEND_NOT_SELECTED});
  

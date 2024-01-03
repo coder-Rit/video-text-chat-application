@@ -12,5 +12,20 @@ export const typeDefs = `#graphql
         idList:[ID]
     }
 
+    type MessageT{
+        id:ID
+        msg:String
+        senderId:ID
+        receiverId:ID
+        createdAt:String
+    }
+    
+    type friendChatT {
+         friendId: String
+         chats: [MessageT]
+    }
+
+     
+
  
 `;

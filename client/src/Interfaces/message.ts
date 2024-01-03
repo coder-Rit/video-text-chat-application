@@ -1,7 +1,9 @@
 export interface messageI {
   msg: string,
   senderId: string,
-  reciverId: string,
+  receiverId: string,
+  createdAt:string,
+
 }
 
 
@@ -15,14 +17,4 @@ export interface allFriendsChatI {
 }
 
 
-
-
-export interface allfriendsTriI{
-  [abc_id:string]:messageI[]
-  
-}
-  
-
-  export interface state_allFrineds{
-    chatState:allfriendsTriI
-  }
+ 

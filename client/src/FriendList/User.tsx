@@ -9,8 +9,8 @@ import { updateFriendList } from '../actions/userActions';
 import { useDispatch } from 'react-redux';
 import { selectFriend } from '../actions/selectAction';
 import { FriendInterface } from '../Interfaces/common';
-import { chatInit } from '../actions/chatAction';
-import { allFriendsChatI, friendChatI } from '../Interfaces/message';
+ 
+import { motion } from "framer-motion"
 
 
 
@@ -50,7 +50,7 @@ const User = (props: any) => {
 
   const selectFriendFunc = () => {
 
-    Dispatch(selectFriend(props.user))
+    Dispatch(selectFriend(props.user, props.idx))
 
 
   }
@@ -77,7 +77,7 @@ const User = (props: any) => {
 
   }, [data])
 
-  
+
 
 
 
@@ -96,7 +96,15 @@ const User = (props: any) => {
 
 
   return (
-    <div className="user" onClick={selectFriendFunc} ref={userDiv} >
+    <motion.div className="user" onClick={selectFriendFunc} ref={userDiv}
+      initial={{ opacity: 0, x: -400 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{
+        duration: 0.5,
+        delay: 0.1 * props.idx,
+        ease: 'easeInOut', // You 
+      }}
+    >
       <div className="imageDiv">
         <img src={`https://api.multiavatar.com/${props.user.userName}.png`} alt={props.user.userName} loading="lazy" />
       </div>
@@ -106,7 +114,7 @@ const User = (props: any) => {
           <span>{props.user.userName}</span>
           <span>where are you bro?</span>
 
-          <div>Online</div>
+          <div className={props.status} >{props.status}</div>
 
         </div>
       }
@@ -123,7 +131,7 @@ const User = (props: any) => {
       </div>}
 
 
-    </div>
+    </motion.div>
   )
 }
 

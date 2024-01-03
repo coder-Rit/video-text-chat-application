@@ -9,6 +9,12 @@ export interface siderStateInterface {
 
   export interface  FriendInterface{
     isFriendSelected: boolean,
+    idx:number,
     selectedFriend:User
   }
 
+
+  interface onlineStatusChecker_I {
+    myId: string,
+    friendsIds: string[]
+  }

@@ -32,6 +32,7 @@ const FriendsPannel = (props:any) => {
                 <div>
                     <span onClick={() => setopenSider(true)}><PersonAddIcon></PersonAddIcon></span>
                     <span><PersonIcon></PersonIcon></span>
+                    
                 </div>
 
                 <div>

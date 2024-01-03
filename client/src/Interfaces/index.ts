@@ -1,5 +1,5 @@
 import { FriendInterface, siderStateInterface } from "./common";
-import { allFriendsChatI, allfriendsTriI, friendChatI, state_allFrineds } from "./message";
+import { allFriendsChatI, friendChatI } from "./message";
 import { UserListInterface, userInterface } from "./user";
 
 export interface rootState {
@@ -7,6 +7,5 @@ export interface rootState {
   userList: UserListInterface,
   siderState: siderStateInterface,
   selectedFriend:FriendInterface,
-  // chats:allFriendsChatI[],
-  chats:state_allFrineds
+  chats:allFriendsChatI,
 }

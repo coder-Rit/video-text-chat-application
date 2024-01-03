@@ -1,4 +1,4 @@
-import { allfriendsTriI, friendChatI, messageI } from "../Interfaces/message";
+import {  friendChatI, messageI } from "../Interfaces/message";
 import { UPDATE_CHATS } from "../constants/userConstants";
 
 // export const chatInit = (allFriendsChat:friendChatI[]) => (dispatch:any) => {
@@ -8,33 +8,34 @@ import { UPDATE_CHATS } from "../constants/userConstants";
 
 
 // };
-export const chatInit = (allFriendsChat: allfriendsTriI) => (dispatch: any) => {
+export const chatInit = (allFriendsChat: friendChatI[]) => (dispatch: any) => {
 
+    let data = JSON.parse(JSON.stringify(allFriendsChat))
 
-    dispatch({ type: UPDATE_CHATS, payload: allFriendsChat });
+    dispatch({ type: UPDATE_CHATS, payload: data });
 
 
 };
 
 
-export const appendMsg = (allFriendsChat: allfriendsTriI, friendId: string, msg: messageI) => (dispatch: any) => {
+export const appendMsg = (allFriendsChat: friendChatI[], friendId: string, msg: messageI) => (dispatch: any) => {
 
+ 
+     
 
-    //    const currentFriendIndex =  allFriendsChat.findIndex((data)=>{
-    //         return data.friendId === friendId
-    //     })
-
-    //     allFriendsChat[currentFriendIndex].chats.push(msg)
-
-
-    let firendmsg = allFriendsChat[friendId]
-    firendmsg.push(msg)
-    // let allFriendsChatnew = allFriendsChat
-    // allFriendsChatnew[friendId]= firendmsg
-
-
+       const currentFriendIndex =  allFriendsChat.findIndex((data)=>{
+            return data.friendId === friendId
+        })
+        console.log(currentFriendIndex);
+        
+        let newAllchats = allFriendsChat
+         
+        let chatarr =  allFriendsChat[currentFriendIndex] 
+         
+        chatarr.chats.push(msg);
+         
     
-    dispatch({ type: UPDATE_CHATS, payload: allFriendsChat });
+    dispatch({ type: UPDATE_CHATS, payload: newAllchats });
 
 
 };
