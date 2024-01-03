@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { userInterface } from '../Interfaces/user';
 import { rootState } from '../Interfaces';
 import { FriendInterface } from '../Interfaces/common';
 import { allFriendsChatI, messageI } from '../Interfaces/message';
 import { useSelector } from 'react-redux';
+import Image from './Files Components/Image';
 
 
 
-const ChatCard = () => {
+const ChatCard = (props: any) => {
 
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
   const { AllfriendChats } = useSelector<rootState, allFriendsChatI>((state) => state.chats);
-  const { idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend); 
+  const { idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
+
 
   const [chats, setChats] = useState<messageI[]>([])
 
@@ -41,56 +43,101 @@ const ChatCard = () => {
     )
   }
 
-  function formatTimeFromISOString(isoTimeString:string) {
-     
+  function formatTimeFromISOString(isoTimeString: string) {
+
     const date = new Date(parseInt(isoTimeString));
-  
+
     const formattedTimeString = new Intl.DateTimeFormat('en-US', {
       hour: 'numeric',
       minute: 'numeric',
       hour12: true,
     }).format(date);
-  
+
     return formattedTimeString;
   }
 
   useEffect(() => {
-    
+
     if (idx) {
-     const chatInx =  AllfriendChats.findIndex(data=>{
-        return data.friendId === user.friendList[idx-1].id 
+      const chatInx = AllfriendChats.findIndex(data => {
+        return data.friendId === user.friendList[idx - 1].id
       })
-      
+
       setChats(AllfriendChats[chatInx].chats)
-    } 
+    }
 
- 
+
   }, [idx])
-  
 
+  useLayoutEffect(() => {
+    const chatboardRef = props.chatboard.current;
+    if (chatboardRef) {
+      console.log(chatboardRef.scrollTop);
+      chatboardRef.scrollTop = chatboardRef.scrollHeight
+      console.log(chatboardRef.scrollTop);
+    }
+  }, [AllfriendChats]);
+
+
+  function textMaper(data: messageI) {
+
+
+    return (
+      <div className={data.senderId === user.id ? "chat__conversation-board__message-container reversed" : "chat__conversation-board__message-container"}>
+
+        <div className="chat__conversation-board__message__context">
+          <div className="chat__conversation-board_message_box">
+            <span>{data.msg}</span>
+            <span>{formatTimeFromISOString(data.createdAt)}</span>
+          </div>
+        </div>
+
+        {chatBtn()}
+
+      </div>
+
+    )
+  }
+
+
+  function fileMaper(data: any) {
+
+
+    const mapData = data.fileData?.map((fileData: any) => {
+      const uint8Array = new Uint8Array(fileData.file.data);
+      const newblob = new Blob([uint8Array], { type: fileData.type })
+
+      return <Image Blob={newblob}></Image>
+    })
+
+    return <div className={data.senderId === user.id ? "chat__conversation-board__message-container flex_down reversed" : "chat__conversation-board__message-container flex_down"}>
+      {data.msg !== "" && <div className="chat__conversation-board__message__context">
+        <div className="chat__conversation-board_message_box">
+      {mapData}
+          <span className='msgTxt'>{data.msg}</span>
+          <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
+        </div>
+      </div>
+      }
+
+    </div>
+
+  }
 
   return (
 
-    <div className="chat__conversation-board" id='chatboard'>
+    <div className="chat__conversation-board" id='chatboard' ref={props.chatboard}>
 
       {
         isAuthenticated && idx && chats.map(data => {
-          return (
-            <div className={data.senderId === user.id ? "chat__conversation-board__message-container reversed" : "chat__conversation-board__message-container"}>
 
-              <div className="chat__conversation-board__message__context">
-                <div className="chat__conversation-board_message_box">  
-                  <span>{data.msg}</span>
-                  <span>{formatTimeFromISOString(data.createdAt)}</span>
-                  </div>
-              </div>
+          console.log(data)
 
-              {chatBtn()}
-
-            </div>
-
-          )
-
+          if (data.type === "text") {
+            return textMaper(data)
+          } else {
+            return fileMaper(data)
+          }
 
 
         })
@@ -98,7 +145,7 @@ const ChatCard = () => {
       }
 
 
-     
+
 
 
 

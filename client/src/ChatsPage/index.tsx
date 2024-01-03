@@ -36,6 +36,8 @@ const ChatsPage = () => {
   const { AllfriendChats } = useSelector<rootState, allFriendsChatI>((state) => state.chats);
   const { idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
 
+  const chatboard = useRef<HTMLDivElement>(null)
+
 
   const [openSider, setopenSider] = useState(false)
   let sider = useRef(null)
@@ -84,10 +86,10 @@ const ChatsPage = () => {
 
           <ChatHeader></ChatHeader>
 
-          <ChatCard></ChatCard>
+          <ChatCard chatboard={chatboard}></ChatCard>
 
 
-          <MessageForm socket={socket}></MessageForm>
+          <MessageForm socket={socket} chatboard={chatboard}></MessageForm>
 
         </motion.div>
       }

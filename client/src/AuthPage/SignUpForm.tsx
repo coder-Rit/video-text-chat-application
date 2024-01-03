@@ -28,19 +28,20 @@ const CREATE_USER = gql`
  
 mutation CreateUser($firstName: String!, $email: String!, $password: String!, $profileImageURL: String!, $lastName: String, $userName: String) {
   createUser(firstName: $firstName, email: $email, password: $password, profileImageURL: $profileImageURL, lastName: $lastName, userName: $userName) {
-    userName
-    token
-    profileImageURL
-    lastName
     id
+    userName
     firstName
-    email
-    friendList {
-      userName
     lastName
-    firstName
-      profileImageURL
+    email
+    profileImageURL
+    token
+    friendList {
       id
+      userName
+      firstName
+      lastName
+      profileImageURL
+      lastSeen
     }
   }
 }
@@ -89,9 +90,8 @@ const SignUpForm = (props: LogInFormProps) => {
       email: email,
       password: password,
       profileImageURL: profileImageURL,
- 
-      // is_online: true,
-    };
+      lastSeen:new Date().toISOString,
+     };
 
 
 

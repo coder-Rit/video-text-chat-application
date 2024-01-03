@@ -1,20 +1,30 @@
+
+export interface fileI {
+  file: File,
+  mimeType: string,
+  fileName: string,
+  fileSize: number
+}
+
 export interface messageI {
   msg: string,
   senderId: string,
   receiverId: string,
-  createdAt:string,
+  createdAt: string,
+  type: "file" | "text",
+  fileData?: fileI[]
+
 
 }
 
 
 export interface friendChatI {
-  friendId: string
+  friendId: string 
   chats: messageI[],
 }
 
 export interface allFriendsChatI {
-  AllfriendChats:friendChatI[]
+  AllfriendChats: friendChatI[]
 }
 
 
- 

@@ -10,6 +10,7 @@ import { Socket, Server } from 'socket.io';
 import { createServer } from "http";
 import { ObjectId } from "mongoose";
 import { messageI, messageModel } from "./model/messageModel";
+import { UserModel } from "./model/userModel";
 
 dotenv.config({ path: "./config/config.env" });
 
@@ -66,7 +67,7 @@ async function init() {
 
 
   let onlineUser: string[] = []
-  let userBysocketId = {
+  let userBysocketId: any = {
 
   }
 
@@ -87,6 +88,7 @@ async function init() {
 
         if (!onlineUser.includes(data.myId)) {
           onlineUser.push(data.myId)
+          userBysocketId[socket.id as string] = data.myId;
         }
         socket.join(data.myId)
 
@@ -103,14 +105,14 @@ async function init() {
         const room = getRoomNameBydata(data)
         console.log(room)
 
-        socket.join(room) 
+        socket.join(room)
 
       })
 
       socket.on('send_msg', async (data: messageI) => {
- 
+
         const room = getRoomNameBydata(data)
-        
+
 
         try {
           const message = await messageModel.create(data)
@@ -123,10 +125,44 @@ async function init() {
           new Error(`unable to send data to db ${error}`)
         }
 
+      })
+
+      socket.on('disconnect', async () => {
+        console.log(socket.id, " is disconnected");
+        console.log(userBysocketId);
+        const disconnectedUser = userBysocketId[socket.id]
+
+        onlineUser = onlineUser.filter(data => {
+          return data !== disconnectedUser
+        })
+        console.log(onlineUser);
+
+        delete userBysocketId[socket.id]
+
+        console.log(userBysocketId);
+
+        //updateLastSeen
+        try {
+
+          await UserModel.findByIdAndUpdate(disconnectedUser, {
+            lastSeen: new Date().toISOString
+          })
+        } catch (error: any) {
+          new Error(error)
+        }
+
 
 
       })
+
+
+
+
+
+
     });
+
+
   });
 }
 

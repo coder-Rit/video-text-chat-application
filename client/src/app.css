@@ -175,6 +175,8 @@ body {
     padding: 1em 0 2em;
     height: calc(100vh - 155px - 2em - 25px * 2 - .5em - 3em);
     overflow: auto;
+    transition: 0.5s all ;
+    scroll-behavior: smooth;
 }
 
 #chat .chat__conversation-board__message-container.reversed {
@@ -329,6 +331,7 @@ body {
     flex-direction: row;
     align-items: center;
     height: 100%;
+    gap: 5px;
 }
 
 #chat .chat__conversation-panel__container .panel-item:not(:last-child) {
@@ -453,12 +456,12 @@ body {
 
     
 }
-.chat__conversation-board_message_box>span:nth-child(1){
+.msgTxt{
     font-size: 14px;
     color: #afafaf;
     
 }
-.chat__conversation-board_message_box>span:nth-child(2){
+.msgTime{
     color: #54575c;
     font-size: 8px;
     font-weight: bold;
@@ -466,6 +469,40 @@ body {
 
 }
 
+.file-input-container {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+  
+  .custom-file-input {
+    position: absolute;
+    font-size: 100px;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0); /* For IE 8 and earlier */
+   }
+  
+  .custom-file-label {
+    display: inline-block;
+     color: #fff; /* Custom text color */
+    cursor: pointer;
+  }
+  
+.imageFile{
+    width: 300px;
+    height: auto;
+    border-radius: 10px;
+
+}
+.flex_down{
+    display: flex;
+    flex-direction: column;
+}
 
 @media only screen and (max-width: 600px) {
     #chat {
@@ -693,3 +730,5 @@ h3 {
 .selectedUser {
     background-color: #8147fc;
 }
+
+

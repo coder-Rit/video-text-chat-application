@@ -22,6 +22,13 @@ query GetChats($idList: [ID]) {
       msg
       createdAt
       id
+      fileData {
+        mimeType
+        fileSize
+        fileName
+        file
+      }
+      type
     }
   }
 }

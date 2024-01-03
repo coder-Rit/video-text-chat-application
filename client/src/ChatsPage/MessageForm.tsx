@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 
 import { CaretUpFilled } from "@ant-design/icons";
 
@@ -10,14 +10,13 @@ import { useSelector } from "react-redux";
 import { rootState } from "../Interfaces";
 import { userInterface } from "../Interfaces/user";
 import { FriendInterface } from "../Interfaces/common";
-import { allFriendsChatI, friendChatI, messageI } from "../Interfaces/message";
+import { allFriendsChatI, fileI, messageI } from "../Interfaces/message";
 import { useDispatch } from "react-redux";
 import { appendMsg } from "../actions/chatAction";
 // import { Context } from "../functions/context";
 import { motion } from "framer-motion"
-
-
-
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 
 
 const MessageForm = (props: any) => {
@@ -29,46 +28,95 @@ const MessageForm = (props: any) => {
   const { socket } = props
   // const { user } = useContext(Context);
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
-  const { selectedFriend, isFriendSelected ,idx} = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
+  const { selectedFriend, isFriendSelected, idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
   const { AllfriendChats } = useSelector<rootState, allFriendsChatI>((state) => state.chats);
- 
-  const [messageQ, setmessageQ] = useState<messageI>( )
+
+  const [messageQ, setmessageQ] = useState<messageI>()
+  const [files, setfiles] = useState<FileList | null>()
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-
     event.preventDefault()
-
     const createdAt = new Date().toISOString()
-    const msg = {
-      msg: text,
-      senderId: user.id as string,
-      receiverId: selectedFriend.id as string,
-      createdAt
+
+
+    if (text != "" && !files) {
+      const msg: messageI = {
+        msg: text,
+        senderId: user.id as string,
+        receiverId: selectedFriend.id as string,
+        createdAt,
+        type: "text"
+      }
+      if (isFriendSelected) {
+        socket.emit('send_msg', msg)
+        setText('')
+      }
     }
-    if (isFriendSelected) {
-      console.log(msg);
-      
-      socket.emit('send_msg', msg)
-      setText('')
+
+    if (files) {
+      const fileArray= []
+      for (let i = 0; i < files.length; i++) {
+        const file: File = files[i];
+         
+        let tempFile :fileI = {
+          file: file,
+          mimeType: file.type,
+          fileName: file.name,
+          fileSize: file.size,
+        }
+
+        fileArray.push(tempFile)
+      }
+  
+      const msg: messageI = {
+        msg: text,
+        senderId: user.id as string,
+        receiverId: selectedFriend.id as string,
+        createdAt,
+        type: "file",
+        fileData: fileArray
+      }
+ 
+      if (isFriendSelected) {
+        socket.emit('send_msg', msg)
+        setfiles(null)
+        setText("")
+      }
+    }
+
+
+
+
+    const chatboardRef = props.chatboard.current;
+
+    if (chatboardRef) {
+      chatboardRef.scrollTop = chatboardRef.scrollHeight;
     }
 
 
   };
 
+  const storeFile = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      console.log(e.target.files);
+      setfiles(e.target.files);
+
+
+    }
+  }
+
 
   useEffect(() => {
     console.log("idx", idx);
-    
+
     if (isAuthenticated && idx
     ) {
-
-      
-      
+ 
       socket.emit("startChat", {
         msg: user.userName,
         senderId: user.id,
         receiverId: selectedFriend.id,
-        createdAt:new Date().toISOString
+        createdAt: new Date().toISOString,
       })
     }
 
@@ -89,11 +137,11 @@ const MessageForm = (props: any) => {
 
 
   useEffect(() => {
-    
+
     if (messageQ) {
-       console.log(AllfriendChats);
-      
+      console.log(AllfriendChats);
       Dispatch(appendMsg(AllfriendChats, selectedFriend.id as string, messageQ))
+
     }
 
   }, [messageQ])
@@ -105,34 +153,53 @@ const MessageForm = (props: any) => {
 
 
   return (
-    <motion.form onSubmit={onSubmit} 
-    initial={{ opacity: 0, y:150 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ 
-      duration: 0.5 ,
-      repeatType: 'reverse', // Reverse the animation on each repeat
-      ease: 'easeInOut', // You 
-    }}
+    <motion.form onSubmit={onSubmit}
+      initial={{ opacity: 0, y: 150 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.5,
+        repeatType: 'reverse', // Reverse the animation on each repeat
+        ease: 'easeInOut', // You
+      }}
     >
 
       <div className="chat__conversation-panel">
-        <div className="chat__conversation-panel__container"><button
-          className="chat__conversation-panel__button panel-item btn-icon add-file-button"><svg
-            className="feather feather-plus sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="24"
-            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg></button>
-          <button className="chat__conversation-panel__button panel-item btn-icon emoji-button"><svg
-            className="feather feather-smile sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="24"
-            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-            <line x1="9" y1="9" x2="9.01" y2="9"></line>
-            <line x1="15" y1="9" x2="15.01" y2="9"></line>
-          </svg></button><input value={text} onChange={(e) => setText(e.target.value)} className="chat__conversation-panel__input panel-item"
+        <div className="chat__conversation-panel__container">
+
+
+
+          <div className="file-input- ">
+            <input type="file" id="fileInput" multiple onChange={storeFile} className="custom- -input" />
+            <label htmlFor="fileInput" className="custom-file-label">
+              <AddCircleIcon></AddCircleIcon>
+
+            </label>
+
+
+          </div>
+
+          {/* <button
+            className="chat__conversation-panel__button panel-item btn-icon add-file-button"
+
+          >
+            <input type="file" name="" id="" />
+           
+            
+
+
+          </button>
+            */}
+
+          <div>
+            <input type="file" id="fileInput" className="custom-file-input" />
+            <label htmlFor="fileInput" className="custom-file-label">
+              <EmojiEmotionsIcon></EmojiEmotionsIcon>
+
+            </label>
+          </div>
+
+
+          <input value={text} onChange={(e) => setText(e.target.value)} className="chat__conversation-panel__input panel-item"
             placeholder="Type a message..." />
           <button
             type="submit"

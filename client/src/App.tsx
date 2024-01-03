@@ -18,19 +18,20 @@ const LOAD_USER = gql`
 
 query LoadUser($token: String!) {
   loadUser(token: $token) {
-    userName
-    token
-    profileImageURL
-    lastName
     id
+    userName
     firstName
-    email
-    friendList {
-      userName
     lastName
-    firstName
-      profileImageURL
+    email
+    profileImageURL
+    token
+    friendList {
       id
+      userName
+      firstName
+      lastName
+      profileImageURL
+      lastSeen
     }
   }
 }
