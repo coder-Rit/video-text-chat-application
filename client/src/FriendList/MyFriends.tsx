@@ -65,25 +65,14 @@ const MyFriends = (props: any) => {
     function getStatus() {
 
         let friendsIds = user.friendList?.map(data => data.id)
-        console.log(friendsIds);
-        setIdList(friendsIds)
-
+         setIdList(friendsIds) 
         props.socket.emit('set_online_status', {
             myId: user.id,
-            friendsIds: friendsIds
-        })
+         })
 
     }
 
-    function isOnline(id: string): string {
-
-        const res = onlineUserList.statusLine.findIndex(data => data === id)
-        if (res === -1) {
-            return "offline"
-        } else {
-            return "online"
-        }
-    }
+   
 
     useEffect(() => {
 
@@ -98,8 +87,8 @@ const MyFriends = (props: any) => {
 
         if (isAuthenticated) {
 
-            props.socket.on('online_status_avil', (data: any) => {
-                console.log(data);
+            console.log( "see_online_status");
+            props.socket.on('see_online_status', (data: any) => {
                 setonlineUserList({
                     gotStatus: true,
                     statusLine: data
@@ -124,7 +113,6 @@ const MyFriends = (props: any) => {
          
         if (data) {
             intialValueFiller()
-            
         }
     }, [data])
     
@@ -139,9 +127,11 @@ const MyFriends = (props: any) => {
         >
             {user.firstName}
             {
-                user.friendList && onlineUserList.gotStatus && user.friendList.map((data, index) => {
+                user.friendList && user.friendList.map((data, index) => {
+                  
+                    
                     return (
-                        <User user={data} idx={index + 1} status={isOnline(data.id as string)} usedFor="myFriend"
+                        <User index={index} user={data} idx={index + 1} onlineUserList={onlineUserList} usedFor="myFriend"
 
                         ></User>
                     )

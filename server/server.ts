@@ -11,6 +11,7 @@ import { createServer } from "http";
 import { ObjectId } from "mongoose";
 import { messageI, messageModel } from "./model/messageModel";
 import { UserModel } from "./model/userModel";
+import { log } from "console";
 
 dotenv.config({ path: "./config/config.env" });
 
@@ -20,9 +21,14 @@ interface onlineStatusChecker_I {
   myId: string,
   friendsIds: string[]
 }
+interface typingInter {
+  senderId: string,
+  receiverId: string,
+  state:boolean
+}
 
 
-const getRoomNameBydata = (data: messageI): string => {
+const getRoomNameBydata = (data: messageI|typingInter): string => {
 
   if (data.senderId > data.receiverId) {
     return data.senderId + data.receiverId
@@ -52,6 +58,8 @@ async function init() {
     res.json({ message: "Server is up and running" });
   });
 
+
+
   app.use("/graphql", expressMiddleware(await createApolloGraphqlServer()));
 
   const httpserver = createServer(app);
@@ -71,10 +79,10 @@ async function init() {
 
   }
 
-  function findCommonArray(arr1: string[], arr2: string[]) {
-    const set2 = new Set(arr2);
-    return arr1.filter(value => set2.has(value));
-  }
+  // function findCommonArray(arr1: string[], arr2: string[]) {
+  //   const set2 = new Set(arr2);
+  //   return arr1.filter(value => set2.has(value));
+  // }
 
   httpserver.listen(PORT, async () => {
     console.log(`Server started at PORT:${PORT}`);
@@ -85,17 +93,15 @@ async function init() {
 
 
       socket.on('set_online_status', (data: onlineStatusChecker_I) => {
-
+          
         if (!onlineUser.includes(data.myId)) {
           onlineUser.push(data.myId)
           userBysocketId[socket.id as string] = data.myId;
         }
-        socket.join(data.myId)
+        socket.join(data.myId) 
+        io.emit('see_online_status', onlineUser)
+        console.log("see_online_status",onlineUser);
 
-        const commonArray = findCommonArray(onlineUser, data.friendsIds);
-        console.log(commonArray);
-
-        io.in(data.myId).emit('online_status_avil', commonArray)
       })
 
 
@@ -109,9 +115,17 @@ async function init() {
 
       })
 
+      socket.on('is_typing_started',(data:typingInter)=>{
+
+        const room = getRoomNameBydata(data)
+        io.in(room).emit('is_typing_started', data)
+
+      })
+
       socket.on('send_msg', async (data: messageI) => {
 
         const room = getRoomNameBydata(data)
+        io.in(room).emit('recive_msg', data)
 
 
         try {
@@ -129,24 +143,31 @@ async function init() {
 
       socket.on('disconnect', async () => {
         console.log(socket.id, " is disconnected");
-        console.log(userBysocketId);
         const disconnectedUser = userBysocketId[socket.id]
 
         onlineUser = onlineUser.filter(data => {
           return data !== disconnectedUser
         })
-        console.log(onlineUser);
 
         delete userBysocketId[socket.id]
 
-        console.log(userBysocketId);
+        
+        io.emit('see_online_status', onlineUser)
+        console.log("see_online_status");
+        
+
+
 
         //updateLastSeen
         try {
 
-          await UserModel.findByIdAndUpdate(disconnectedUser, {
-            lastSeen: new Date().toISOString
+          console.log(disconnectedUser);
+
+          const newUpdate = await UserModel.findByIdAndUpdate(disconnectedUser, {
+            lastSeen: new Date().toISOString()
           })
+          console.log(newUpdate);
+
         } catch (error: any) {
           new Error(error)
         }

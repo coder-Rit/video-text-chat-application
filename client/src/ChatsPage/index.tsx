@@ -56,7 +56,7 @@ const ChatsPage = () => {
 
 
 
-  
+
 
 
 
@@ -79,12 +79,12 @@ const ChatsPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{
             duration: 0.5,
-            delay:2,
-             ease: 'easeInOut', // You 
+            delay: 2,
+            ease: 'easeInOut', // You 
           }}
         >
 
-          <ChatHeader></ChatHeader>
+          <ChatHeader socket={socket}></ChatHeader>
 
           <ChatCard chatboard={chatboard}></ChatCard>
 

@@ -54,11 +54,11 @@ const MessageForm = (props: any) => {
     }
 
     if (files) {
-      const fileArray= []
+      const fileArray = []
       for (let i = 0; i < files.length; i++) {
         const file: File = files[i];
-         
-        let tempFile :fileI = {
+
+        let tempFile: fileI = {
           file: file,
           mimeType: file.type,
           fileName: file.name,
@@ -67,7 +67,7 @@ const MessageForm = (props: any) => {
 
         fileArray.push(tempFile)
       }
-  
+
       const msg: messageI = {
         msg: text,
         senderId: user.id as string,
@@ -76,7 +76,7 @@ const MessageForm = (props: any) => {
         type: "file",
         fileData: fileArray
       }
- 
+
       if (isFriendSelected) {
         socket.emit('send_msg', msg)
         setfiles(null)
@@ -111,7 +111,7 @@ const MessageForm = (props: any) => {
 
     if (isAuthenticated && idx
     ) {
- 
+
       socket.emit("startChat", {
         msg: user.userName,
         senderId: user.id,
@@ -148,6 +148,24 @@ const MessageForm = (props: any) => {
 
 
 
+  useEffect(() => {
+    if (isAuthenticated && idx
+    ) {
+      let data = {
+        senderId: user.id,
+        receiverId: selectedFriend.id,
+        state: true
+      }
+
+      if (text !== "") {
+        socket.emit("is_typing_started", data)
+      } else {
+        data.state = false
+        socket.emit("is_typing_started", data)
+      }
+    }
+  }, [text])
+
 
 
 
@@ -168,35 +186,14 @@ const MessageForm = (props: any) => {
 
 
 
-          <div className="file-input- ">
-            <input type="file" id="fileInput" multiple onChange={storeFile} className="custom- -input" />
-            <label htmlFor="fileInput" className="custom-file-label">
-              <AddCircleIcon></AddCircleIcon>
+          <label className="lable">
+            <input type="file" hidden multiple onChange={storeFile} />
+            <div className="btn-up iconStyle"><AddCircleIcon></AddCircleIcon></div>
+          </label>
 
-            </label>
-
-
-          </div>
-
-          {/* <button
-            className="chat__conversation-panel__button panel-item btn-icon add-file-button"
-
-          >
-            <input type="file" name="" id="" />
-           
-            
+          <div className="iconStyle" ><EmojiEmotionsIcon></EmojiEmotionsIcon></div>
 
 
-          </button>
-            */}
-
-          <div>
-            <input type="file" id="fileInput" className="custom-file-input" />
-            <label htmlFor="fileInput" className="custom-file-label">
-              <EmojiEmotionsIcon></EmojiEmotionsIcon>
-
-            </label>
-          </div>
 
 
           <input value={text} onChange={(e) => setText(e.target.value)} className="chat__conversation-panel__input panel-item"

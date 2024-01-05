@@ -7,7 +7,7 @@ export interface User {
   lastName: string | null;
   profileImageURL: string;
   friendList:User[];
-  lastSeen:Date
+  lastSeen:string
 
 }
 export interface userInterface {

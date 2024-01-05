@@ -5,6 +5,7 @@ import { FriendInterface } from '../Interfaces/common';
 import { allFriendsChatI, messageI } from '../Interfaces/message';
 import { useSelector } from 'react-redux';
 import Image from './Files Components/Image';
+import FileComp from './Files Components/FileComp';
 
 
 
@@ -87,8 +88,8 @@ const ChatCard = (props: any) => {
 
         <div className="chat__conversation-board__message__context">
           <div className="chat__conversation-board_message_box">
-            <span>{data.msg}</span>
-            <span>{formatTimeFromISOString(data.createdAt)}</span>
+            <span className='msgTxt'>{data.msg}</span>
+            <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
           </div>
         </div>
 
@@ -104,21 +105,41 @@ const ChatCard = (props: any) => {
 
 
     const mapData = data.fileData?.map((fileData: any) => {
+
       const uint8Array = new Uint8Array(fileData.file.data);
       const newblob = new Blob([uint8Array], { type: fileData.type })
 
-      return <Image Blob={newblob}></Image>
+       
+      switch (fileData.mimeType) {
+        case "application/pdf":
+          console.log("working");
+          return <FileComp Blob={newblob} fileData={fileData}></FileComp>
+        // word
+        case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+          return <FileComp Blob={newblob} fileData={fileData}></FileComp>
+        case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+          return <FileComp Blob={newblob} fileData={fileData}></FileComp>
+        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+          return <FileComp Blob={newblob} fileData={fileData}></FileComp>
+        default:
+          
+          return <Image Blob={newblob}></Image>
+
+      }
+
+
+
     })
 
     return <div className={data.senderId === user.id ? "chat__conversation-board__message-container flex_down reversed" : "chat__conversation-board__message-container flex_down"}>
-      {data.msg !== "" && <div className="chat__conversation-board__message__context">
+      <div className="chat__conversation-board__message__context">
         <div className="chat__conversation-board_message_box">
-      {mapData}
+          {mapData}
           <span className='msgTxt'>{data.msg}</span>
           <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
         </div>
       </div>
-      }
+
 
     </div>
 
@@ -131,7 +152,6 @@ const ChatCard = (props: any) => {
       {
         isAuthenticated && idx && chats.map(data => {
 
-          console.log(data)
 
           if (data.type === "text") {
             return textMaper(data)

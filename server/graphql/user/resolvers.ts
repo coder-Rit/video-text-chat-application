@@ -107,9 +107,6 @@ const queries = {
         ],
       }).sort({ createdAt: 1 }).limit(100);
 
-      console.log(messages);
-      
-
       const tempObj = {
         friendId:id,
         chats:messages

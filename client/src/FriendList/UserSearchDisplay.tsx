@@ -8,11 +8,7 @@ import User from './User';
 
 const UserSearchDisplay = (props: any) => {
 
-
-  useEffect(() => {
-    console.log(props.loading);
-  }, [props.loading])
-
+ 
 
   return (
     <div>

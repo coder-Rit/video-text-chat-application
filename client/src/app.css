@@ -132,7 +132,7 @@ body {
 #chat {
     background: var(--chat-background);
     max-width: 1100px;
-    
+
     margin: 25px auto;
     box-sizing: border-box;
     padding: 1em;
@@ -175,7 +175,7 @@ body {
     padding: 1em 0 2em;
     height: calc(100vh - 155px - 2em - 25px * 2 - .5em - 3em);
     overflow: auto;
-    transition: 0.5s all ;
+    transition: 0.5s all;
     scroll-behavior: smooth;
 }
 
@@ -411,7 +411,7 @@ body {
     display: grid;
     width: 40vw;
     max-width: 800px;
-    background-color: #31434d;
+    background-color: rgba(75, 75, 75, 0.159);
     border-radius: 10px;
     grid-template-columns: 70px 1fr 70px;
     grid-template-rows: auto;
@@ -428,9 +428,10 @@ body {
     margin: 0;
     padding: 0;
 }
+
 .chat_conversation-header-details>span {
-   color: #ffffff69;
-   font-size: 11px;
+    color: #ffffff69;
+    font-size: 11px;
 }
 
 .chat_conversation-header-icons {
@@ -440,68 +441,107 @@ body {
     gap: 15px;
 }
 
-.chat__conversation-board-default{
+.chat__conversation-board-default {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 600px;
 }
 
-.chat__conversation-board_message_box{
-     display: flex;
+.chat__conversation-board_message_box {
+    display: flex;
     flex-direction: column;
-    background-color: #070000;
-    padding: 10px;
-    border-radius: 10px;
+    background-color: rgba(75, 75, 75, 0.159);
+     border-radius: 10px;
 
-    
+
 }
-.msgTxt{
+
+.msgTxt {
     font-size: 14px;
+    padding: 10px;
     color: #afafaf;
     
 }
-.msgTime{
+
+.msgTime {
     color: #54575c;
     font-size: 8px;
     font-weight: bold;
     text-align: right;
+    padding: 10px;
 
 }
 
-.file-input-container {
-    position: relative;
-    overflow: hidden;
+.lable {
+     text-align: center;
+    text-decoration: none;
     display: inline-block;
-  }
-  
-  .custom-file-input {
-    position: absolute;
-    font-size: 100px;
-    top: 0;
-    right: 0;
-    margin: 0;
-    padding: 0;
     cursor: pointer;
-    opacity: 0;
-    filter: alpha(opacity=0); /* For IE 8 and earlier */
-   }
-  
-  .custom-file-label {
-    display: inline-block;
-     color: #fff; /* Custom text color */
-    cursor: pointer;
-  }
-  
-.imageFile{
+ }
+
+.iconStyle{
+    margin: 2px;
+    padding: 5px;
+    background-color: #00000018;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.771);
+}
+
+.imageFile {
     width: 300px;
     height: auto;
     border-radius: 10px;
 
 }
-.flex_down{
+
+.flex_down {
     display: flex;
     flex-direction: column;
+}
+
+
+.FileDisplay{
+     
+    color: white;
+
+    align-items: center;
+    padding: 10px;
+    display: flex;
+    border-radius: 10px 10px 0 0;
+    
+}
+.pdf{
+    background-color: #ff000010;
+}
+.ppt{
+    background-color: #ffa20010;
+}
+.doc{
+    background-color: #0055ff10;
+}
+.xls{
+    background-color: #00ff1e10;
+}
+
+.fileIcone{
+    width: 45px;
+    cursor: pointer;
+
+}
+.fileDetails
+{
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+ }
+.filesTechnical{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr;
+    color: #767676;
 }
 
 @media only screen and (max-width: 600px) {
@@ -593,11 +633,13 @@ h3 {
     font-size: 11px;
     text-align: right;
 }
-.offline{
+
+.offline {
     color: #31434d;
 
 }
-.online{
+
+.online {
     color: rgb(72, 255, 0);
     text-shadow: rgba(67, 176, 0, 0.919) 0px 0px 5px;
 
@@ -730,5 +772,3 @@ h3 {
 .selectedUser {
     background-color: #8147fc;
 }
-
-

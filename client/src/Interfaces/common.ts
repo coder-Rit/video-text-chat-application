@@ -18,3 +18,9 @@ export interface siderStateInterface {
     myId: string,
     friendsIds: string[]
   }
+
+ export interface typingInter {
+    senderId: string,
+    receiverId: string,
+    state:boolean
+  }

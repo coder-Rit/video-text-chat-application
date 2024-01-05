@@ -39,6 +39,7 @@ const User = (props: any) => {
 
 
   const [userId, setuserId] = useState("")
+  const [status, setstatus] = useState("offline")
   const userDiv = useRef<HTMLInputElement>(null)
 
   const [add_friend, { loading, error, data }] = useMutation(ADD_FRIEND, {
@@ -54,6 +55,16 @@ const User = (props: any) => {
 
 
   }
+
+  function isOnline(id: string): string {
+
+    const res = props.onlineUserList.statusLine.findIndex((data:any) => data === id)
+    if (res === -1) {
+        return "offline"
+    } else {
+        return "online"
+    }
+}
 
 
   useEffect(() => {
@@ -77,6 +88,18 @@ const User = (props: any) => {
 
   }, [data])
 
+  useEffect(() => {
+    
+    if (props.onlineUserList) {
+      console.log(props.onlineUserList);
+      
+      setstatus(isOnline(props.user.id as string))
+      
+
+    }
+
+  }, [props.onlineUserList])
+  
 
 
 
@@ -97,6 +120,7 @@ const User = (props: any) => {
 
   return (
     <motion.div className="user" onClick={selectFriendFunc} ref={userDiv}
+    
       initial={{ opacity: 0, x: -400 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{
@@ -114,7 +138,10 @@ const User = (props: any) => {
           <span>{props.user.userName}</span>
           <span>where are you bro?</span>
 
-          <div className={props.status} >{props.status}</div>
+        {
+
+          <div className={status} >{status}</div>
+        }
 
         </div>
       }
