@@ -30,22 +30,13 @@ const socket = io("http://localhost:4000/");
 
 const ChatsPage = () => {
 
-  const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
-  const { isSiderOpen } = useSelector<rootState, siderStateInterface>((state) => state.siderState);
+  const { isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
 
-  const { AllfriendChats } = useSelector<rootState, allFriendsChatI>((state) => state.chats);
   const { idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
 
   const chatboard = useRef<HTMLDivElement>(null)
 
-
-  const [openSider, setopenSider] = useState(false)
-  let sider = useRef(null)
-  let navigate = useNavigate();
   const Dispatch: any = useDispatch()
-  const backgroundImage = {
-    backgroundImage: `url(${valley})`, // Here due to variable
-  } as CSSProperties;
 
 
 
@@ -69,39 +60,42 @@ const ChatsPage = () => {
 
 
 
-      <FriendsPannel socket={socket}></FriendsPannel>
+      <FriendsPannel socket={socket} ></FriendsPannel>
 
 
 
-      {
-        isAuthenticated && idx && <motion.div
-
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.5,
-            delay: 2,
-            ease: 'easeInOut', // You 
-          }}
-        >
-
-          <ChatHeader socket={socket}></ChatHeader>
-
-          <ChatCard chatboard={chatboard}></ChatCard>
-
-
-          <MessageForm socket={socket} chatboard={chatboard}></MessageForm>
-
-        </motion.div>
-      }
-
-      <AnimatePresence mode="wait">
+      <div className="grid-item">
 
         {
-          isAuthenticated && !idx &&
-          <DefaultCart key="exit"></DefaultCart>
-        }
-      </AnimatePresence>
+          isAuthenticated && idx && <motion.div
+            className="chatSection"
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.5,
+              delay: 2,
+              ease: 'easeInOut', // You 
+            }}
+          >
 
+            <ChatHeader socket={socket}></ChatHeader>
+
+            {/* <ChatCard chatboard={chatboard}></ChatCard> */}
+
+
+            <MessageForm socket={socket} chatboard={chatboard}></MessageForm>
+
+          </motion.div>
+        }
+
+        <AnimatePresence mode="wait">
+
+          {
+            isAuthenticated && !idx &&
+            <DefaultCart key="exit"></DefaultCart>
+          }
+        </AnimatePresence>
+
+      </div>
 
 
 

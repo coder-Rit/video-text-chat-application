@@ -93,34 +93,7 @@ const queries = {
 
 
   },
-  getChats:async (_:any, payload:{idList:string[]})=>{
-
-    let resArray = [];
-
-    for (let i = 0; i < payload.idList.length; i++) {
-      const id = payload.idList[i];
-
-      const messages = await messageModel.find({
-        $or: [
-          { senderId: id },
-          { receiverId: id },
-        ],
-      }).sort({ createdAt: 1 }).limit(100);
-
-      const tempObj = {
-        friendId:id,
-        chats:messages
-      }
-
-      resArray.push(tempObj)
-      
-    }
-    
-    return resArray
-
-
-
-  }
+ 
  
 };
 
@@ -210,4 +183,4 @@ const mutations = {
 };
 
 
-export const resolvers = { queries, mutations }; 
+export const resolvers = { queries, mutations };  

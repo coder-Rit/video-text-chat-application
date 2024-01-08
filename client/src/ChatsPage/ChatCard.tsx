@@ -6,6 +6,8 @@ import { allFriendsChatI, messageI } from '../Interfaces/message';
 import { useSelector } from 'react-redux';
 import Image from './Files Components/Image';
 import FileComp from './Files Components/FileComp';
+import { motion } from "framer-motion"
+import { extractFileType } from './commonFunc';
 
 
 
@@ -103,39 +105,28 @@ const ChatCard = (props: any) => {
 
   function fileMaper(data: any) {
 
-
-    const mapData = data.fileData?.map((fileData: any) => {
+     const mapData = data.fileData?.map((fileData: any) => {
 
       const uint8Array = new Uint8Array(fileData.file.data);
       const newblob = new Blob([uint8Array], { type: fileData.type })
 
-       
-      switch (fileData.mimeType) {
-        case "application/pdf":
-          console.log("working");
-          return <FileComp Blob={newblob} fileData={fileData}></FileComp>
-        // word
-        case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-          return <FileComp Blob={newblob} fileData={fileData}></FileComp>
-        case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-          return <FileComp Blob={newblob} fileData={fileData}></FileComp>
-        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-          return <FileComp Blob={newblob} fileData={fileData}></FileComp>
-        default:
-          
-          return <Image Blob={newblob}></Image>
+      let ext_type = extractFileType(fileData.mimeType)
 
+      if (ext_type === "img") {
+        return <Image Blob={newblob} fileData={fileData}></Image>
+      } else {
+        return <FileComp Blob={newblob} fileData={fileData} imageUrl={ext_type}></FileComp>
       }
 
 
-
     })
+
 
     return <div className={data.senderId === user.id ? "chat__conversation-board__message-container flex_down reversed" : "chat__conversation-board__message-container flex_down"}>
       <div className="chat__conversation-board__message__context">
         <div className="chat__conversation-board_message_box">
           {mapData}
-          <span className='msgTxt'>{data.msg}</span>
+          {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
           <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
         </div>
       </div>
@@ -145,12 +136,20 @@ const ChatCard = (props: any) => {
 
   }
 
+
+
   return (
 
-    <div className="chat__conversation-board" id='chatboard' ref={props.chatboard}>
+    <motion.div className="chat__conversation-board" id='chatboard'
+      initial={{ opacity: 0, x: 0 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{
+        duration: 0.5,
+      }}
+      ref={props.chatboard}>
 
       {
-        isAuthenticated && idx && chats.map(data => {
+            isAuthenticated && idx && chats.map(data => {
 
 
           if (data.type === "text") {
@@ -169,7 +168,7 @@ const ChatCard = (props: any) => {
 
 
 
-    </div>
+    </motion.div>
 
   )
 }

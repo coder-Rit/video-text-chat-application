@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { ChangeEvent, ReactNode, useContext, useEffect, useState } from "react";
 
 import { CaretUpFilled } from "@ant-design/icons";
 
@@ -17,12 +17,31 @@ import { appendMsg } from "../actions/chatAction";
 import { motion } from "framer-motion"
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
+import { extractFileType, formatBytes } from "./commonFunc";
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import CloseIcon from '@mui/icons-material/Close';
+import EmojiComp from "./EmojiComp";
+import SelectFileType from "./SelectFileType";
+import gql from "graphql-tag";
+import { useLazyQuery, useMutation } from "@apollo/client";
+
+
+const SEND_FILES = gql`
+mutation UploadFiles($fileArray: [Upload!]!) {
+  uploadFiles(fileArray: $fileArray) {
+    url
+    fileName
+  }
+}
+
+`
 
 
 const MessageForm = (props: any) => {
-
-
   const Dispatch: any = useDispatch()
+
+
+
 
   const [text, setText] = useState<string>("");
   const { socket } = props
@@ -33,6 +52,17 @@ const MessageForm = (props: any) => {
 
   const [messageQ, setmessageQ] = useState<messageI>()
   const [files, setfiles] = useState<FileList | null>()
+  const [fileslength, set_fileslength] = useState<number>(0)
+  const [EmojiPiker, setEmojiPiker] = useState<boolean>(false)
+  const [SelectFileState, setSelectFileState] = useState<boolean>(false)
+  const [selectedType, setselectedType] = useState<string | null>(null)
+
+  const [uploadFiles, { loading, data, error }] = useMutation(SEND_FILES, {
+    variables: {
+      fileArray: files
+    }
+  })
+
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -96,6 +126,9 @@ const MessageForm = (props: any) => {
 
   };
 
+
+
+
   const storeFile = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       console.log(e.target.files);
@@ -103,6 +136,109 @@ const MessageForm = (props: any) => {
 
 
     }
+  }
+
+
+
+
+
+  const viewFileBeforeSend = (files: FileList): ReactNode => {
+
+
+    console.log("filesData", files);
+
+    let filesData = []
+
+     uploadFiles()
+
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      const tempObj: any = {
+        name: file["name"],
+        IconScr: null,
+        size: file["size"]
+      }
+
+
+      if (selectedType === "file") {
+        tempObj.IconScr = extractFileType(file["type"])
+
+      } else if (selectedType === "photos") {
+        const reader = new FileReader();
+        reader.readAsDataURL(file)
+        reader.onloadend = async function () {
+          tempObj.IconScr = await reader.result
+        }
+
+      }
+
+      filesData.push(tempObj)
+    }
+
+
+
+    const node = <motion.div className="viewFileBeforeSend_body"
+      initial={{ opacity: 0, x: 250 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{
+        duration: .2,
+      }}
+    >
+
+      <span className="RemoveCircleOutlineIcon" onClick={() => setfiles(null)}>
+        <CloseIcon></CloseIcon>
+      </span >
+
+      <div className="viewFileBeforeSend" id="viewFileBeforeSend" >
+
+        {
+          filesData.map((data, index) => {
+            return (
+              <div className={`FileDisplay FileDisplay_Specific  ${data.IconScr} `}>
+
+                <span className="RemoveCircleOutlineIcon" onClick={() => removeFile(index)} >
+
+                  <RemoveCircleOutlineIcon sx={{ fontSize: "13px" }} ></RemoveCircleOutlineIcon>
+                </span>
+
+
+                <img className='fileIcone' src={data.IconScr} alt="" />
+
+                <div className='fileDetails'>
+                  <span>{data.name}</span>
+                  <div className='filesTechnical'>
+                    <span>{data.IconScr}</span>
+                    <span style={{ textAlign: "right" }}>{formatBytes(data.size)}</span>
+                  </div>
+                </div>
+              </div>
+            )
+          })
+        }
+
+      </div>
+
+
+    </motion.div>
+
+    return node
+
+  }
+
+
+
+  function removeFile(idx: number) {
+
+    if (files) {
+      let fileArr = Array.from(files)
+      fileArr.splice(idx, 1)
+      let tempObj: any = Object.assign({ length: fileArr.length }, fileArr)
+      console.log(tempObj);
+      setfiles(tempObj);
+    }
+
   }
 
 
@@ -154,13 +290,12 @@ const MessageForm = (props: any) => {
       let data = {
         senderId: user.id,
         receiverId: selectedFriend.id,
-        state: true
+        state: "typing"
       }
-
       if (text !== "") {
         socket.emit("is_typing_started", data)
       } else {
-        data.state = false
+        data.state = selectedFriend.lastSeen
         socket.emit("is_typing_started", data)
       }
     }
@@ -168,50 +303,91 @@ const MessageForm = (props: any) => {
 
 
 
+  useEffect(() => {
+    if (files) {
+
+      set_fileslength(files.length)
+    }
+  }, [files])
+
+  useEffect(() => {
+
+    if (files && fileslength > 0) {
+      setSelectFileState(false)
+    } else {
+      setselectedType(null)
+
+    }
+
+  }, [files, fileslength])
+
+  useEffect(() => {
+    console.log("errors are there", error);
+
+  }, [error])
+
+
+
 
 
   return (
-    <motion.form onSubmit={onSubmit}
-      initial={{ opacity: 0, y: 150 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.5,
-        repeatType: 'reverse', // Reverse the animation on each repeat
-        ease: 'easeInOut', // You
-      }}
-    >
 
-      <div className="chat__conversation-panel">
-        <div className="chat__conversation-panel__container">
+    <>
 
 
+      <motion.form onSubmit={onSubmit}
+        initial={{ opacity: 0, y: 150 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.5,
+          repeatType: 'reverse', // Reverse the animation on each repeat
+          ease: 'easeInOut', // You
+        }}
+        className="msgForm"
+      >
 
-          <label className="lable">
-            <input type="file" hidden multiple onChange={storeFile} />
-            <div className="btn-up iconStyle"><AddCircleIcon></AddCircleIcon></div>
-          </label>
+        {files && fileslength > 0 && viewFileBeforeSend(files)}
+        {SelectFileState && <SelectFileType storeFile={storeFile} setselectedType={setselectedType} setSelectFileState={setSelectFileState}></SelectFileType>}
 
-          <div className="iconStyle" ><EmojiEmotionsIcon></EmojiEmotionsIcon></div>
-
-
+        {EmojiPiker && <EmojiComp text={text} setText={setText} setEmojiPiker={setEmojiPiker}></EmojiComp>}
+        <div className="chat__conversation-panel">
+          <div className="chat__conversation-panel__container">
 
 
-          <input value={text} onChange={(e) => setText(e.target.value)} className="chat__conversation-panel__input panel-item"
-            placeholder="Type a message..." />
-          <button
-            type="submit"
-            className="chat__conversation-panel__button panel-item btn-icon send-message-button"><svg
-              xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              aria-hidden="true" data-reactid="1036">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg></button>
+
+
+            {/* <label className="lable">
+              <input type="file" hidden multiple onChange={storeFile} />
+              <div className="btn-up iconStyle"><AddCircleIcon></AddCircleIcon></div>
+            </label> */}
+
+
+            <div className="btn-up iconStyle" onClick={() => setSelectFileState(true)}><AddCircleIcon></AddCircleIcon></div>
+
+
+            <div className="iconStyle" onClick={() => setEmojiPiker(true)}><EmojiEmotionsIcon></EmojiEmotionsIcon></div>
+
+
+
+
+            <input value={text} onChange={(e) => setText(e.target.value)} className="chat__conversation-panel__input panel-item"
+              placeholder="Type a message..." />
+            <button
+              type="submit"
+              className="chat__conversation-panel__button panel-item btn-icon send-message-button"><svg
+                xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                aria-hidden="true" data-reactid="1036">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg></button>
+          </div>
         </div>
-      </div>
 
 
-    </motion.form>
+      </motion.form>
+    </>
+
   );
 };
 

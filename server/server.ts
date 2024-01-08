@@ -20,15 +20,15 @@ dotenv.config({ path: "./config/config.env" });
 interface onlineStatusChecker_I {
   myId: string,
   friendsIds: string[]
-}
+} 
 interface typingInter {
   senderId: string,
   receiverId: string,
-  state:boolean
+  state: string
 }
 
 
-const getRoomNameBydata = (data: messageI|typingInter): string => {
+const getRoomNameBydata = (data: messageI | typingInter): string => {
 
   if (data.senderId > data.receiverId) {
     return data.senderId + data.receiverId
@@ -46,7 +46,7 @@ async function init() {
 
   app.use(cors({
     credentials: true,
-    origin: "http://localhost:3000"
+    origin: "http://localhost:3000/graphql"
   }));
 
   app.use(express.json());
@@ -57,12 +57,11 @@ async function init() {
   app.get("/", (req, res) => {
     res.json({ message: "Server is up and running" });
   });
+ 
 
-
-
-  app.use("/graphql", expressMiddleware(await createApolloGraphqlServer()));
-
+  
   const httpserver = createServer(app);
+  app.use("/graphql", expressMiddleware(await createApolloGraphqlServer(httpserver)) );
 
   const io = new Server(httpserver, {
     cors: {
@@ -70,6 +69,7 @@ async function init() {
       methods: ['GET', 'POST']
     },
   });
+
 
 
 
@@ -93,18 +93,15 @@ async function init() {
 
 
       socket.on('set_online_status', (data: onlineStatusChecker_I) => {
-          
+
         if (!onlineUser.includes(data.myId)) {
           onlineUser.push(data.myId)
           userBysocketId[socket.id as string] = data.myId;
         }
-        socket.join(data.myId) 
-        io.emit('see_online_status', onlineUser)
-        console.log("see_online_status",onlineUser);
+        io.emit('see_online_status', onlineUser);
+        console.log("see_online_status", onlineUser);
 
       })
-
-
 
       socket.on('startChat', (data: messageI) => {
         console.log("room created by ", data);
@@ -115,9 +112,24 @@ async function init() {
 
       })
 
-      socket.on('is_typing_started',(data:typingInter)=>{
+      socket.on('get_online_status', (data) => {
+
+        if (onlineUser.includes(data.frdId)) {
+          data.state = "online"
+        }
+        socket.join(data.myId)
+
+        io.to(data.myId).emit('got_online_status', data)
+
+      })
+
+
+      socket.on('is_typing_started', (data: typingInter) => {
 
         const room = getRoomNameBydata(data)
+        if (data.state !== "typing" && onlineUser.includes(data.receiverId)) {
+          data.state = "online"
+        }
         io.in(room).emit('is_typing_started', data)
 
       })
@@ -151,10 +163,10 @@ async function init() {
 
         delete userBysocketId[socket.id]
 
-        
+
         io.emit('see_online_status', onlineUser)
         console.log("see_online_status");
-        
+
 
 
 

@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { userList } from "../actions/userActions";
 import UserSearchDisplay from "./UserSearchDisplay";
 import SearchIcon from '@mui/icons-material/Search';
+import GoBack from "../AuthPage/components/GoBack";
 
 const FIND_USER = gql`
  
@@ -22,8 +23,8 @@ const FIND_USER = gql`
 `
 
 
-const FindUser = () => {
-
+const FindUser = (props: any) => {
+    const { goBack } = props
 
 
     // const { setUser } = useContext(Context);
@@ -94,14 +95,16 @@ const FindUser = () => {
     return (
 
         < >
+            <GoBack goBack={props.goBack} icon="goBack"></GoBack>
+
             <div className="searchUserheader" >
-                <h2>Add New Friends</h2>
+                <h2 className='sidepanle_heading'>ADD FRIENDS</h2>
                 <div className="searchGrp">
-                    <SearchIcon sx={{  opacity: "0.5", width: "25px", marginTop: "5px" }}></SearchIcon>
+                    <SearchIcon sx={{ opacity: "0.5", width: "25px", marginTop: "5px" }}></SearchIcon>
                     <input type="text" name="userName" className="userNameInput" value={userName} id="" onChange={(e) => setuserName(e.target.value)} placeholder="Search username" />
                 </div>
             </div>
-            <div className="friends-list" id="friends-list" ref={friendList_element} >
+            <div className="user-list" ref={friendList_element} >
                 <UserSearchDisplay friendList={UserList} loading={loading} usedFor="findUser"></UserSearchDisplay>
             </div>
         </ >

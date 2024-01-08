@@ -10,6 +10,8 @@ import { friendChatI } from '../Interfaces/message';
 import { motion } from "framer-motion"
 import gql from 'graphql-tag';
 import { useLazyQuery } from '@apollo/client';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import GoBack from '../AuthPage/components/GoBack';
 
 
 const GET_CHATS = gql`
@@ -57,7 +59,7 @@ const MyFriends = (props: any) => {
     })
 
 
-    function intialValueFiller() { 
+    function intialValueFiller() {
 
         Dispatch(chatInit(data.getChats))
     }
@@ -65,14 +67,14 @@ const MyFriends = (props: any) => {
     function getStatus() {
 
         let friendsIds = user.friendList?.map(data => data.id)
-         setIdList(friendsIds) 
+        setIdList(friendsIds)
         props.socket.emit('set_online_status', {
             myId: user.id,
-         })
+        })
 
     }
 
-   
+
 
     useEffect(() => {
 
@@ -87,7 +89,7 @@ const MyFriends = (props: any) => {
 
         if (isAuthenticated) {
 
-            console.log( "see_online_status");
+            console.log("see_online_status");
             props.socket.on('see_online_status', (data: any) => {
                 setonlineUserList({
                     gotStatus: true,
@@ -109,36 +111,40 @@ const MyFriends = (props: any) => {
 
 
     useEffect(() => {
-     
-         
+
+
         if (data) {
             intialValueFiller()
         }
     }, [data])
-    
+
 
 
 
 
 
     return (
-        <div className="users" id='users'
-
+        <div
+            className='users'
         >
-            {user.firstName}
-            {
-                user.friendList && user.friendList.map((data, index) => {
-                  
-                    
-                    return (
-                        <User index={index} user={data} idx={index + 1} onlineUserList={onlineUserList} usedFor="myFriend"
-
-                        ></User>
-                    )
-                })
-            }
+            <GoBack goBack={props.goBack} icon="goBack"></GoBack>
+            <h2 className='sidepanle_heading'>MY CONTACTS</h2>
+            <div className='user-list'>
 
 
+                {
+                    user.friendList && user.friendList.map((data, index) => {
+
+
+                        return (
+                            <User index={index} goBack={props.goBack} user={data} idx={index + 1} onlineUserList={onlineUserList} usedFor="myFriend"
+
+                            ></User>
+                        )
+                    })
+                }
+
+            </div>
         </div>
     )
 }

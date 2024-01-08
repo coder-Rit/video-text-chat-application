@@ -1,8 +1,8 @@
 
- import mongoose, { Document, Schema, Types } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 
-export interface fileI {
-  file: Buffer,
+export interface fileIdI {
+  fileId: string,
   mimeType: string,
   fileName: string
   fileSize: number
@@ -13,7 +13,7 @@ interface messageI {
   receiverId: string,
   createdAt: Date,
   type: "file" | "text",
-  fileData?: fileI[]
+  fileData?: fileIdI[]
 }
 interface MessageDocument extends messageI, Document { }
 
@@ -30,8 +30,8 @@ const messageSchema = new Schema<MessageDocument>({
     type: String
   },
   fileData: [{
-    file: {
-      type: Buffer
+    fileId: {
+      type: mongoose.Schema.ObjectId
     },
     mimeType: {
       type: String

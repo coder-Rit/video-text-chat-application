@@ -22,5 +22,5 @@ export interface siderStateInterface {
  export interface typingInter {
     senderId: string,
     receiverId: string,
-    state:boolean
+    state:string
   }

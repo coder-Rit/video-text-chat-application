@@ -9,10 +9,7 @@ export const chatReducer = (state =  {AllfriendChats:[]} , action) => {
         return {
           ...state,
           AllfriendChats:action.payload
-        }
-        
-      
-   
+        } 
      
       default:
         return state;

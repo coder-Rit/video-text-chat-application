@@ -9,8 +9,9 @@ import { updateFriendList } from '../actions/userActions';
 import { useDispatch } from 'react-redux';
 import { selectFriend } from '../actions/selectAction';
 import { FriendInterface } from '../Interfaces/common';
- 
+
 import { motion } from "framer-motion"
+import useDisplay, { useDisplayI } from '../hooks/useDisplay';
 
 
 
@@ -36,6 +37,7 @@ const User = (props: any) => {
   // const AllfriendChats = useSelector<rootState, allFriendsChatI[]>((state) => state.chats);
 
   const Dispatch: any = useDispatch()
+  const Display: useDisplayI = useDisplay()
 
 
   const [userId, setuserId] = useState("")
@@ -53,25 +55,30 @@ const User = (props: any) => {
 
     Dispatch(selectFriend(props.user, props.idx))
 
+    if (Display.getScreenWidth()<1000) {
+      props.goBack('index')
+    }
 
   }
 
   function isOnline(id: string): string {
 
-    const res = props.onlineUserList.statusLine.findIndex((data:any) => data === id)
+    const res = props.onlineUserList.statusLine.findIndex((data: any) => data === id)
     if (res === -1) {
-        return "offline"
+      return "offline"
     } else {
-        return "online"
+      return "online"
     }
-}
+  }
 
 
   useEffect(() => {
     if (userId !== "") {
       console.log(userId);
 
+      
       add_friend()
+      
     }
   }, [userId])
 
@@ -89,17 +96,16 @@ const User = (props: any) => {
   }, [data])
 
   useEffect(() => {
-    
+
     if (props.onlineUserList) {
-      console.log(props.onlineUserList);
-      
+
       setstatus(isOnline(props.user.id as string))
-      
+
 
     }
 
   }, [props.onlineUserList])
-  
+
 
 
 
@@ -120,7 +126,7 @@ const User = (props: any) => {
 
   return (
     <motion.div className="user" onClick={selectFriendFunc} ref={userDiv}
-    
+
       initial={{ opacity: 0, x: -400 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{
@@ -128,6 +134,7 @@ const User = (props: any) => {
         delay: 0.1 * props.idx,
         ease: 'easeInOut', // You 
       }}
+      
     >
       <div className="imageDiv">
         <img src={`https://api.multiavatar.com/${props.user.userName}.png`} alt={props.user.userName} loading="lazy" />
@@ -138,10 +145,10 @@ const User = (props: any) => {
           <span>{props.user.userName}</span>
           <span>where are you bro?</span>
 
-        {
+          {
 
-          <div className={status} >{status}</div>
-        }
+            <div className={status} >{status}</div>
+          }
 
         </div>
       }
@@ -149,7 +156,7 @@ const User = (props: any) => {
         <div>
 
           <span>{props.user.userName}</span>
-          <span>Say, 🫸 to {props.user.firstName} {props.user.lastName}</span>
+          {/* <span>Say, 🫸 to {props.user.firstName} {props.user.lastName}</span> */}
           <div> </div>
         </div>
 

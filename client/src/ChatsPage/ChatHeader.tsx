@@ -14,7 +14,8 @@ const ChatHeader = (props: any) => {
 
 
   const [lastSeenState, setlastSeenState] = useState("")
-  function getLastSeenTimeString(miliDate: string) {
+
+  function getLastSeenTimeString(miliDate: string): string {
 
     const inputDate = new Date(parseInt(miliDate));
 
@@ -45,24 +46,48 @@ const ChatHeader = (props: any) => {
       };
 
       const dateString = inputDate.toLocaleDateString('en-US', dateFormatOptions);
-      setlastSeenState(`Last seen on ${dateString} at ${timeString}`)
+      return `Last seen on ${dateString} at ${timeString}`
 
     }
   }
 
 
+
   useEffect(() => {
-
-
     props.socket.on('is_typing_started', (data: typingInter) => {
-      if (data.state && data.senderId!==user.id) {
-        setlastSeenState("typing")
-      } else {
-        setlastSeenState("")
+      if (data.senderId !== user.id) {
+        if (data.state === "online" || data.state === "typing") {
+          setlastSeenState(data.state)
+        } else {
+          setlastSeenState(getLastSeenTimeString(selectedFriend.lastSeen))
+        }
+
       }
     })
 
   }, [props.socket])
+
+
+  useEffect(() => {
+    let data = {
+      myId: user.id,
+      frdId: selectedFriend.id,
+      state: getLastSeenTimeString(selectedFriend.lastSeen)
+    }
+    props.socket.emit("get_online_status", data)
+  }, [])
+
+  useEffect(() => {
+    props.socket.on("got_online_status", (data: any) => {
+      setlastSeenState(data.state)
+    })
+  }, [props.socket])
+
+
+
+
+
+
 
 
 
@@ -83,7 +108,17 @@ const ChatHeader = (props: any) => {
           <div><img className="chat_conversation-header-image" src={`https://api.multiavatar.com/${selectedFriend.userName}.png`} alt="" /></div>
           <div className="chat_conversation-header-details">
             <h3>{selectedFriend.firstName} {selectedFriend.lastName}  </h3>
-            <span>{lastSeenState}</span>
+            <span>
+              {lastSeenState === "typing" ? <div className='typing'>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div> : lastSeenState
+
+              }
+
+
+            </span>
           </div>
           <div className="chat_conversation-header-icons">
             <CallIcon sx={{ cursor: "pointer" }}></CallIcon>

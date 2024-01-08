@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
+import { extractFileType, formatBytes } from '../commonFunc'
 
 const FileComp = (props: any) => {
 
   const { mimeType,fileName,fileSize } = props.fileData
 
-  const [imageUrl, setimageUrl] = useState("")
-
+ 
 
 
  const  downloadFile=(selectedFile:any)=>{
@@ -26,57 +26,26 @@ const FileComp = (props: any) => {
   document.body.removeChild(downloadLink);
   }
 
-  function formatBytes(bytes:number, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
-
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
-}
+  
 
 
-
-  useEffect(() => {
-
-
-    switch (mimeType) {
-
-      case "application/pdf":
-        setimageUrl("pdf")
-        break;
-      case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        setimageUrl("doc")
-        break;
-      case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-        setimageUrl("ppt")
-        break;
-      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-        setimageUrl("xls")
-        break;
-        default:
-        setimageUrl("unknown")
-        break;
-    }
  
-  }, [])
 
 
 
 
   return (
-    <div className={`FileDisplay ${imageUrl} `}>
+    
+    <div className={`FileDisplay ${props.imageUrl} `}>
        
 
-      <img className='fileIcone' onClick={()=>downloadFile(props.Blob)} src={`/images/${imageUrl}.png`} alt="" />
+      <img className='fileIcone' onClick={()=>downloadFile(props.Blob)} src={`/images/${props.imageUrl}.png`} alt="" />
        
       <div className='fileDetails'>
-        <span>{fileName}</span>
+        <h4>{fileName}</h4>
         <div className='filesTechnical'>
-          <span>{imageUrl}</span>
-          <span style={{ textAlign: "right" }}>{formatBytes(parseInt(fileSize))}</span>
+          <div>{props.imageUrl}</div>
+          <div style={{ textAlign: "right" }}>{formatBytes(parseInt(fileSize))}</div>
         </div>
       </div>
     </div>
