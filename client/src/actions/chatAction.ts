@@ -8,34 +8,35 @@ import { UPDATE_CHATS } from "../constants/userConstants";
 
 
 // };
-export const chatInit = (allFriendsChat: friendChatI[]) => (dispatch: any) => {
+export const chatInit = (userId :string ,chatList:messageI[]) => (dispatch: any) => {
 
-    let data = JSON.parse(JSON.stringify(allFriendsChat))
+    let tempObj = {
+        [userId]:chatList
+    }
+    
 
-    dispatch({ type: UPDATE_CHATS, payload: data });
+    dispatch({ type: UPDATE_CHATS, payload: tempObj });
 
 
 };
 
 
-export const appendMsg = (allFriendsChat: friendChatI[], friendId: string, msg: messageI) => (dispatch: any) => {
-
+export const appendMsg = (allFriendsChat: friendChatI, friendId: string, msg: messageI) => (dispatch: any) => {
  
-     
 
-       const currentFriendIndex =  allFriendsChat.findIndex((data)=>{
-            return data.friendId === friendId
-        })
-        console.log(currentFriendIndex);
+    //    const currentFriendIndex =  allFriendsChat.findIndex((data)=>{
+    //         return data.friendId === friendId
+    //     })
+    //     console.log(currentFriendIndex);
         
-        let newAllchats = allFriendsChat
+    //     let newAllchats = allFriendsChat
          
-        let chatarr =  allFriendsChat[currentFriendIndex] 
+    //     let chatarr =  allFriendsChat[currentFriendIndex] 
          
-        chatarr.chats.push(msg);
+    //     chatarr.chats.push(msg);
          
     
-    dispatch({ type: UPDATE_CHATS, payload: newAllchats });
+    // dispatch({ type: UPDATE_CHATS, payload: newAllchats });
 
 
 };

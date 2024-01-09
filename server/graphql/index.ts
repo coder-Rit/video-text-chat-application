@@ -1,11 +1,9 @@
 import { ApolloServer } from "@apollo/server";
 import { User } from "./user";
 import { Chats } from "./chats";
-import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.js";
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+  
 
-
-async function createApolloGraphqlServer(httpServer:any) {
+async function createApolloGraphqlServer( ) {
 
   const gqlServer = new ApolloServer({
     typeDefs: `
@@ -31,12 +29,10 @@ async function createApolloGraphqlServer(httpServer:any) {
         ...User.resolvers.mutations,
         ...Chats.resolvers.mutations,
       },
-    },
-    plugins:[ApolloServerPluginDrainHttpServer({ httpServer })]
+    }
   });
 
   // Start the gql server
-   graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 })
   await gqlServer.start();
 
   return gqlServer;

@@ -43,6 +43,8 @@ const FindUser = (props: any) => {
             load: load
         },
         onCompleted: (data) => {
+            console.log(data);
+            
             setUserList(data.searchFriend)
         }
 

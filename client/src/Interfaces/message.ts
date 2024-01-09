@@ -1,6 +1,6 @@
 
 export interface fileI {
-  file: File,
+  url: string,
   mimeType: string,
   fileName: string,
   fileSize: number
@@ -19,12 +19,6 @@ export interface messageI {
 
 
 export interface friendChatI {
-  friendId: string 
-  chats: messageI[],
-}
-
-export interface allFriendsChatI {
-  AllfriendChats: friendChatI[]
-}
-
-
+  [key: string]:  messageI[] 
+ }
+ 

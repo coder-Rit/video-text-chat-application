@@ -12,10 +12,12 @@ import { FriendInterface } from '../Interfaces/common';
 
 import { motion } from "framer-motion"
 import useDisplay, { useDisplayI } from '../hooks/useDisplay';
+import { chatInit } from '../actions/chatAction';
 
 
 
 const ADD_FRIEND = gql`
+
 mutation AddFriend($fid: String!, $mid: String!) {
   addFriend(Fid: $fid, Mid: $mid) {
     friendList {
@@ -29,6 +31,7 @@ mutation AddFriend($fid: String!, $mid: String!) {
 }
 
 `
+
 
 const User = (props: any) => {
 
@@ -51,11 +54,21 @@ const User = (props: any) => {
     }
   });
 
+
+  
+
+
+
+
   const selectFriendFunc = () => {
 
     Dispatch(selectFriend(props.user, props.idx))
 
-    if (Display.getScreenWidth()<1000) {
+
+
+
+
+    if (Display.getScreenWidth() < 1000) {
       props.goBack('index')
     }
 
@@ -76,9 +89,9 @@ const User = (props: any) => {
     if (userId !== "") {
       console.log(userId);
 
-      
+
       add_friend()
-      
+
     }
   }, [userId])
 
@@ -124,8 +137,10 @@ const User = (props: any) => {
 
 
 
+
+
   return (
-    <motion.div className="user" onClick={selectFriendFunc} ref={userDiv}
+    <motion.div key={props.index} className="user" onClick={selectFriendFunc} ref={userDiv}
 
       initial={{ opacity: 0, x: -400 }}
       animate={{ opacity: 1, x: 0 }}
@@ -134,7 +149,7 @@ const User = (props: any) => {
         delay: 0.1 * props.idx,
         ease: 'easeInOut', // You 
       }}
-      
+
     >
       <div className="imageDiv">
         <img src={`https://api.multiavatar.com/${props.user.userName}.png`} alt={props.user.userName} loading="lazy" />

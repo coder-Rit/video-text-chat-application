@@ -11,14 +11,53 @@ import PeopleIcon from '@mui/icons-material/People';
 import GoBack from '../AuthPage/components/GoBack';
 import useDisplay, { useDisplayI } from '../hooks/useDisplay';
 import { motion } from "framer-motion";
+import { FriendInterface } from '../Interfaces/common';
+import { rootState } from '../Interfaces';
+import { useSelector } from 'react-redux';
+import gql from 'graphql-tag';
+import { useLazyQuery } from '@apollo/client';
 
 
 
 
+
+const GET_CHATS = gql`
+query GetChats($friendId: ID) {
+  getChats(friendId: $friendId) {
+    friendId
+    chats {
+      senderId
+      receiverId
+      msg
+      createdAt
+      id
+      fileData {
+        mimeType
+        fileSize
+        fileName
+        url
+      }
+      type
+    }
+  }
+}
+`
 
 
 
 const FriendsPannel = (props: any) => {
+
+
+    const { selectedFriend, isFriendSelected } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
+
+
+    const [getChats, { data }] = useLazyQuery(GET_CHATS, {
+        onCompleted: (data) => {
+            console.log(5461);
+            console.log(data);
+        },
+    })
+
 
     const Dispaly: useDisplayI = useDisplay()
 
@@ -51,26 +90,38 @@ const FriendsPannel = (props: any) => {
 
         switch (openSiderState) {
             case "addFriend":
-                setActiveClass(addFriend, friends, profile,index)
+                setActiveClass(addFriend, friends, profile, index)
                 break;
             case "profile":
-                setActiveClass(profile, friends, addFriend,index)
+                setActiveClass(profile, friends, addFriend, index)
                 break;
             case "friends":
-                setActiveClass(friends, addFriend, profile,index)
+                setActiveClass(friends, addFriend, profile, index)
                 break;
             case "index":
-                setActiveClass(index, addFriend, profile,friends)
+                setActiveClass(index, addFriend, profile, friends)
                 break;
             default:
 
-            
+
                 break;
         }
 
     }, [openSiderState])
 
 
+
+    useEffect(() => {
+
+        if (selectedFriend) { 
+            getChats({
+                variables: {
+                    friendId: selectedFriend.id
+                }
+            })
+        }
+
+    }, [selectedFriend])
 
 
     return (
@@ -95,44 +146,44 @@ const FriendsPannel = (props: any) => {
 
             {
                 openSiderState === "profile" && <motion.div className="addFriendDiv"
-                initial={{ opacity: 0, x: -400 }}
-                animate={{ opacity: 1, x: 70 }}
-                transition={{
-                  duration: 0.2,
-                 
-                }}   >
+                    initial={{ opacity: 0, x: -400 }}
+                    animate={{ opacity: 1, x: 70 }}
+                    transition={{
+                        duration: 0.2,
+
+                    }}   >
                     <MyProfile goBack={setopenSiderState}></MyProfile>
                 </motion.div>
             }
 
             {
-                openSiderState === "friends" && <motion.div className="addFriendDiv" 
-                initial={{ opacity: 0, x: -400 }}
-                animate={{ opacity: 1, x: 70 }}
-                transition={{
-                  duration: 0.2,
-                 
-                }}
-                  >
+                openSiderState === "friends" && <motion.div className="addFriendDiv"
+                    initial={{ opacity: 0, x: -400 }}
+                    animate={{ opacity: 1, x: 70 }}
+                    transition={{
+                        duration: 0.2,
+
+                    }}
+                >
                     <MyFriends socket={socket} goBack={setopenSiderState}></MyFriends>
                 </motion.div>
             }
 
             {
                 openSiderState === "addFriend" && <motion.div className="addFriendDiv"
-                initial={{ opacity: 0, x: -400 }}
-                animate={{ opacity: 1, x: 70 }}
-                transition={{
-                    duration: 0.2,
-                   
-                  }}
-                  >
+                    initial={{ opacity: 0, x: -400 }}
+                    animate={{ opacity: 1, x: 70 }}
+                    transition={{
+                        duration: 0.2,
+
+                    }}
+                >
                     <FindUser goBack={setopenSiderState}></FindUser>
                 </motion.div>
             }
 
 
-           
+
 
 
 

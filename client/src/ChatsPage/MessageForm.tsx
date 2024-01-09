@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { rootState } from "../Interfaces";
 import { userInterface } from "../Interfaces/user";
 import { FriendInterface } from "../Interfaces/common";
-import { allFriendsChatI, fileI, messageI } from "../Interfaces/message";
+import {  fileI, friendChatI, messageI } from "../Interfaces/message";
 import { useDispatch } from "react-redux";
 import { appendMsg } from "../actions/chatAction";
 // import { Context } from "../functions/context";
@@ -24,17 +24,10 @@ import EmojiComp from "./EmojiComp";
 import SelectFileType from "./SelectFileType";
 import gql from "graphql-tag";
 import { useLazyQuery, useMutation } from "@apollo/client";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { storage } from "../Firebase/Firebase";
 
 
-const SEND_FILES = gql`
-mutation UploadFiles($fileArray: [Upload!]!) {
-  uploadFiles(fileArray: $fileArray) {
-    url
-    fileName
-  }
-}
-
-`
 
 
 const MessageForm = (props: any) => {
@@ -48,7 +41,7 @@ const MessageForm = (props: any) => {
   // const { user } = useContext(Context);
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
   const { selectedFriend, isFriendSelected, idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
-  const { AllfriendChats } = useSelector<rootState, allFriendsChatI>((state) => state.chats);
+  const AllfriendChats  = useSelector<rootState, friendChatI>((state) => state.chats);
 
   const [messageQ, setmessageQ] = useState<messageI>()
   const [files, setfiles] = useState<FileList | null>()
@@ -57,18 +50,48 @@ const MessageForm = (props: any) => {
   const [SelectFileState, setSelectFileState] = useState<boolean>(false)
   const [selectedType, setselectedType] = useState<string | null>(null)
 
-  const [uploadFiles, { loading, data, error }] = useMutation(SEND_FILES, {
-    variables: {
-      fileArray: files
-    }
-  })
+  const [imgUrl, setImgUrl] = useState<String>("");
+  const [progresspercent, setProgresspercent] = useState<number>(0);
+
+
+
+  const uploadFiles = () => {
+
+    if (!files) return;
+
+    const file = files[0];
+
+    const storageRef = ref(storage, `files/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on("state_changed",
+      (snapshot) => {
+        const progress =
+          Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        setProgresspercent(progress);
+      },
+      (error) => {
+        alert(error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setImgUrl(downloadURL)
+        });
+      }
+    );
+
+  }
+
 
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    if (!isFriendSelected) return;
     const createdAt = new Date().toISOString()
 
 
+    // for text
     if (text != "" && !files) {
       const msg: messageI = {
         msg: text,
@@ -82,14 +105,14 @@ const MessageForm = (props: any) => {
         setText('')
       }
     }
-
+    // for files
     if (files) {
       const fileArray = []
       for (let i = 0; i < files.length; i++) {
         const file: File = files[i];
 
         let tempFile: fileI = {
-          file: file,
+          url: "",
           mimeType: file.type,
           fileName: file.name,
           fileSize: file.size,
@@ -107,13 +130,14 @@ const MessageForm = (props: any) => {
         fileData: fileArray
       }
 
-      if (isFriendSelected) {
-        socket.emit('send_msg', msg)
-        setfiles(null)
-        setText("")
-      }
+      socket.emit('send_msg', msg)
+      setfiles(null)
+      setText("")
+
     }
 
+
+    uploadFiles()
 
 
 
@@ -131,7 +155,6 @@ const MessageForm = (props: any) => {
 
   const storeFile = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      console.log(e.target.files);
       setfiles(e.target.files);
 
 
@@ -145,11 +168,10 @@ const MessageForm = (props: any) => {
   const viewFileBeforeSend = (files: FileList): ReactNode => {
 
 
-    console.log("filesData", files);
 
     let filesData = []
 
-     uploadFiles()
+
 
 
     for (let i = 0; i < files.length; i++) {
@@ -243,7 +265,6 @@ const MessageForm = (props: any) => {
 
 
   useEffect(() => {
-    console.log("idx", idx);
 
     if (isAuthenticated && idx
     ) {
@@ -263,7 +284,6 @@ const MessageForm = (props: any) => {
     socket.on('recive_msg', (data: messageI) => {
 
       setmessageQ(data)
-      console.log(data);
 
 
     })
@@ -276,7 +296,8 @@ const MessageForm = (props: any) => {
 
     if (messageQ) {
       console.log(AllfriendChats);
-      Dispatch(appendMsg(AllfriendChats, selectedFriend.id as string, messageQ))
+      
+        Dispatch(appendMsg(AllfriendChats, selectedFriend.id as string, messageQ))
 
     }
 
@@ -310,6 +331,8 @@ const MessageForm = (props: any) => {
     }
   }, [files])
 
+
+
   useEffect(() => {
 
     if (files && fileslength > 0) {
@@ -321,14 +344,8 @@ const MessageForm = (props: any) => {
 
   }, [files, fileslength])
 
-  useEffect(() => {
-    console.log("errors are there", error);
-
-  }, [error])
-
-
-
-
+ 
+  
 
   return (
 
@@ -376,7 +393,7 @@ const MessageForm = (props: any) => {
               type="submit"
               className="chat__conversation-panel__button panel-item btn-icon send-message-button"><svg
                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                 aria-hidden="true" data-reactid="1036">
                 <line x1="22" y1="2" x2="11" y2="13"></line>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>

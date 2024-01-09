@@ -3,7 +3,7 @@ export const typeDefs = `#graphql
   scalar Upload
  
   type FileT {
-    file: Upload
+    url:  String
     mimeType: String
     fileName: String
     fileSize: Int
@@ -28,13 +28,6 @@ export const typeDefs = `#graphql
     friendId: String
     chats: [MessageT]
   }
-
-  type uploadFilesT{
-    fileName: String
-    url:String
-  }
  
-
-
       
 `;

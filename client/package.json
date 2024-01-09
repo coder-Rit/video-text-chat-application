@@ -19,6 +19,7 @@
     "@types/react-redux": "^7.1.33",
     "antd": "4.21.5",
     "apollo-upload-client": "^17.0.0",
+    "firebase": "^10.7.1",
     "framer-motion": "^10.16.16",
     "graphql": "^15.8.0",
     "graphql-tag": "^2.12.6",

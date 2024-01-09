@@ -2,17 +2,17 @@ import { UPDATE_CHATS } from "../constants/userConstants";
 
 
 
-export const chatReducer = (state =  {AllfriendChats:[]} , action) => {
+export const chatReducer = (state =  {} , action) => {
     switch (action.type) {
       
       case UPDATE_CHATS:
         return {
           ...state,
-          AllfriendChats:action.payload
+          ...action.payload
         } 
      
       default:
         return state;
     }
   };
- 
+  

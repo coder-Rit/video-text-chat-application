@@ -12,29 +12,10 @@ import gql from 'graphql-tag';
 import { useLazyQuery } from '@apollo/client';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import GoBack from '../AuthPage/components/GoBack';
+import { FriendInterface } from '../Interfaces/common';
 
 
-const GET_CHATS = gql`
-query GetChats($idList: [ID]) {
-  getChats(idList: $idList) {
-    friendId
-    chats {
-      senderId
-      receiverId
-      msg
-      createdAt
-      id
-      fileData {
-        mimeType
-        fileSize
-        fileName
-        file
-      }
-      type
-    }
-  }
-}
-`
+
 
 
 
@@ -43,6 +24,7 @@ const MyFriends = (props: any) => {
     const Dispatch: any = useDispatch()
 
     const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
+    const { selectedFriend ,idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
 
 
     const [onlineUserList, setonlineUserList] = useState({
@@ -52,18 +34,10 @@ const MyFriends = (props: any) => {
 
     const [idList, setIdList] = useState<any>(null)
 
-    const [getChats, { loading, data, error }] = useLazyQuery(GET_CHATS, {
-        variables: {
-            idList
-        }
-    })
+    
 
 
-    function intialValueFiller() {
-
-        Dispatch(chatInit(data.getChats))
-    }
-
+    
     function getStatus() {
 
         let friendsIds = user.friendList?.map(data => data.id)
@@ -89,7 +63,6 @@ const MyFriends = (props: any) => {
 
         if (isAuthenticated) {
 
-            console.log("see_online_status");
             props.socket.on('see_online_status', (data: any) => {
                 setonlineUserList({
                     gotStatus: true,
@@ -101,24 +74,9 @@ const MyFriends = (props: any) => {
 
     }, [isAuthenticated, props.socket])
 
+ 
 
-    useEffect(() => {
-        if (idList) {
-            getChats()
-
-        }
-    }, [idList])
-
-
-    useEffect(() => {
-
-
-        if (data) {
-            intialValueFiller()
-        }
-    }, [data])
-
-
+    
 
 
 
@@ -137,7 +95,7 @@ const MyFriends = (props: any) => {
 
 
                         return (
-                            <User index={index} goBack={props.goBack} user={data} idx={index + 1} onlineUserList={onlineUserList} usedFor="myFriend"
+                            <User  index={index} goBack={props.goBack} user={data} idx={index + 1} onlineUserList={onlineUserList} usedFor="myFriend"
 
                             ></User>
                         )

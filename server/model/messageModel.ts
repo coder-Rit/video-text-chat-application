@@ -2,7 +2,7 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 
 export interface fileIdI {
-  fileId: string,
+  url: string,
   mimeType: string,
   fileName: string
   fileSize: number
@@ -30,8 +30,8 @@ const messageSchema = new Schema<MessageDocument>({
     type: String
   },
   fileData: [{
-    fileId: {
-      type: mongoose.Schema.ObjectId
+    url: {
+      type:String
     },
     mimeType: {
       type: String

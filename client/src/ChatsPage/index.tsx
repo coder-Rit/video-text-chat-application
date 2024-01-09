@@ -17,7 +17,6 @@ import MessageForm from "./MessageForm";
 import { io } from "socket.io-client";
 import ChatHeader from "./ChatHeader";
 import ChatCard from "./ChatCard";
-import { allFriendsChatI } from "../Interfaces/message";
 import DefaultCart from "./DefaultCart";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion"

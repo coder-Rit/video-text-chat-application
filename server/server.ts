@@ -8,11 +8,9 @@ import dotenv from 'dotenv';
 import createApolloGraphqlServer from "./graphql";
 import { Socket, Server } from 'socket.io';
 import { createServer } from "http";
-import { ObjectId } from "mongoose";
-import { messageI, messageModel } from "./model/messageModel";
+ import { messageI, messageModel } from "./model/messageModel";
 import { UserModel } from "./model/userModel";
-import { log } from "console";
-
+ 
 dotenv.config({ path: "./config/config.env" });
 
 
@@ -44,10 +42,11 @@ async function init() {
   const app: Express = express();
   const PORT = Number(process.env.PORT) || 8000;
 
+  
   app.use(cors({
     credentials: true,
-    origin: "http://localhost:3000/graphql"
-  }));
+    origin: "http://localhost:3000"
+  }))
 
   app.use(express.json());
   connectToDatabase();
@@ -61,7 +60,8 @@ async function init() {
 
   
   const httpserver = createServer(app);
-  app.use("/graphql", expressMiddleware(await createApolloGraphqlServer(httpserver)) );
+
+  app.use("/graphql", expressMiddleware(await createApolloGraphqlServer()) );
 
   const io = new Server(httpserver, {
     cors: {

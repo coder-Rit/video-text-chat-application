@@ -39,31 +39,7 @@ const queries = {
 };
 
 const mutations = {
-  uploadFiles: async (_: any, payload: { fileArray: FileUpload }) => {
-
-    console.log("payload",payload);
-
-    let res = []
-
-
-    const { createReadStream, filename, mimetype, encoding } = await payload.fileArray
-
-    const Stream = createReadStream()
-    const pathName = path.join(__dirname, `../../public/${filename}`)
-    await Stream.pipe(fs.createWriteStream(pathName))
-
-    res.push({
-      filename: filename,
-      url: `http://localhost:4000/public/${filename}`,
-
-    })
-
-    return {res}
-
-
-
-  }
-
+  
 
 };
 
