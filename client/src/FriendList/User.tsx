@@ -140,7 +140,7 @@ const User = (props: any) => {
 
 
   return (
-    <motion.div key={props.index} className="user" onClick={selectFriendFunc} ref={userDiv}
+    <motion.div  className="user" onClick={selectFriendFunc} ref={userDiv}
 
       initial={{ opacity: 0, x: -400 }}
       animate={{ opacity: 1, x: 0 }}
@@ -168,7 +168,7 @@ const User = (props: any) => {
         </div>
       }
       {props.usedFor === "findUser" && <div className="detailsDiv_findUser">
-        <div>
+        <div >
 
           <span>{props.user.userName}</span>
           {/* <span>Say, 🫸 to {props.user.firstName} {props.user.lastName}</span> */}

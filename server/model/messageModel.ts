@@ -12,7 +12,7 @@ interface messageI {
   senderId: string,
   receiverId: string,
   createdAt: Date,
-  type: "file" | "text",
+  type: "doc" | "img" | "text",
   fileData?: fileIdI[]
 }
 interface MessageDocument extends messageI, Document { }
@@ -31,7 +31,7 @@ const messageSchema = new Schema<MessageDocument>({
   },
   fileData: [{
     url: {
-      type:String
+      type: String
     },
     mimeType: {
       type: String

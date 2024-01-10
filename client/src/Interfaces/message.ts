@@ -11,9 +11,8 @@ export interface messageI {
   senderId: string,
   receiverId: string,
   createdAt: string,
-  type: "file" | "text",
-  fileData?: fileI[]
-
+  type: "doc" | "img" | "text",
+  fileData?: fileI[] 
 
 }
 
@@ -21,4 +20,5 @@ export interface messageI {
 export interface friendChatI {
   [key: string]:  messageI[] 
  }
+ 
  

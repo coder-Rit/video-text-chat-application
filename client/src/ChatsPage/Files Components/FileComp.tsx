@@ -1,46 +1,47 @@
 import React, { useEffect, useState } from 'react'
-import { extractFileType, formatBytes } from '../commonFunc'
+import { formatBytes } from '../commonFunc'
+import DownloadFileIcon from '../../AuthPage/components/DownloadFileIcon'
+import IndetermineProgress from '../../AuthPage/components/IndetermineProgress'
 
 const FileComp = (props: any) => {
 
-  const { mimeType,fileName,fileSize } = props.fileData
+  const { fileName, fileSize,url } = props.fileData
 
- 
+  //  const  downloadFile=(selectedFile:any)=>{
 
+  //   const downloadLink = document.createElement('a');
+  //   downloadLink.download = fileName;
 
- const  downloadFile=(selectedFile:any)=>{
+  //   // Create a URL for the Blob and set it as the href attribute
+  //   downloadLink.href = URL.createObjectURL(selectedFile);
 
-  const downloadLink = document.createElement('a');
-  downloadLink.download = fileName;
+  //   // Append the anchor element to the document body
+  //   document.body.appendChild(downloadLink);
 
-  // Create a URL for the Blob and set it as the href attribute
-  downloadLink.href = URL.createObjectURL(selectedFile);
+  //   // Trigger a click event on the anchor element
+  //   downloadLink.click();
 
-  // Append the anchor element to the document body
-  document.body.appendChild(downloadLink);
-
-  // Trigger a click event on the anchor element
-  downloadLink.click();
-
-  // Remove the anchor element from the document
-  document.body.removeChild(downloadLink);
-  }
-
-  
+  //   // Remove the anchor element from the document
+  //   document.body.removeChild(downloadLink);
+  //   }
 
 
- 
+
+
+
 
 
 
 
   return (
-    
-    <div className={`FileDisplay ${props.imageUrl} `}>
-       
 
-      <img className='fileIcone' onClick={()=>downloadFile(props.Blob)} src={`/images/${props.imageUrl}.png`} alt="" />
-       
+    <div className={`FileDisplay ${props.imageUrl} `}>
+
+    <div className='fileIconeDiv'>
+     {url===""&&<IndetermineProgress></IndetermineProgress>}
+      <img className={`fileIcone ${url===""?'opacity7':null} `} src={`/images/${props.imageUrl}.png`} alt="" />
+    </div>
+
       <div className='fileDetails'>
         <h4>{fileName}</h4>
         <div className='filesTechnical'>

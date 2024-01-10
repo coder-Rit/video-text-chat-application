@@ -10,15 +10,16 @@ export const typeDefs = `#graphql
   }
 
   enum MessageType {
-    file
+    img
     text
+    doc
   }
 
   type MessageT {
     id: ID
     msg: String
     senderId: ID
-    receiverId: ID
+    receiverId: ID 
     createdAt: String
     type: MessageType
     fileData: [FileT]

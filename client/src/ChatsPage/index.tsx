@@ -16,10 +16,10 @@ import { FriendInterface, siderStateInterface } from "../Interfaces/common";
 import MessageForm from "./MessageForm";
 import { io } from "socket.io-client";
 import ChatHeader from "./ChatHeader";
-import ChatCard from "./ChatCard";
 import DefaultCart from "./DefaultCart";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion"
+import ChatCard from "./ChatCard";
 
 
 
@@ -76,11 +76,8 @@ const ChatsPage = () => {
             }}
           >
 
-            <ChatHeader socket={socket}></ChatHeader>
-
-            {/* <ChatCard chatboard={chatboard}></ChatCard> */}
-
-
+            <ChatHeader socket={socket}></ChatHeader> 
+            <ChatCard chatboard={chatboard}></ChatCard> 
             <MessageForm socket={socket} chatboard={chatboard}></MessageForm>
 
           </motion.div>

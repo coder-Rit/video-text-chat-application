@@ -24,7 +24,7 @@ const MyFriends = (props: any) => {
     const Dispatch: any = useDispatch()
 
     const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
-    const { selectedFriend ,idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
+    const { selectedFriend, idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
 
 
     const [onlineUserList, setonlineUserList] = useState({
@@ -34,10 +34,10 @@ const MyFriends = (props: any) => {
 
     const [idList, setIdList] = useState<any>(null)
 
-    
 
 
-    
+
+
     function getStatus() {
 
         let friendsIds = user.friendList?.map(data => data.id)
@@ -74,9 +74,9 @@ const MyFriends = (props: any) => {
 
     }, [isAuthenticated, props.socket])
 
- 
 
-    
+
+
 
 
 
@@ -95,9 +95,12 @@ const MyFriends = (props: any) => {
 
 
                         return (
-                            <User  index={index} goBack={props.goBack} user={data} idx={index + 1} onlineUserList={onlineUserList} usedFor="myFriend"
+                            <div key={index}>
 
-                            ></User>
+                                <User index={index} goBack={props.goBack} user={data} idx={index + 1} onlineUserList={onlineUserList} usedFor="myFriend"
+
+                                ></User>
+                            </div>
                         )
                     })
                 }

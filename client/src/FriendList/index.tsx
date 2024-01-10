@@ -16,6 +16,9 @@ import { rootState } from '../Interfaces';
 import { useSelector } from 'react-redux';
 import gql from 'graphql-tag';
 import { useLazyQuery } from '@apollo/client';
+import { useDispatch } from 'react-redux';
+import { chatInit } from '../actions/chatAction';
+import { messageI } from '../Interfaces/message';
 
 
 
@@ -51,15 +54,10 @@ const FriendsPannel = (props: any) => {
     const { selectedFriend, isFriendSelected } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
 
 
-    const [getChats, { data }] = useLazyQuery(GET_CHATS, {
-        onCompleted: (data) => {
-            console.log(5461);
-            console.log(data);
-        },
-    })
-
 
     const Dispaly: useDisplayI = useDisplay()
+    const Dispatch: any = useDispatch()
+
 
     const { socket } = props
 
@@ -69,6 +67,15 @@ const FriendsPannel = (props: any) => {
     const index = useRef<HTMLDivElement>(null)
 
     const [openSiderState, setopenSiderState] = useState<string>("friends")
+
+
+    const [getChats, { data }] = useLazyQuery(GET_CHATS, {
+        onCompleted: (data) => {
+            Dispatch(chatInit(data.getChats.friendId as string, data.getChats.chats as messageI[]))
+        },
+    })
+
+
 
 
 
@@ -113,7 +120,7 @@ const FriendsPannel = (props: any) => {
 
     useEffect(() => {
 
-        if (selectedFriend) { 
+        if (selectedFriend) {
             getChats({
                 variables: {
                     friendId: selectedFriend.id

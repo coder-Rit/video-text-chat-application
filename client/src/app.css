@@ -38,12 +38,12 @@ body {
 }
 
 
-*::-webkit-scrollbar-track {
+*:hover::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0);
 }
 
 
-*::-webkit-scrollbar-thumb {
+*:hover::-webkit-scrollbar-thumb {
     background-color: rgb(139, 139, 139);
     border-radius: 20px;
 }
@@ -432,7 +432,7 @@ body {
 .FileDisplay {
 
     color: white;
-    width: 250px;
+    width: auto;
 
     align-items: center;
     padding: 10px;
@@ -468,11 +468,25 @@ body {
 .unknown {
     background-color: #eaff0010;
 }
-
+.fileIconeDiv{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.FileAnimation{
+    position: absolute;
+    z-index: 2;
+    top: 13px;
+}
 .fileIcone {
     width: 45px;
     cursor: pointer;
 
+
+}
+.opacity7{
+    opacity: 0.7;
 }
 
 .fileDetails {

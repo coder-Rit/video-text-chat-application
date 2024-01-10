@@ -19,7 +19,7 @@ const GoBack = (props: any) => {
 
   return (
     <>
-      {width <= 1000 && <span onClick={() => props.goBack('index')}>
+      {width <= 1000 && <span style={{display:"flex",alignItems:"center"}} onClick={() => props.goBack('index')}>
 
         {props.icon === "backIcon" && <ArrowBackIcon></ArrowBackIcon>}
         {props.icon === "message" && <MessageIcon></MessageIcon>}

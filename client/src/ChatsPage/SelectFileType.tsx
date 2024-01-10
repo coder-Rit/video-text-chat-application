@@ -18,14 +18,14 @@ const SelectFileType = (props: any) => {
         ease: 'easeInOut', // You
       }}
     >
-      <div className="RemoveCircleOutlineIcon" onClick={() => setSelectFileState(false)}>
+      <div className="RemoveCircleOutlineIcon" onClick={() => {setSelectFileState(false);setselectedType('text')}}>
         <CloseIcon></CloseIcon>
       </div >
       <div className='selectFileDiv'>
 
         <label className="lable" >
           <input type="file" hidden multiple accept="image/*" onChange={storeFile}  />
-          <div className="btn-up iconStyle" onClick={()=>setselectedType('photos')}>
+          <div className="btn-up iconStyle" onClick={()=>setselectedType('img')}>
             <div>
               <PhotoSizeSelectActualIcon></PhotoSizeSelectActualIcon>
             </div>
@@ -45,7 +45,7 @@ const SelectFileType = (props: any) => {
       </div> */}
         <label className="lable">
           <input type="file" hidden multiple onChange={storeFile} />
-          <div className="btn-up iconStyle" onClick={()=>setselectedType('files')}>
+          <div className="btn-up iconStyle" onClick={()=>setselectedType('doc')}>
             <div>
               <FilePresentIcon></FilePresentIcon>
             </div>

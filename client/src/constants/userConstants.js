@@ -36,6 +36,7 @@ export const FRIEND_SELECTED ="FRIEND_SELECTED"
 
 
 export const UPDATE_CHATS ="UPDATE_CHATS" 
+export const CHAT_INIT ="CHAT_INIT" 
 
  
 
