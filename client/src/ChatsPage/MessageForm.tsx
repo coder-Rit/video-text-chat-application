@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { rootState } from "../Interfaces";
 import { userInterface } from "../Interfaces/user";
 import { FriendInterface } from "../Interfaces/common";
-import { fileI, friendChatI, messageI } from "../Interfaces/message";
+import { FilesQI, fileI, fileUrl, friendChatI, messageI } from "../Interfaces/message";
 import { useDispatch } from "react-redux";
 import { appendMsg } from "../actions/chatAction";
 // import { Context } from "../functions/context";
@@ -18,23 +18,21 @@ import { motion } from "framer-motion"
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import { extractFileType, formatBytes } from "./commonFunc";
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import CloseIcon from '@mui/icons-material/Close';
 import EmojiComp from "./EmojiComp";
 import SelectFileType from "./SelectFileType";
 import gql from "graphql-tag";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../Firebase/Firebase";
-
+import { v4 as uuidv4 } from 'uuid';
+import FileComp from "./Files Components/FileComp";
+import CloseIcon from '@mui/icons-material/Close';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 
 
 const MessageForm = (props: any) => {
   const Dispatch: any = useDispatch()
-
-
-
 
   const [text, setText] = useState<string>("");
   const { socket } = props
@@ -50,16 +48,16 @@ const MessageForm = (props: any) => {
   const [SelectFileState, setSelectFileState] = useState<boolean>(false)
   const [selectedType, setselectedType] = useState<'doc' | 'img' | 'text'>("text")
 
-  const [imgUrl, setImgUrl] = useState<String>("");
+  const [fileUrls, setfileUrls] = useState<fileUrl[]>([]);
   const [progresspercent, setProgresspercent] = useState<number>(0);
 
+  const [FilesQ, setFilesQ] = useState<FilesQI[]>([]);
+  const [previewFileList, setpreviewFileList] = useState<any>([]);
 
 
-  const uploadFiles = () => {
+  const uploadFiles = (file: File, uuid: string) => {
 
-    if (!files) return;
-
-    const file = files[0];
+    if (!file) return;
 
     const storageRef = ref(storage, `files/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
@@ -75,7 +73,11 @@ const MessageForm = (props: any) => {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setImgUrl(downloadURL)
+          let msgUpdator = {
+            uuid,
+            url: downloadURL
+          }
+          socket.on('updateUrl', msgUpdator)
         });
       }
     );
@@ -86,58 +88,48 @@ const MessageForm = (props: any) => {
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    console.log(FilesQ);
+    
 
     if (!isFriendSelected) return;
     const createdAt = new Date().toISOString()
 
-
     // for text
-    if (selectedType === "text") {
-      const msg: messageI = {
-        msg: text,
-        senderId: user.id as string,
-        receiverId: selectedFriend.id as string,
-        createdAt,
-        type: "text"
-      }
-      if (isFriendSelected) {
-        socket.emit('send_msg', msg)
-        setText('')
-      }
-    }
+    // if (selectedType === "text") {
+    //   const msg: messageI = {
+    //     msg: text,
+    //     senderId: user.id as string,
+    //     receiverId: selectedFriend.id as string,
+    //     createdAt,
+    //     type: "text"
+    //   }
+    //   if (isFriendSelected) {
+    //     socket.emit('send_msg', msg)
+    //     setText('')
+    //   }
+    // }
+
     // for files
-    if (files && (selectedType === "doc" || selectedType === "img")) {
-      const fileArray = []
-      for (let i = 0; i < files.length; i++) {
-        const file: File = files[i];
+    console.log(selectedType);
+    
+    if (selectedType === "doc" || selectedType === "img") {
+      const messageArray = FilesQ.map(data => {
+        delete data.bufferFile
+        data.msg.createdAt =createdAt
+        return data.msg
+      })
 
-        let tempFile: fileI = {
-          url: "",
-          mimeType: file.type,
-          fileName: file.name,
-          fileSize: file.size,
-        }
-
-        fileArray.push(tempFile)
-      }
-
-      const msg: messageI = {
-        msg: text,
-        senderId: user.id as string,
-        receiverId: selectedFriend.id as string,
-        createdAt,
-        type: selectedType,
-        fileData: fileArray
-      }
-
-      socket.emit('send_msg', msg)
+      console.log(messageArray);
+      
+      socket.emit('send_msg', messageArray)
       setfiles(null)
+      setpreviewFileList([])
       setText("")
 
     }
 
 
-    uploadFiles()
+    // uploadFiles()
 
 
 
@@ -155,100 +147,78 @@ const MessageForm = (props: any) => {
 
   const storeFile = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setfiles(e.target.files);
+      let files = e.target.files
 
+      let tempFilesQ: FilesQI[] = []
 
-    }
-  }
+      let filesData = []
 
-
-
-
-
-  const viewFileBeforeSend = (files: FileList): ReactNode => {
-
-
-
-    let filesData = []
-
-
-
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-
-      const tempObj: any = {
-        name: file["name"],
-        IconScr: null,
-        size: file["size"]
-      }
-
-
-      tempObj.IconScr = extractFileType(file["type"])
-      // if (selectedType === "doc") {
-
-      // } else if (selectedType === "img") {
-      //   const reader = new FileReader();
-      //   reader.readAsDataURL(file)
-      //   reader.onloadend = async function () {
-      //     tempObj.IconScr = await reader.result
-      //   }
-
-      // }
-
-      filesData.push(tempObj)
-    }
-
-
-
-    const node = <motion.div className="viewFileBeforeSend_body"
-      initial={{ opacity: 0, x: 250 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{
-        duration: .2,
-      }}
-    >
-
-      <span className="RemoveCircleOutlineIcon" onClick={() => setfiles(null)}>
-        <CloseIcon></CloseIcon>
-      </span >
-
-      <div className="viewFileBeforeSend" id="viewFileBeforeSend" >
-
-        {
-          filesData.map((data, index) => {
-
-            return (
-              <div className={`FileDisplay FileDisplay_Specific  ${data.IconScr} `}>
-
-                <span className="RemoveCircleOutlineIcon" onClick={() => removeFile(index)} >
-
-                  <RemoveCircleOutlineIcon sx={{ fontSize: "13px" }} ></RemoveCircleOutlineIcon>
-                </span>
-
-
-                <img className='fileIcone' src={`./images/${data.IconScr}.png`} alt="" />
-
-                <div className='fileDetails'>
-                  <span>{data.name}</span>
-                  <div className='filesTechnical'>
-                    <span>{data.IconScr}</span>
-                    <span style={{ textAlign: "right" }}>{formatBytes(data.size)}</span>
-                  </div>
-                </div>
-              </div>
-            )
-          })
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const tempObj: any = {
+          fileName: file["name"],
+          mimeType: file["type"],
+          fileSize: file["size"],
+          url: ""
         }
 
-      </div>
+        // if (selectedType === "doc") {
+
+        // } else if (selectedType === "img") {
+        //   const reader = new FileReader();
+        //   reader.readAsDataURL(file)
+        //   reader.onloadend = async function () {
+        //     tempObj.IconScr = await reader.result
+        //   }
+
+        // }
+
+        filesData.push(tempObj)
+        tempFilesQ.push(mapFilesInMessages(file))
 
 
-    </motion.div>
+      }
 
-    return node
+      setFilesQ(tempFilesQ)
+      setpreviewFileList(filesData)
+
+    }
+  }
+
+
+  const mapFilesInMessages = (singleFile: File) => {
+
+    let tempFile: fileI = {
+      url: "",
+      mimeType: singleFile.type,
+      fileName: singleFile.name,
+      fileSize: singleFile.size,
+    }
+
+
+    const msg: messageI = {
+      uuid: uuidv4(),
+      msg: text,
+      senderId: user.id as string,
+      receiverId: selectedFriend.id as string,
+      createdAt: "",
+      type: selectedType,
+      fileData: tempFile
+    }
+
+
+    return {
+      bufferFile: singleFile,
+      msg: msg
+    }
 
   }
+
+
+
+
+
+
 
 
 
@@ -256,7 +226,10 @@ const MessageForm = (props: any) => {
 
     if (files) {
       let fileArr = Array.from(files)
+      let tempFileUrls = fileUrls
       fileArr.splice(idx, 1)
+      tempFileUrls.splice(idx, 1)
+      setfileUrls(tempFileUrls)
       let tempObj: any = Object.assign({ length: fileArr.length }, fileArr)
       console.log(tempObj);
       setfiles(tempObj);
@@ -282,7 +255,8 @@ const MessageForm = (props: any) => {
 
   useEffect(() => {
 
-    socket.on('recive_msg', (data: messageI) => {
+    socket.on('recive_msg', (data: messageI[]) => {
+
 
       Dispatch(appendMsg(selectedFriend.id as string, data))
 
@@ -290,7 +264,7 @@ const MessageForm = (props: any) => {
     })
 
     return () => socket.off('recive_msg');
-  }, [socket,selectedFriend])
+  }, [socket, selectedFriend])
 
 
 
@@ -324,13 +298,13 @@ const MessageForm = (props: any) => {
 
   useEffect(() => {
 
-    if (files && fileslength > 0) {
+    if ( previewFileList.length > 0) {
       setSelectFileState(false)
     } else {
       setselectedType('text')
     }
 
-  }, [files, fileslength])
+  }, [ previewFileList])
 
 
 
@@ -351,7 +325,32 @@ const MessageForm = (props: any) => {
         className="msgForm"
       >
 
-        {files && fileslength > 0 && viewFileBeforeSend(files)}
+        {previewFileList.length > 0 && <motion.div className="viewFileBeforeSend_body"
+          initial={{ opacity: 0, x: 250 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{
+            duration: .2,
+          }}
+        >
+
+          <span className="RemoveCircleOutlineIcon" onClick={() => setpreviewFileList([])}>
+            <CloseIcon></CloseIcon>
+          </span >
+
+          <div className="viewFileBeforeSend" id="viewFileBeforeSend" >
+            {
+              previewFileList.map((data: any, index: number) => {
+                return <FileComp For="preview" fileData={data}  removeFile={removeFile} index={index} ></FileComp>
+
+              })
+            }
+          </div>
+
+
+
+
+        </motion.div>}
+
         {SelectFileState && <SelectFileType storeFile={storeFile} setselectedType={setselectedType} setSelectFileState={setSelectFileState}></SelectFileType>}
 
         {EmojiPiker && <EmojiComp text={text} setText={setText} setEmojiPiker={setEmojiPiker}></EmojiComp>}

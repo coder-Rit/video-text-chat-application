@@ -16,7 +16,7 @@ export const chatReducer = (state =  {} , action) => {
 
         return {
           ...state,
-          [friendId]:[...state[friendId],msg]
+          [friendId]:[...state[friendId],...msg]
         } 
      
       default:

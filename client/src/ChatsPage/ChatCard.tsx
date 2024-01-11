@@ -66,6 +66,8 @@ const ChatCard = (props: any) => {
       const chats = allChats[friendIdx]
 
       if (chats) {
+        console.log("chats",chats);
+        
         setChats(chats)
       }
     }
@@ -107,36 +109,26 @@ const ChatCard = (props: any) => {
 
 
 
-  function fileMaper(data: messageI, idx: number) {
+  function fileMaper(data: messageI, idx: number) { 
 
+    // if (data.type === "img") {
 
-    let mapData: ReactNode = []
+    //   mapData = data.fileData?.map((fileData: any, idx) => {
+    //     const uint8Array = new Uint8Array(fileData.file.data);
+    //     const newblob = new Blob([uint8Array], { type: fileData.type })
+    //     return <div key={idx}>
 
-    if (data.type === "img") {
+    //       <Image Blob={newblob} fileData={fileData}></Image>
+    //     </div>
+    //   })
 
-      mapData = data.fileData?.map((fileData: any, idx) => {
-        const uint8Array = new Uint8Array(fileData.file.data);
-        const newblob = new Blob([uint8Array], { type: fileData.type })
-        return <div key={idx}>
-
-          <Image Blob={newblob} fileData={fileData}></Image>
-        </div>
-      })
-
-    } else if (data.type === "doc") {
-      mapData = data.fileData?.map((fileData: any, idx) => {
-
-        let ext_type = extractFileType(fileData.mimeType)
-        return <div key={idx}>
-          <FileComp fileData={fileData} imageUrl={ext_type}></FileComp>
-        </div>
-      })
-    }
-
+    // } else
+ 
     return <div key={idx} className={data.senderId === user.id ? "chat__conversation-board__message-container flex_down reversed" : "chat__conversation-board__message-container flex_down"}>
       <div className="chat__conversation-board__message__context">
         <div className="chat__conversation-board_message_box">
-          {mapData}
+        <FileComp For ="downloadable_file" fileData={data.fileData} ></FileComp>
+
           {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
           <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
         </div>

@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { formatBytes } from '../commonFunc'
+import { extractFileType, formatBytes } from '../commonFunc'
 import DownloadFileIcon from '../../AuthPage/components/DownloadFileIcon'
 import IndetermineProgress from '../../AuthPage/components/IndetermineProgress'
+import { Box } from '@mui/material'
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+
 
 const FileComp = (props: any) => {
 
-  const { fileName, fileSize,url } = props.fileData
+  const { fileName, fileSize, url, mimeType } = props.fileData
+
+  const [imageUrl, setimageUrl] = useState("")
+
 
   //  const  downloadFile=(selectedFile:any)=>{
 
@@ -29,28 +35,66 @@ const FileComp = (props: any) => {
 
 
 
+  useEffect(() => {
+    console.log(props);
+    
+    setimageUrl(extractFileType(mimeType)) 
+  }, [mimeType])
 
 
 
+  if (props.For === "preview") {
 
-  return (
+    return (<div className={`FileDisplay FileDisplay_Specific  ${imageUrl} `}>
 
-    <div className={`FileDisplay ${props.imageUrl} `}>
+      <span className="RemoveCircleOutlineIcon" onClick={() => props.removeFile(props.index)} >
 
-    <div className='fileIconeDiv'>
-     {url===""&&<IndetermineProgress></IndetermineProgress>}
-      <img className={`fileIcone ${url===""?'opacity7':null} `} src={`/images/${props.imageUrl}.png`} alt="" />
-    </div>
+        <RemoveCircleOutlineIcon sx={{ fontSize: "13px" }} ></RemoveCircleOutlineIcon>
+      </span>
+
+
+      <img className='fileIcone' src={`./images/${imageUrl}.png`} alt="" />
 
       <div className='fileDetails'>
-        <h4>{fileName}</h4>
+        <span>{fileName}</span>
         <div className='filesTechnical'>
-          <div>{props.imageUrl}</div>
-          <div style={{ textAlign: "right" }}>{formatBytes(parseInt(fileSize))}</div>
+          <span>{imageUrl}</span>
+          <span style={{ textAlign: "right" }}>{formatBytes(fileSize)}</span>
         </div>
       </div>
-    </div>
-  )
+    </div>)
+
+
+
+  } else if(props.For==="downloadable_file") { 
+
+    return (
+
+      <div className={`FileDisplay ${imageUrl} `}>
+
+        <div className='fileIconeDiv'>
+          <div className='FileAnimation'>
+            <Box sx={{ display: 'flex', justifyContent: "center", alignItems: "center" }}>
+              {url === "" && <IndetermineProgress></IndetermineProgress>}
+              {url !== "" && <DownloadFileIcon></DownloadFileIcon>}
+            </Box>
+          </div>
+          <img className={`fileIcone ${'opacity7'} `} src={`/images/${imageUrl}.png`} alt="" />
+        </div>
+
+        <div className='fileDetails'>
+          <h4>{fileName}</h4>
+          <div className='filesTechnical'>
+            <div>{imageUrl}</div>
+            <div style={{ textAlign: "right" }}>{formatBytes(parseInt(fileSize))}</div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+
+
 }
 
 export default FileComp

@@ -134,20 +134,19 @@ async function init() {
 
       })
 
-      socket.on('send_msg', async (data: messageI) => {
+      socket.on('send_msg', async (data: messageI[]) => {
 
-        const room = getRoomNameBydata(data)
+        const room = getRoomNameBydata(data[0])
         io.in(room).emit('recive_msg', data)
 
-
+        
         try {
-          const message = await messageModel.create(data)
-          await message.save()
-          console.log(data);
+          const message = await messageModel.insertMany(data)
+          console.log(message);
 
-          io.in(room).emit('recive_msg', message)
-
-        } catch (error: any) {
+          // io.in(room).emit('recive_msg', message)
+ 
+        } catch (error: any) {  
           new Error(`unable to send data to db ${error}`)
         }
 

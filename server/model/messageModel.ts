@@ -13,7 +13,7 @@ interface messageI {
   receiverId: string,
   createdAt: Date,
   type: "doc" | "img" | "text",
-  fileData?: fileIdI[]
+  fileData?: fileIdI
 }
 interface MessageDocument extends messageI, Document { }
 
@@ -29,7 +29,7 @@ const messageSchema = new Schema<MessageDocument>({
   type: {
     type: String
   },
-  fileData: [{
+  fileData: {
     url: {
       type: String
     },
@@ -42,7 +42,7 @@ const messageSchema = new Schema<MessageDocument>({
     fileSize: {
       type: Number
     }
-  }]
+  }
 
 });
 

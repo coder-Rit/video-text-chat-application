@@ -14,9 +14,10 @@ export const chatInit = (userId: string, chatList: messageI[]) => (dispatch: any
 };
 
 
-export const appendMsg = (friendId: string, msg: messageI) => (dispatch: any) => {
+export const appendMsg = (friendId: string, msg: messageI[]) => (dispatch: any) => {
 
 
+    
 
     dispatch({ type: UPDATE_CHATS, payload: { friendId, msg } });
 

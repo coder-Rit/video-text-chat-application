@@ -1,7 +1,6 @@
 export const typeDefs = `#graphql
 
-  scalar Upload
- 
+  
   type FileT {
     url:  String
     mimeType: String
@@ -22,7 +21,7 @@ export const typeDefs = `#graphql
     receiverId: ID 
     createdAt: String
     type: MessageType
-    fileData: [FileT]
+    fileData: FileT
   }
 
   type FriendChatT {

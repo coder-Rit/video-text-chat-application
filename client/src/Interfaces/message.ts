@@ -7,18 +7,29 @@ export interface fileI {
 }
 
 export interface messageI {
+  uuid:string
   msg: string,
   senderId: string,
   receiverId: string,
   createdAt: string,
   type: "doc" | "img" | "text",
-  fileData?: fileI[] 
+  fileData?: fileI
 
 }
 
 
 export interface friendChatI {
-  [key: string]:  messageI[] 
- }
- 
- 
+  [key: string]: messageI[]
+}
+
+
+export interface fileUrl {
+  url: string, uuid: string,
+}
+
+
+export interface FilesQI {
+  bufferFile?:File,
+  msg:messageI
+}
+
