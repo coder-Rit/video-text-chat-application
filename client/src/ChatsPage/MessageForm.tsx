@@ -73,11 +73,14 @@ const MessageForm = (props: any) => {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log("UPLOADING ENDED");
           let msgUpdator = {
             uuid,
+            senderId: user.id,
+            receiverId: user.friendList[idx].id,
             url: downloadURL
           }
-          socket.on('updateUrl', msgUpdator)
+          socket.emit('UPDATE_URL', msgUpdator)
         });
       }
     );
@@ -88,8 +91,7 @@ const MessageForm = (props: any) => {
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log(FilesQ);
-    
+
 
     if (!isFriendSelected) return;
     const createdAt = new Date().toISOString()
@@ -110,18 +112,27 @@ const MessageForm = (props: any) => {
     // }
 
     // for files
-    console.log(selectedType);
-    
+
     if (selectedType === "doc" || selectedType === "img") {
+
+      let fileArray: any = []
       const messageArray = FilesQ.map(data => {
+        fileArray.push({ file: data.bufferFile, uuid: data.msg.uuid })
         delete data.bufferFile
-        data.msg.createdAt =createdAt
+        data.msg.createdAt = createdAt
         return data.msg
       })
-
-      console.log(messageArray);
-      
       socket.emit('send_msg', messageArray)
+
+
+      console.log("UPLOADING STARTED");
+
+      for (let i = 0; i < fileArray.length; i++) {
+        const msgData: any = fileArray[i]; 
+        uploadFiles(msgData.file as File, msgData.uuid) 
+      }
+
+
       setfiles(null)
       setpreviewFileList([])
       setText("")
@@ -129,7 +140,7 @@ const MessageForm = (props: any) => {
     }
 
 
-    // uploadFiles()
+
 
 
 
@@ -231,7 +242,6 @@ const MessageForm = (props: any) => {
       tempFileUrls.splice(idx, 1)
       setfileUrls(tempFileUrls)
       let tempObj: any = Object.assign({ length: fileArr.length }, fileArr)
-      console.log(tempObj);
       setfiles(tempObj);
     }
 
@@ -255,13 +265,10 @@ const MessageForm = (props: any) => {
 
   useEffect(() => {
 
-    socket.on('recive_msg', (data: messageI[]) => {
-
-
-      Dispatch(appendMsg(selectedFriend.id as string, data))
-
-
+    socket.on('recive_msg', (data: messageI[]) => { 
+      Dispatch(appendMsg(selectedFriend.id as string, data)) 
     })
+    
 
     return () => socket.off('recive_msg');
   }, [socket, selectedFriend])
@@ -298,15 +305,16 @@ const MessageForm = (props: any) => {
 
   useEffect(() => {
 
-    if ( previewFileList.length > 0) {
+    if (previewFileList.length > 0) {
       setSelectFileState(false)
     } else {
       setselectedType('text')
     }
 
-  }, [ previewFileList])
+  }, [previewFileList])
 
 
+  
 
 
   return (
@@ -340,7 +348,7 @@ const MessageForm = (props: any) => {
           <div className="viewFileBeforeSend" id="viewFileBeforeSend" >
             {
               previewFileList.map((data: any, index: number) => {
-                return <FileComp For="preview" fileData={data}  removeFile={removeFile} index={index} ></FileComp>
+                return <FileComp For="preview" fileData={data} removeFile={removeFile} index={index} ></FileComp>
 
               })
             }

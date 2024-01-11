@@ -66,8 +66,6 @@ const ChatCard = (props: any) => {
       const chats = allChats[friendIdx]
 
       if (chats) {
-        console.log("chats",chats);
-        
         setChats(chats)
       }
     }
@@ -81,6 +79,18 @@ const ChatCard = (props: any) => {
       chatboardRef.scrollTop = chatboardRef.scrollHeight
     }
   }, [chats]);
+
+
+
+  useEffect(() => {
+    
+    console.log("TRYING");
+    props.socket.on('RE_UPDATED_URL',(data:any)=>{
+      console.log("RE_UPDATED_URL",data);
+    })
+    return () => props.socket.off('RE_UPDATED_URL');
+  }, [props.socket])
+  
 
 
   function textMaper(data: messageI, idx: number) {

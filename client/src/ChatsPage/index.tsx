@@ -76,8 +76,8 @@ const ChatsPage = () => {
             }}
           >
 
-            <ChatHeader socket={socket}></ChatHeader> 
-            <ChatCard chatboard={chatboard}></ChatCard> 
+            <ChatHeader  socket={socket}                      ></ChatHeader> 
+            <ChatCard    socket={socket} chatboard={chatboard}></ChatCard> 
             <MessageForm socket={socket} chatboard={chatboard}></MessageForm>
 
           </motion.div>

@@ -134,6 +134,15 @@ async function init() {
 
       })
 
+      socket.on('UPDATE_URL', (data) => {
+
+        const room = getRoomNameBydata(data)
+        console.log(room);
+        
+        io.in(room).emit('RE_UPDATED_URL', data) 
+
+      })
+
       socket.on('send_msg', async (data: messageI[]) => {
 
         const room = getRoomNameBydata(data[0])

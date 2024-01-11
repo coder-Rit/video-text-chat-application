@@ -4,8 +4,7 @@ import { messageModel } from "../../model/messageModel";
 import jwt from "jsonwebtoken";
 import fs from "fs";
 import path from "path";
-import { FileUpload } from "graphql-upload-ts";
-
+ 
 
 
 const queries = {
