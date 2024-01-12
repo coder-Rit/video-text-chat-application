@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { rootState } from "../Interfaces";
 import { userInterface } from "../Interfaces/user";
 import { FriendInterface } from "../Interfaces/common";
-import { FilesQI, fileI, fileUrl, friendChatI, messageI } from "../Interfaces/message";
+import { FilesQI, fileI, fileUrl, friendChatI, messageI, urlUpdateObjectI } from "../Interfaces/message";
 import { useDispatch } from "react-redux";
 import { appendMsg } from "../actions/chatAction";
 // import { Context } from "../functions/context";
@@ -43,7 +43,6 @@ const MessageForm = (props: any) => {
 
   const [messageQ, setmessageQ] = useState<messageI>()
   const [files, setfiles] = useState<FileList | null>()
-  const [fileslength, set_fileslength] = useState<number>(0)
   const [EmojiPiker, setEmojiPiker] = useState<boolean>(false)
   const [SelectFileState, setSelectFileState] = useState<boolean>(false)
   const [selectedType, setselectedType] = useState<'doc' | 'img' | 'text'>("text")
@@ -74,10 +73,11 @@ const MessageForm = (props: any) => {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           console.log("UPLOADING ENDED");
-          let msgUpdator = {
+
+          let msgUpdator: urlUpdateObjectI = {
             uuid,
-            senderId: user.id,
-            receiverId: user.friendList[idx].id,
+            senderId: user.id as string,
+            receiverId: user.friendList[idx - 1].id as string,
             url: downloadURL
           }
           socket.emit('UPDATE_URL', msgUpdator)
@@ -97,21 +97,20 @@ const MessageForm = (props: any) => {
     const createdAt = new Date().toISOString()
 
     // for text
-    // if (selectedType === "text") {
-    //   const msg: messageI = {
-    //     msg: text,
-    //     senderId: user.id as string,
-    //     receiverId: selectedFriend.id as string,
-    //     createdAt,
-    //     type: "text"
-    //   }
-    //   if (isFriendSelected) {
-    //     socket.emit('send_msg', msg)
-    //     setText('')
-    //   }
-    // }
+    if (selectedType === "text") {
+      const msg: messageI = {
+        uuid: "",
+        msg: text,
+        senderId: user.id as string,
+        receiverId: selectedFriend.id as string,
+        createdAt,
+        type: "text"
+      }
+      
+      socket.emit('send_msg', [msg])
+    }
 
-    // for files
+    // for files 
 
     if (selectedType === "doc" || selectedType === "img") {
 
@@ -128,17 +127,16 @@ const MessageForm = (props: any) => {
       console.log("UPLOADING STARTED");
 
       for (let i = 0; i < fileArray.length; i++) {
-        const msgData: any = fileArray[i]; 
-        uploadFiles(msgData.file as File, msgData.uuid) 
+        const msgData: any = fileArray[i];
+        uploadFiles(msgData.file as File, msgData.uuid)
       }
 
-
-      setfiles(null)
-      setpreviewFileList([])
-      setText("")
-
+      
     }
-
+    
+    setfiles(null)
+    setpreviewFileList([])
+    setText("")
 
 
 
@@ -265,10 +263,10 @@ const MessageForm = (props: any) => {
 
   useEffect(() => {
 
-    socket.on('recive_msg', (data: messageI[]) => { 
-      Dispatch(appendMsg(selectedFriend.id as string, data)) 
+    socket.on('recive_msg', (data: messageI[]) => {
+      Dispatch(appendMsg(selectedFriend.id as string, data))
     })
-    
+
 
     return () => socket.off('recive_msg');
   }, [socket, selectedFriend])
@@ -293,16 +291,6 @@ const MessageForm = (props: any) => {
   }, [text])
 
 
-
-  useEffect(() => {
-    if (files) {
-
-      set_fileslength(files.length)
-    }
-  }, [files])
-
-
-
   useEffect(() => {
 
     if (previewFileList.length > 0) {
@@ -314,7 +302,7 @@ const MessageForm = (props: any) => {
   }, [previewFileList])
 
 
-  
+
 
 
   return (

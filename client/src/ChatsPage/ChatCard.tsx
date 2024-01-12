@@ -4,14 +4,19 @@ import { rootState } from '../Interfaces';
 import { FriendInterface } from '../Interfaces/common';
 import { friendChatI, messageI } from '../Interfaces/message';
 import { useSelector } from 'react-redux';
-import Image from './Files Components/Image';
+import Image from './Files Components/ImageComp';
 import FileComp from './Files Components/FileComp';
 import { motion } from "framer-motion"
 import { extractFileType } from './commonFunc';
+import { useDispatch } from 'react-redux';
+import { updateUrl } from '../actions/chatAction';
+import MessageBox from './Files Components/MessageBox';
+import ImageComp from './Files Components/ImageComp';
 
 
 
 const ChatCard = (props: any) => {
+  const Dispatch: any = useDispatch()
 
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
   const allChats = useSelector<rootState, friendChatI>((state) => state.chats);
@@ -20,31 +25,7 @@ const ChatCard = (props: any) => {
 
   const [chats, setChats] = useState<messageI[]>([])
 
-  function chatBtn() {
-    return (
-      <div className="chat__conversation-board__message__options"><button
-        className="btn-icon chat__conversation-board__message__option-button option-item emoji-button"><svg
-          className="feather feather-smile sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg"
-          width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="10"></circle>
-          <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-          <line x1="9" y1="9" x2="9.01" y2="9"></line>
-          <line x1="15" y1="9" x2="15.01" y2="9"></line>
-        </svg></button>
-        <button
-          className="btn-icon chat__conversation-board__message__option-button option-item more-button"><svg
-            className="feather feather-more-horizontal sc-dnqmqq jxshSx"
-            xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-            strokeLinejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="1"></circle>
-            <circle cx="19" cy="12" r="1"></circle>
-            <circle cx="5" cy="12" r="1"></circle>
-          </svg></button>
-      </div>
-    )
-  }
+
 
   function formatTimeFromISOString(isoTimeString: string) {
 
@@ -80,101 +61,115 @@ const ChatCard = (props: any) => {
     }
   }, [chats]);
 
+  useEffect((): any => {
 
-
-  useEffect(() => {
-    
     console.log("TRYING");
-    props.socket.on('RE_UPDATED_URL',(data:any)=>{
-      console.log("RE_UPDATED_URL",data);
+    props.socket.on('RE_UPDATED_URL', (data: any) => {
+      console.log("RE_UPDATED_URL");
+      if (data.senderId !== user.id) {
+        Dispatch(updateUrl(data))
+      }
     })
     return () => props.socket.off('RE_UPDATED_URL');
   }, [props.socket])
-  
+
+
+
 
 
   function textMaper(data: messageI, idx: number) {
 
+    const main = <>
+      <span className='msgTxt'>{data.msg}</span>
+      <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
+    </>
 
-    return (
-      <div key={idx} className={data.senderId === user.id ? "chat__conversation-board__message-container reversed" : "chat__conversation-board__message-container"}>
 
-        <div className="chat__conversation-board__message__context">
-          <div className="chat__conversation-board_message_box">
-            <span className='msgTxt'>{data.msg}</span>
-            <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
-          </div>
-        </div>
+    return <MessageBox main={main} res={data.senderId === user.id} idx={idx} ></MessageBox>
+  }
 
-        {chatBtn()}
 
-      </div>
+  function fileMaper(data: messageI, idx: number) {
+    const main = <>
+      {data.fileData?.url === "" && <span className='userIsUploading'>Uploading <span className='loadingDots dot1'>.</span><span className='loadingDots dot2'>.</span><span className='loadingDots dot2'>.</span></span>}
 
-    )
+      <FileComp For="downloadable_file" fileData={data.fileData} ></FileComp>
+      {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
+      <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
+    </>
+
+    return <MessageBox main={main} res={data.senderId === user.id} idx={idx} ></MessageBox>
+
+
+  }
+
+
+  function imageMaper(data: messageI, idx: number) {
+    const main = <>
+      <ImageComp fileData={data.fileData} ></ImageComp>
+      {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
+      <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
+    </>
+
+    return <MessageBox main={main} res={data.senderId === user.id} idx={idx} ></MessageBox>
+
+
   }
 
 
 
 
 
+  const [visibleChats, setVisibleChats] = useState<number>(10);
 
+  const handleScroll = () => {
+    // You can implement logic here to check if the user has scrolled to the top
+    // and then load more chats by updating the visibleChats state.
+    // This is just a basic example; you might need to adjust this based on your actual UI and scroll behavior.
+    if (window.scrollY === 0) {
+      setVisibleChats((prevVisibleChats) => prevVisibleChats + 10);
+    }
+  };
 
-  function fileMaper(data: messageI, idx: number) { 
+  useEffect(() => {
+    // Attach the scroll event listener when the component mounts
+    window.addEventListener('scroll', handleScroll);
 
-    // if (data.type === "img") {
+    // Detach the scroll event listener when the component unmounts
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
-    //   mapData = data.fileData?.map((fileData: any, idx) => {
-    //     const uint8Array = new Uint8Array(fileData.file.data);
-    //     const newblob = new Blob([uint8Array], { type: fileData.type })
-    //     return <div key={idx}>
-
-    //       <Image Blob={newblob} fileData={fileData}></Image>
-    //     </div>
-    //   })
-
-    // } else
- 
-    return <div key={idx} className={data.senderId === user.id ? "chat__conversation-board__message-container flex_down reversed" : "chat__conversation-board__message-container flex_down"}>
-      <div className="chat__conversation-board__message__context">
-        <div className="chat__conversation-board_message_box">
-        <FileComp For ="downloadable_file" fileData={data.fileData} ></FileComp>
-
-          {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
-          <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
-        </div>
-      </div>
-
-
-    </div>
-
-  }
+  const renderChats = () => {
+    // Render only the last `visibleChats` number of chats
+    return isAuthenticated && chats.slice(-visibleChats).map((data, idx: number) => {
+      if (data.type === 'text') {
+        return textMaper(data, idx);
+      } else if (data.type === 'doc') {
+        return fileMaper(data, idx);
+      } else {
+        return imageMaper(data, idx);
+      }
+    });
+  };
 
 
 
   return (
 
     <motion.div className="chat__conversation-board" id='chatboard'
-      initial={{ opacity: 0, x: 0 }}
+      initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{
         duration: 0.5,
       }}
       ref={props.chatboard}>
 
-      {
-        isAuthenticated && idx && chats.map((data, idx: number) => {
+      <div>
+        {renderChats()}
+      </div>
 
-
-          if (data.type === "text") {
-            return textMaper(data, idx)
-          } else {
-            return fileMaper(data, idx)
-          }
-
-
-        })
-
-      }
 
 
 

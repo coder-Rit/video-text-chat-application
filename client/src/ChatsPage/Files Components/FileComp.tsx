@@ -44,7 +44,11 @@ const FileComp = (props: any) => {
 
   if (props.For === "preview") {
 
-    return (<div className={`FileDisplay FileDisplay_Specific  ${imageUrl} `}>
+    return (
+    <>
+
+
+    <div className={`FileDisplay FileDisplay_Specific  ${imageUrl} `}>
 
       <span className="RemoveCircleOutlineIcon" onClick={() => props.removeFile(props.index)} >
 
@@ -61,7 +65,10 @@ const FileComp = (props: any) => {
           <span style={{ textAlign: "right" }}>{formatBytes(fileSize)}</span>
         </div>
       </div>
-    </div>)
+    </div>
+    </>
+
+    )
 
 
 

@@ -8,6 +8,7 @@ export interface fileIdI {
   fileSize: number
 }
 interface messageI {
+  uuid:string,
   msg: string,
   senderId: string,
   receiverId: string,

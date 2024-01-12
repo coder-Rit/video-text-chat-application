@@ -8,9 +8,9 @@ import dotenv from 'dotenv';
 import createApolloGraphqlServer from "./graphql";
 import { Socket, Server } from 'socket.io';
 import { createServer } from "http";
- import { messageI, messageModel } from "./model/messageModel";
+import { messageI, messageModel } from "./model/messageModel";
 import { UserModel } from "./model/userModel";
- 
+
 dotenv.config({ path: "./config/config.env" });
 
 
@@ -18,7 +18,7 @@ dotenv.config({ path: "./config/config.env" });
 interface onlineStatusChecker_I {
   myId: string,
   friendsIds: string[]
-} 
+}
 interface typingInter {
   senderId: string,
   receiverId: string,
@@ -26,23 +26,36 @@ interface typingInter {
 }
 
 
-const getRoomNameBydata = (data: messageI | typingInter): string => {
+export interface friendChatI {
+  [key: string]: messageI
+}
 
-  if (data.senderId > data.receiverId) {
-    return data.senderId + data.receiverId
+
+
+const getRoomNameBydata = (senderId: string, receiverId: string): string => {
+
+  if (senderId > receiverId) {
+    return senderId + receiverId
   } else {
-    return data.receiverId + data.senderId
+    return receiverId + senderId
 
   }
+}
 
-
+const saveMessage = async (updateMsg: messageI) => {
+  try {
+    const message = await messageModel.create(updateMsg)
+    await message.save()
+  } catch (error: any) {
+    new Error(`unable to send data to db ${error}`)
+  }
 }
 
 async function init() {
   const app: Express = express();
   const PORT = Number(process.env.PORT) || 8000;
 
-  
+
   app.use(cors({
     credentials: true,
     origin: "http://localhost:3000"
@@ -56,12 +69,12 @@ async function init() {
   app.get("/", (req, res) => {
     res.json({ message: "Server is up and running" });
   });
- 
 
-  
+
+
   const httpserver = createServer(app);
 
-  app.use("/graphql", expressMiddleware(await createApolloGraphqlServer()) );
+  app.use("/graphql", expressMiddleware(await createApolloGraphqlServer()));
 
   const io = new Server(httpserver, {
     cors: {
@@ -78,6 +91,9 @@ async function init() {
   let userBysocketId: any = {
 
   }
+  let UrlLessMsg: friendChatI = {
+
+  }
 
   // function findCommonArray(arr1: string[], arr2: string[]) {
   //   const set2 = new Set(arr2);
@@ -89,8 +105,6 @@ async function init() {
 
     io.on('connection', (socket: Socket) => {
       console.log(`User connected ${socket.id}`);
-
-
 
       socket.on('set_online_status', (data: onlineStatusChecker_I) => {
 
@@ -105,10 +119,16 @@ async function init() {
 
       socket.on('startChat', (data: messageI) => {
         console.log("room created by ", data);
-        const room = getRoomNameBydata(data)
-        console.log(room)
-
+        let room = getRoomNameBydata(data.senderId, data.receiverId)
+        console.log("startChatRoom", room)
         socket.join(room)
+
+        if (io.sockets.adapter.rooms.has(room)) {
+          console.log(`Room ${room} exist.`);
+
+        } else {
+          console.log(`Room ${room} does not exist.`);
+        }
 
       })
 
@@ -126,7 +146,7 @@ async function init() {
 
       socket.on('is_typing_started', (data: typingInter) => {
 
-        const room = getRoomNameBydata(data)
+        const room = getRoomNameBydata(data.senderId, data.receiverId)
         if (data.state !== "typing" && onlineUser.includes(data.receiverId)) {
           data.state = "online"
         }
@@ -134,30 +154,38 @@ async function init() {
 
       })
 
-      socket.on('UPDATE_URL', (data) => {
+      socket.on('send_msg', (data: messageI[]) => {
 
-        const room = getRoomNameBydata(data)
-        console.log(room);
-        
-        io.in(room).emit('RE_UPDATED_URL', data) 
+        console.log(data);
+
+
+        const room = getRoomNameBydata(data[0].senderId, data[0].receiverId)
+
+        io.in(room).emit('recive_msg', data)
+        if (data[0].type === "text") {
+          saveMessage(data[0])
+        } else {
+          data.forEach(msg => {
+            UrlLessMsg[msg.uuid] = msg
+          })
+
+        }
 
       })
 
-      socket.on('send_msg', async (data: messageI[]) => {
+      socket.on('UPDATE_URL', (data) => {
+        let room = getRoomNameBydata(data.senderId, data.receiverId)
+        io.in(room).emit('RE_UPDATED_URL', data);
 
-        const room = getRoomNameBydata(data[0])
-        io.in(room).emit('recive_msg', data)
+        let updateMsg = UrlLessMsg[data.uuid];
 
-        
-        try {
-          const message = await messageModel.insertMany(data)
-          console.log(message);
-
-          // io.in(room).emit('recive_msg', message)
- 
-        } catch (error: any) {  
-          new Error(`unable to send data to db ${error}`)
+        if (updateMsg && updateMsg.fileData) {
+          updateMsg.fileData.url = data.url;
         }
+
+        saveMessage(updateMsg)
+        delete UrlLessMsg[data.uuid]
+
 
       })
 

@@ -196,7 +196,7 @@ body {
     margin: 0 0 2em 0;
 }
 
- 
+
 
 #chat .chat__conversation-board__message__person__avatar::before {
     content: "";
@@ -205,8 +205,8 @@ body {
     width: 100%;
 }
 
- 
- 
+
+
 
 #chat .chat__conversation-board__message__context {
     max-width: 55%;
@@ -386,7 +386,46 @@ body {
     padding: 10px;
     padding-bottom: 0;
     color: #afafaf;
+}
 
+.userIsUploading {
+    padding: 5px;
+    font-size: 12px;
+    padding-left: 10px;
+    color: rgba(255, 255, 255, 0.562);
+}
+
+@keyframes loadingAnimation {
+    0% {
+        opacity: 0.2;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.2;
+    }
+}
+
+.loadingDots {
+    display: inline-block;
+    text-align: left;
+    font-size: 15px;
+}
+
+.dot1 {
+    animation: loadingAnimation  1.5s infinite;
+    animation-delay: 0.1s;
+}
+.dot2 {
+    animation: loadingAnimation  1.5s infinite;
+    animation-delay: 0.2s;
+}
+.dot3 {
+    animation: loadingAnimation  1.5s infinite;
+    animation-delay: 0.3s;
 }
 
 .msgTime {
@@ -468,24 +507,28 @@ body {
 .unknown {
     background-color: #eaff0010;
 }
-.fileIconeDiv{
+
+.fileIconeDiv {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.FileAnimation{
+
+.FileAnimation {
     position: absolute;
     z-index: 2;
     top: 13px;
 }
+
 .fileIcone {
     width: 45px;
     cursor: pointer;
 
 
 }
-.opacity7{
+
+.opacity7 {
     opacity: 0.7;
 }
 
@@ -575,12 +618,13 @@ h3 {
     display: flex;
     height: 100%;
     color: white;
-  
+
     border-radius: 10px;
     gap: 10px;
 
 }
-.zInxex2{
+
+.zInxex2 {
     position: relative;
     z-index: 2;
 }
@@ -605,7 +649,7 @@ h3 {
     padding-top: 80px;
 }
 
- 
+
 
 .sidepanle_heading {
     text-align: center;
@@ -629,7 +673,7 @@ h3 {
     transition: all 0.2s;
     cursor: pointer;
     margin-top: 10px;
-    
+
 }
 
 .user:hover {
@@ -715,7 +759,7 @@ h3 {
 
 
 .addFriendDiv {
-    position: absolute; 
+    position: absolute;
     transition: all 0.7s;
     height: 100%;
     color: white;
@@ -955,12 +999,14 @@ h3 {
     .addFriendDiv {
         height: 100vh;
         z-index: 5;
-        
+
     }
-    .sidepanle_heading{
+
+    .sidepanle_heading {
         margin-top: 0;
     }
-    .user-list{
+
+    .user-list {
         max-height: auto;
     }
 
@@ -1011,11 +1057,11 @@ h3 {
     #chat {
         display: flex;
         flex-direction: column;
-        flex-flow: column-reverse; 
+        flex-flow: column-reverse;
 
     }
 
-    
+
 
 
     .chatSection {
@@ -1032,7 +1078,7 @@ h3 {
     }
 
     .sidepanle_btns {
-       display: flex;
+        display: flex;
     }
 
     .addFriendDiv {

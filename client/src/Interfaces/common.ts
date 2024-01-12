@@ -24,5 +24,11 @@ export interface siderStateInterface {
     receiverId: string,
     state:string
   }
+ export interface actionI {
+    type: string,
+    payload: any,
+     
+  }
+
 
   
