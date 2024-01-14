@@ -874,9 +874,12 @@ h3 {
     position: relative;
     color: rgb(195, 195, 195);
     border-bottom: 1px solid rgba(255, 255, 255, 0.285);
-
+    cursor: pointer;
 }
 
+.FileDisplay_Specific:hover{
+    background-color: rgba(255, 255, 255, 0.081);
+}
 
 
 .FileDisplay_Specific:nth-child(1) {
@@ -1030,7 +1033,6 @@ h3 {
 }
 
 .selectFileDiv {
-
     display: flex;
     margin-top: 15px;
     flex-direction: column;
@@ -1055,26 +1057,23 @@ h3 {
 
 @media only screen and (max-width: 650px) {
     #chat {
-        display: flex;
-        flex-direction: column;
-        flex-flow: column-reverse;
-
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 55px;
     }
 
 
 
 
-    .chatSection {
-        height: 100vh;
-
+    .chatSection { 
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: 70px auto 105px;
+        grid-template-rows: 70px auto 60px;
 
     }
 
     #chat .chat__conversation-board {
-        height: auto;
+        
     }
 
     .sidepanle_btns {
@@ -1084,6 +1083,9 @@ h3 {
     .addFriendDiv {
         height: 85vh;
         overflow-y: scroll;
+    }
+    .msgForm{
+    height: auto;
     }
 
 }

@@ -48,9 +48,10 @@ const FileComp = (props: any) => {
     <>
 
 
-    <div className={`FileDisplay FileDisplay_Specific  ${imageUrl} `}>
+    <div className={`FileDisplay FileDisplay_Specific  ${imageUrl} `} style={{backgroundColor:props.fileCaption-1 === props.index ?"rgba(255, 255, 255, 0.081)":"rgba(0, 0,0, 0)"}} onClick={()=>props.set_fileCaption(props.index+1)}>
 
-      <span className="RemoveCircleOutlineIcon" onClick={() => props.removeFile(props.index)} >
+      <span className="RemoveCircleOutlineIcon" onClick={() => {props.removeFile(props.index)
+      props.set_fileCaption(0)}} >
 
         <RemoveCircleOutlineIcon sx={{ fontSize: "13px" }} ></RemoveCircleOutlineIcon>
       </span>

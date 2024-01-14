@@ -19,7 +19,7 @@ const queries = {
         { senderId: id },
         { receiverId: id },
       ],
-    }).sort({ createdAt: 1 }).limit(20);
+    }).sort({ createdAt: 1 }) 
 
     const tempObj = {
       friendId: id,

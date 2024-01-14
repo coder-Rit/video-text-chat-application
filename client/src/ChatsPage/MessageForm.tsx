@@ -53,6 +53,8 @@ const MessageForm = (props: any) => {
   const [FilesQ, setFilesQ] = useState<FilesQI[]>([]);
   const [previewFileList, setpreviewFileList] = useState<any>([]);
 
+  const [fileCaption, set_fileCaption] = useState<number>(0);
+
 
   const uploadFiles = (file: File, uuid: string) => {
 
@@ -106,7 +108,7 @@ const MessageForm = (props: any) => {
         createdAt,
         type: "text"
       }
-      
+
       socket.emit('send_msg', [msg])
     }
 
@@ -131,9 +133,9 @@ const MessageForm = (props: any) => {
         uploadFiles(msgData.file as File, msgData.uuid)
       }
 
-      
+
     }
-    
+
     setfiles(null)
     setpreviewFileList([])
     setText("")
@@ -223,7 +225,35 @@ const MessageForm = (props: any) => {
 
   }
 
-
+  function setTextInMsg(idx: number, text: string) {
+    let tempMsgObj = [...FilesQ]; // create a copy of FilesQ
+    tempMsgObj[idx].msg.msg = text;
+    console.log(tempMsgObj[idx].msg.msg);
+    setFilesQ(tempMsgObj);
+  }
+ 
+  function dynamicInputComp(fileCaption: number): ReactNode {
+    if (fileCaption) {
+      const cpation = FilesQ[fileCaption - 1].msg.msg;
+      return (
+        <input
+          value={cpation}
+          onChange={(e) => setTextInMsg(fileCaption - 1, e.target.value)}
+          className="chat__conversation-panel__input panel-item"
+          placeholder="Write a caption..."
+        />
+      );
+    } else {
+      return (
+        <input
+          value={text} //comes from use state
+          onChange={(e) => setText(e.target.value)}
+          className="chat__conversation-panel__input panel-item"
+          placeholder="Type a message..."
+        />
+      );
+    }
+  }
 
 
 
@@ -302,6 +332,13 @@ const MessageForm = (props: any) => {
   }, [previewFileList])
 
 
+  useEffect(() => {
+
+
+    console.log("from useeffect", fileCaption);
+
+  }, [fileCaption])
+
 
 
 
@@ -329,15 +366,21 @@ const MessageForm = (props: any) => {
           }}
         >
 
-          <span className="RemoveCircleOutlineIcon" onClick={() => setpreviewFileList([])}>
+          <span className="RemoveCircleOutlineIcon" onClick={() => {
+            setpreviewFileList([])
+            set_fileCaption(0)
+          }}>
             <CloseIcon></CloseIcon>
           </span >
 
           <div className="viewFileBeforeSend" id="viewFileBeforeSend" >
             {
-              previewFileList.map((data: any, index: number) => {
-                return <FileComp For="preview" fileData={data} removeFile={removeFile} index={index} ></FileComp>
 
+              previewFileList.map((data: any, index: number) => {
+
+                return <div key={index}>
+                  <FileComp For="preview" fileData={data} removeFile={removeFile} index={index} set_fileCaption={set_fileCaption} fileCaption={fileCaption}></FileComp>
+                </div>
               })
             }
           </div>
@@ -368,10 +411,8 @@ const MessageForm = (props: any) => {
             <div className="iconStyle" onClick={() => setEmojiPiker(true)}><EmojiEmotionsIcon></EmojiEmotionsIcon></div>
 
 
+            {dynamicInputComp(fileCaption)}
 
-
-            <input value={text} onChange={(e) => setText(e.target.value)} className="chat__conversation-panel__input panel-item"
-              placeholder="Type a message..." />
             <button
               type="submit"
               className="chat__conversation-panel__button panel-item btn-icon send-message-button"><svg
