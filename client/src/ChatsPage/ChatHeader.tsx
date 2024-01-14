@@ -7,6 +7,7 @@ import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { motion } from "framer-motion"
 import { typingInter } from "../Interfaces/common";
 import { userInterface } from '../Interfaces/user';
+import useDisplay from '../hooks/useDisplay';
 const ChatHeader = (props: any) => {
 
   const { selectedFriend, isFriendSelected } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
@@ -14,6 +15,8 @@ const ChatHeader = (props: any) => {
 
 
   const [lastSeenState, setlastSeenState] = useState("")
+  const screenWidth: number = useDisplay().getScreenWidth()
+
 
   function getLastSeenTimeString(miliDate: string): string {
 
@@ -34,11 +37,18 @@ const ChatHeader = (props: any) => {
 
     const timeString = inputDate.toLocaleTimeString('en-US', options);
 
-    if (isToday) {
+    if (screenWidth <= 425) {
       return `Last seen ${timeString}`;
+
+    }
+    else if (isToday) {
+      return `Last seen ${timeString}`;
+
     } else if (isYesterday) {
       return `Last seen yesterday ${timeString}`;
-    } else {
+    }
+
+    else {
       const dateFormatOptions: Intl.DateTimeFormatOptions = {
         year: 'numeric',
         month: 'long',

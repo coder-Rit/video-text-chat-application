@@ -38,13 +38,10 @@ const FindUser = (props: any) => {
     const [load, setload] = useState(8)
 
     const [searchFriend, { data, error, loading }] = useLazyQuery(FIND_USER, {
-        variables: {
-            userName: userName,
-            load: load
-        },
+
         onCompleted: (data) => {
             console.log(data);
-            
+
             setUserList(data.searchFriend)
         }
 
@@ -56,7 +53,16 @@ const FindUser = (props: any) => {
 
         console.log(userName);
         if (userName !== "" || !userName) {
-            searchFriend()
+
+            const timeoutId = setTimeout(() => {
+                searchFriend({
+                    variables: {
+                        userName: userName,
+                        load: load
+                    },
+                });
+            }, 500);
+            return () => clearTimeout(timeoutId);
         }
 
     }, [userName])

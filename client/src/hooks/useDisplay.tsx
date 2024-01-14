@@ -6,6 +6,9 @@ export interface useDisplayI {
 }
 
 
+ 
+
+
 function useDisplay() {
 
     function getScreenWidth() {

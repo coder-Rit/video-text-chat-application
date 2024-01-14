@@ -67,6 +67,7 @@ const FriendsPannel = (props: any) => {
     const index = useRef<HTMLDivElement>(null)
 
     const [openSiderState, setopenSiderState] = useState<string>("friends")
+    const [leftGap, setleftGap] = useState<number>(70)
 
 
     const [getChats, { data }] = useLazyQuery(GET_CHATS, {
@@ -79,8 +80,7 @@ const FriendsPannel = (props: any) => {
 
 
 
-    function setActiveClass(active: any, ...deactive: any) {
-
+    function setActiveClass(active: any, ...deactive: any) { 
 
         active.current?.classList.add("active")
         active.current?.classList.remove("deactive")
@@ -130,6 +130,17 @@ const FriendsPannel = (props: any) => {
 
     }, [selectedFriend])
 
+    useEffect(() => {
+      
+        if (Dispaly.getScreenWidth()<=650) {
+            setleftGap(0)
+        }else{
+            setleftGap(70)
+        }
+       
+    }, [window.innerWidth])
+    
+
 
     return (
         <>
@@ -154,7 +165,7 @@ const FriendsPannel = (props: any) => {
             {
                 openSiderState === "profile" && <motion.div className="addFriendDiv"
                     initial={{ opacity: 0, x: -400 }}
-                    animate={{ opacity: 1, x: 70 }}
+                    animate={{ opacity: 1, x: leftGap }}
                     transition={{
                         duration: 0.2,
 
@@ -166,7 +177,7 @@ const FriendsPannel = (props: any) => {
             {
                 openSiderState === "friends" && <motion.div className="addFriendDiv"
                     initial={{ opacity: 0, x: -400 }}
-                    animate={{ opacity: 1, x: 70 }}
+                    animate={{ opacity: 1, x: leftGap }}
                     transition={{
                         duration: 0.2,
 
@@ -179,7 +190,7 @@ const FriendsPannel = (props: any) => {
             {
                 openSiderState === "addFriend" && <motion.div className="addFriendDiv"
                     initial={{ opacity: 0, x: -400 }}
-                    animate={{ opacity: 1, x: 70 }}
+                    animate={{ opacity: 1, x: leftGap }}
                     transition={{
                         duration: 0.2,
 

@@ -113,10 +113,7 @@ body {
     background-size: cover;
 }
 
-.chatSection {
-    min-width: 550px;
-    margin: auto;
-}
+
 
 #chat {
     background: var(--chat-background);
@@ -416,15 +413,17 @@ body {
 }
 
 .dot1 {
-    animation: loadingAnimation  1.5s infinite;
+    animation: loadingAnimation 1.5s infinite;
     animation-delay: 0.1s;
 }
+
 .dot2 {
-    animation: loadingAnimation  1.5s infinite;
+    animation: loadingAnimation 1.5s infinite;
     animation-delay: 0.2s;
 }
+
 .dot3 {
-    animation: loadingAnimation  1.5s infinite;
+    animation: loadingAnimation 1.5s infinite;
     animation-delay: 0.3s;
 }
 
@@ -546,7 +545,6 @@ body {
     /* Hide overflowing text */
     text-overflow: ellipsis;
     /* Display an ellipsis (...) when text is truncated */
-
     color: white;
 }
 
@@ -877,7 +875,7 @@ h3 {
     cursor: pointer;
 }
 
-.FileDisplay_Specific:hover{
+.FileDisplay_Specific:hover {
     background-color: rgba(255, 255, 255, 0.081);
 }
 
@@ -1060,32 +1058,73 @@ h3 {
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: auto 55px;
+        border-radius: 0;
     }
 
 
-
-
-    .chatSection { 
+    .chatSection {
+        height: 89vh;
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: 70px auto 60px;
 
     }
 
-    #chat .chat__conversation-board {
-        
-    }
+
 
     .sidepanle_btns {
+        width: 100%;
         display: flex;
+        justify-content: space-around;
+    }
+
+    .fileDetails>h4 {
+        width: 25vw;
     }
 
     .addFriendDiv {
-        height: 85vh;
+        height: 92vh;
+        width: 100vw;
         overflow-y: scroll;
     }
-    .msgForm{
-    height: auto;
+
+    .msgForm {
+        height: auto;
     }
 
+    #chat .chat__conversation-board__message__context {
+        max-width: 65%;
+    }
+
+    .user-list {
+        overflow-y: scroll;
+        height: 600px;
+        width: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .user {
+        width: 80vw;
+        max-width: 350px;
+    }
+    .searchGrp{
+        width: 60%;
+        margin: auto;
+    }
+}
+
+@media only screen and (max-width: 350px) {
+    .chat_conversation-header-details>h3 {
+        font-size: 14px;
+    }
+
+    .chat_conversation-header-details>span {
+        font-size: 8px;
+    }
+
+    #chat {
+        padding: 8px;
+    }
 }

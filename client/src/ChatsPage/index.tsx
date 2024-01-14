@@ -20,6 +20,7 @@ import DefaultCart from "./DefaultCart";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion"
 import ChatCard from "./ChatCard";
+import useDisplay, { useDisplayI } from "../hooks/useDisplay";
 
 
 
@@ -36,6 +37,7 @@ const ChatsPage = () => {
   const chatboard = useRef<HTMLDivElement>(null)
 
   const Dispatch: any = useDispatch()
+  const screenWidth: number = useDisplay().getScreenWidth()
 
 
 
@@ -47,8 +49,8 @@ const ChatsPage = () => {
 
 
 
-  
-  
+
+
 
 
 
@@ -60,9 +62,9 @@ const ChatsPage = () => {
 
 
 
-
-      <FriendsPannel socket={socket} ></FriendsPannel>
-
+      {
+        screenWidth > 650 && <FriendsPannel socket={socket} ></FriendsPannel>
+      }
 
 
       <div className="grid-item">
@@ -78,8 +80,8 @@ const ChatsPage = () => {
             }}
           >
 
-            <ChatHeader  socket={socket}                      ></ChatHeader> 
-            <ChatCard    socket={socket} chatboard={chatboard}></ChatCard> 
+            <ChatHeader socket={socket}                      ></ChatHeader>
+            <ChatCard socket={socket} chatboard={chatboard}></ChatCard>
             <MessageForm socket={socket} chatboard={chatboard}></MessageForm>
 
           </motion.div>
@@ -94,6 +96,9 @@ const ChatsPage = () => {
         </AnimatePresence>
 
       </div>
+      {
+        screenWidth <= 650 && <FriendsPannel socket={socket} ></FriendsPannel>
+      }
 
 
 
