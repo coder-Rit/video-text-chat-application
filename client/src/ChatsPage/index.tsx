@@ -67,7 +67,6 @@ const ChatsPage = () => {
       }
 
 
-      <div className="grid-item">
 
         {
           isAuthenticated && idx && <motion.div
@@ -95,7 +94,6 @@ const ChatsPage = () => {
           }
         </AnimatePresence>
 
-      </div>
       {
         screenWidth <= 650 && <FriendsPannel socket={socket} ></FriendsPannel>
       }

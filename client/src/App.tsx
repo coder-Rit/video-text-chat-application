@@ -70,7 +70,6 @@ function App() {
       <Routes>
         <Route index element={<AuthPage />} />
         <Route path="chatt" element={<ChatsPage />} />
-
       </Routes>
     </Router>
   )

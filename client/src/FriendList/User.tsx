@@ -13,6 +13,8 @@ import { FriendInterface } from '../Interfaces/common';
 import { motion } from "framer-motion"
 import useDisplay, { useDisplayI } from '../hooks/useDisplay';
 import { chatInit } from '../actions/chatAction';
+import { Skeleton } from '@mui/material';
+import { friendChatI } from '../Interfaces/message';
 
 
 
@@ -37,13 +39,15 @@ const User = (props: any) => {
 
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
   const { selectedFriend, isFriendSelected } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
-  // const AllfriendChats = useSelector<rootState, allFriendsChatI[]>((state) => state.chats);
+  const allChats = useSelector<rootState, friendChatI>((state) => state.chats);
+
 
   const Dispatch: any = useDispatch()
   const Display: useDisplayI = useDisplay()
 
 
   const [userId, setuserId] = useState("")
+  const [lastMsg, setlastMsg] = useState<string | null>(null)
   const userDiv = useRef<HTMLInputElement>(null)
 
   const [add_friend, { loading, error, data }] = useMutation(ADD_FRIEND, {
@@ -54,7 +58,7 @@ const User = (props: any) => {
   });
 
 
-  
+
 
 
 
@@ -73,7 +77,7 @@ const User = (props: any) => {
 
   }
 
-  
+
 
   useEffect(() => {
     if (userId !== "") {
@@ -98,7 +102,7 @@ const User = (props: any) => {
 
   }, [data])
 
-   
+
 
 
 
@@ -117,11 +121,45 @@ const User = (props: any) => {
 
 
 
+  useEffect(() => {
+
+    if (allChats) {
+
+
+      let msgArr = allChats[props.user.id]
+
+      if (msgArr) {
+        if (msgArr.length !== 0) {
+          const msgObject = msgArr[msgArr.length-1]
+          if (msgObject.type === "text") {
+            setlastMsg(msgObject.msg)
+          } else {
+            if (msgObject.msg !== "") {
+              setlastMsg(msgObject.msg)
+            } else {
+
+              setlastMsg(msgObject.fileData?.fileName as string)
+            }
+          }
+        } else {
+          setlastMsg(`Say, 🫸 to ${props.user.firstName}`)
+
+        }
+
+      }
+
+
+
+    }
+
+
+  }, [allChats])
+
 
 
 
   return (
-    <motion.div  className="user" onClick={selectFriendFunc} ref={userDiv}
+    <motion.div className="user" onClick={selectFriendFunc} ref={userDiv}
 
       initial={{ opacity: 0, x: -400 }}
       animate={{ opacity: 1, x: 0 }}
@@ -139,7 +177,14 @@ const User = (props: any) => {
       {
         props.usedFor === "myFriend" && <div className="detailsDiv">
           <span>{props.user.userName}</span>
-          <span>where are you bro?</span>
+
+          {
+            lastMsg && <span className='lastMsg'>{lastMsg}</span>
+          }
+          {
+            !lastMsg && <Skeleton variant="text" width={200} sx={{ fontSize: '1rem', bgcolor: '#f3e5f5' }} />
+          }
+
 
           {
 
@@ -152,7 +197,7 @@ const User = (props: any) => {
         <div >
 
           <span>{props.user.userName}</span>
-          {/* <span>Say, 🫸 to {props.user.firstName} {props.user.lastName}</span> */}
+          {/* <span> </span> */}
           <div> </div>
         </div>
 

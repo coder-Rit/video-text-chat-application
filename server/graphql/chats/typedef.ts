@@ -28,6 +28,7 @@ export const typeDefs = `#graphql
     friendId: String
     chats: [MessageT]
   }
- 
+
+   
       
 `;

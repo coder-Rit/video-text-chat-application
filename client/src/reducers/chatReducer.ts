@@ -1,4 +1,4 @@
-import { UPDATE_CHATS,CHAT_INIT, SET_URL_IN_MESSAGE } from "../constants/userConstants";
+import { UPDATE_CHATS,CHAT_INIT, SET_URL_IN_MESSAGE, BULK_CHAT_INIT } from "../constants/userConstants";
 import { actionI } from "../Interfaces/common";
 import {friendChatI, messageI} from "../Interfaces/message"
 
@@ -22,8 +22,11 @@ export const chatReducer = (state:friendChatI|any =  {} , action:actionI ) => {
           ...state,
           ...action.payload as any
         } 
-      case UPDATE_CHATS:
-
+      case BULK_CHAT_INIT:
+        return {
+          ...action.payload as any
+        } 
+      case UPDATE_CHATS: 
         const {friendId,msg} = action.payload
 
         return {

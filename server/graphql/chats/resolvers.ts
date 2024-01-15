@@ -10,27 +10,47 @@ import path from "path";
 const queries = {
 
   getChats: async (_: any, payload: { friendId: string }) => {
-
-
     const id = payload.friendId;
 
-    const messages = await messageModel.find({
+    let messages = await messageModel.find({
       $or: [
         { senderId: id },
         { receiverId: id },
       ],
-    }).sort({ createdAt: 1 }) 
+    }).sort({ createdAt: -1 }).limit(15)
 
-    const tempObj = {
+    messages.reverse()
+     const tempObj = {
       friendId: id,
       chats: messages
+    } 
+ 
+    return tempObj 
+
+  },
+  loadInitialChats: async (_: any, payload: { friendIds: string[]}) => {
+    const ids = payload.friendIds;
+
+    let allChats =[]
+
+    for (let i = 0; i < ids.length; i++) {
+      const id = ids[i]
+      let messages = await messageModel.find({
+        $or: [
+          { senderId: id },
+          { receiverId: id },
+        ],
+      }).sort({ createdAt: -1 }).limit(2)
+      messages.reverse()
+      const tempObj = {
+       friendId: id,
+       chats: messages
+     } 
+     allChats.push(tempObj) 
     }
 
-
-
-    return tempObj
-
-
+ 
+    return allChats 
 
   }
 

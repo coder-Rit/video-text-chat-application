@@ -24,6 +24,9 @@ const ChatCard = (props: any) => {
 
 
   const [chats, setChats] = useState<messageI[]>([])
+  const [visibleChats, setVisibleChats] = useState<number>(10);
+
+
 
 
 
@@ -39,6 +42,68 @@ const ChatCard = (props: any) => {
 
     return formattedTimeString;
   }
+
+
+  function textMaper(data: messageI, idx: number) {
+
+    const main = <>
+      <span className='msgTxt'>{data.msg}</span>
+      <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
+    </>
+
+
+    return <MessageBox main={main} res={data.senderId === user.id} idx={idx} ></MessageBox>
+  }
+
+  function fileMaper(data: messageI, idx: number) {
+    const main = <>
+      {data.fileData?.url === "" && <span className='userIsUploading'>Uploading <span className='loadingDots dot1'>.</span><span className='loadingDots dot2'>.</span><span className='loadingDots dot2'>.</span></span>}
+
+      <FileComp For="downloadable_file" fileData={data.fileData} ></FileComp>
+      {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
+      <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
+    </>
+
+    return <MessageBox main={main} res={data.senderId === user.id} idx={idx} ></MessageBox>
+
+
+  }
+
+  function imageMaper(data: messageI, idx: number) {
+    const main = <>
+      <ImageComp fileData={data.fileData} ></ImageComp>
+      {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
+      <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
+    </>
+
+    return <MessageBox main={main} res={data.senderId === user.id} idx={idx} ></MessageBox>
+
+
+  }
+
+
+  const handleScroll = () => {
+    // You can implement logic here to check if the user has scrolled to the top
+    // and then load more chats by updating the visibleChats state.
+    // This is just a basic example; you might need to adjust this based on your actual UI and scroll behavior.
+    if (window.scrollY === 0) {
+      setVisibleChats((prevVisibleChats) => prevVisibleChats + 10);
+    }
+  };
+
+  const renderChats = () => {
+    // Render only the last `visibleChats` number of chats
+    return isAuthenticated && chats.map((data, idx: number) => {
+      if (data.type === 'text') {
+        return textMaper(data, idx);
+      } else if (data.type === 'doc') {
+        return fileMaper(data, idx);
+      } else {
+        return imageMaper(data, idx);
+      }
+    });
+  };
+
 
   useEffect(() => {
 
@@ -77,59 +142,11 @@ const ChatCard = (props: any) => {
 
 
 
-  function textMaper(data: messageI, idx: number) {
+ 
 
-    const main = <>
-      <span className='msgTxt'>{data.msg}</span>
-      <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
-    </>
+ 
 
-
-    return <MessageBox main={main} res={data.senderId === user.id} idx={idx} ></MessageBox>
-  }
-
-
-  function fileMaper(data: messageI, idx: number) {
-    const main = <>
-      {data.fileData?.url === "" && <span className='userIsUploading'>Uploading <span className='loadingDots dot1'>.</span><span className='loadingDots dot2'>.</span><span className='loadingDots dot2'>.</span></span>}
-
-      <FileComp For="downloadable_file" fileData={data.fileData} ></FileComp>
-      {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
-      <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
-    </>
-
-    return <MessageBox main={main} res={data.senderId === user.id} idx={idx} ></MessageBox>
-
-
-  }
-
-
-  function imageMaper(data: messageI, idx: number) {
-    const main = <>
-      <ImageComp fileData={data.fileData} ></ImageComp>
-      {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
-      <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
-    </>
-
-    return <MessageBox main={main} res={data.senderId === user.id} idx={idx} ></MessageBox>
-
-
-  }
-
-
-
-
-
-  const [visibleChats, setVisibleChats] = useState<number>(10);
-
-  const handleScroll = () => {
-    // You can implement logic here to check if the user has scrolled to the top
-    // and then load more chats by updating the visibleChats state.
-    // This is just a basic example; you might need to adjust this based on your actual UI and scroll behavior.
-    if (window.scrollY === 0) {
-      setVisibleChats((prevVisibleChats) => prevVisibleChats + 10);
-    }
-  };
+  
 
   useEffect(() => {
     // Attach the scroll event listener when the component mounts
@@ -141,18 +158,7 @@ const ChatCard = (props: any) => {
     };
   }, []);
 
-  const renderChats = () => {
-    // Render only the last `visibleChats` number of chats
-    return isAuthenticated && chats.slice(-visibleChats).map((data, idx: number) => {
-      if (data.type === 'text') {
-        return textMaper(data, idx);
-      } else if (data.type === 'doc') {
-        return fileMaper(data, idx);
-      } else {
-        return imageMaper(data, idx);
-      }
-    });
-  };
+  
 
 
 
@@ -169,12 +175,7 @@ const ChatCard = (props: any) => {
       <div>
         {renderChats()}
       </div>
-
-
-
-
-
-
+ 
 
     </motion.div>
 

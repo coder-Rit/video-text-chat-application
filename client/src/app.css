@@ -153,7 +153,7 @@ body {
 #chat .chat__conversation-board {
     padding: 1em .5em 2em;
     overflow-y: scroll;
-    height: calc(75vh - 100px);
+    height: calc(75vh - 50px);
     transition: 0.5s all;
     scroll-behavior: smooth;
 }
@@ -708,7 +708,9 @@ h3 {
     font-size: 11px;
     text-align: right;
 }
-
+.lastMsg{
+    
+}
 .offline {
     color: #31434d;
 

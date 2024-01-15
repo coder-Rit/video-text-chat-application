@@ -38,6 +38,7 @@ const FileComp = (props: any) => {
   useEffect(() => {
      
     setimageUrl(extractFileType(mimeType)) 
+    
   }, [mimeType])
 
 

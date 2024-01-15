@@ -38,6 +38,7 @@ export const FRIEND_SELECTED ="FRIEND_SELECTED"
 export const UPDATE_CHATS ="UPDATE_CHATS" 
 export const CHAT_INIT ="CHAT_INIT" 
 export const SET_URL_IN_MESSAGE ="SET_URL_IN_MESSAGE" 
+export const BULK_CHAT_INIT ="BULK_CHAT_INIT" 
 
  
 

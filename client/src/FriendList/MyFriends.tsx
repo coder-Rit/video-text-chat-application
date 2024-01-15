@@ -5,7 +5,7 @@ import { userInterface } from '../Interfaces/user';
 import User from './User';
 import { messageI } from '../Interfaces/message';
 import { useDispatch } from 'react-redux';
-import { chatInit } from '../actions/chatAction';
+import { BulkChatInit, chatInit } from '../actions/chatAction';
 import { friendChatI } from '../Interfaces/message';
 import { motion } from "framer-motion"
 import gql from 'graphql-tag';
@@ -16,6 +16,24 @@ import { FriendInterface } from '../Interfaces/common';
 
 
 
+const LOAD_ALL_CHATS = gql`
+query LoadInitialChats($friendIds: [ID]) {
+  loadInitialChats(friendIds: $friendIds) {
+    friendId
+    chats {
+      type
+      senderId
+      receiverId
+      msg
+      createdAt
+      fileData {
+        fileName
+      }
+    }
+  }
+}
+`
+
 
 
 
@@ -25,9 +43,46 @@ const MyFriends = (props: any) => {
 
     const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
     const { selectedFriend, idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
+    const allChats = useSelector<rootState, friendChatI>((state) => state.chats);
 
-  
- 
+    const [loadInitialChats, { data, loading, error }] = useLazyQuery(LOAD_ALL_CHATS, {
+        onCompleted: ({ loadInitialChats }) => {
+            let allChats = {}
+
+            loadInitialChats.map((data: any) => {
+                const { friendId, chats } = data
+
+                if (chats.length === 0) {
+                    allChats = {
+                        ...allChats,
+                        [friendId]: []
+                    }
+                } else {
+                    allChats = {
+                        ...allChats,
+                        [friendId]: [chats[0]]
+                    }
+                }
+            })
+            Dispatch(BulkChatInit(allChats))
+        }
+    })
+
+
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            const friendIds = user.friendList.map(data => data.id)
+            loadInitialChats({
+                variables: {
+                    friendIds
+                }
+            })
+        }
+    }, [isAuthenticated])
+
+
+
 
     return (
         <div
@@ -39,13 +94,13 @@ const MyFriends = (props: any) => {
 
 
                 {
-                    user.friendList && user.friendList.map((data, index) => {
+                     user.friendList && user.friendList.map((data, index) => {
 
 
                         return (
                             <div key={index}>
 
-                                <User index={index} goBack={props.goBack} user={data} idx={index + 1}  usedFor="myFriend"
+                                <User index={index} goBack={props.goBack} lastMsg={allChats[data.id as string]} user={data} idx={index + 1} usedFor="myFriend"
 
                                 ></User>
                             </div>
