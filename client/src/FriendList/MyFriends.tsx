@@ -26,60 +26,8 @@ const MyFriends = (props: any) => {
     const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
     const { selectedFriend, idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
 
-
-    const [onlineUserList, setonlineUserList] = useState({
-        gotStatus: false,
-        statusLine: []
-    })
-
-    const [idList, setIdList] = useState<any>(null)
-
-
-
-
-
-    function getStatus() {
-
-        let friendsIds = user.friendList?.map(data => data.id)
-        setIdList(friendsIds)
-        props.socket.emit('set_online_status', {
-            myId: user.id,
-        })
-
-    }
-
-
-
-    useEffect(() => {
-
-        if (isAuthenticated) {
-
-            getStatus()
-        }
-    }, [isAuthenticated])
-
-
-    useEffect(() => {
-
-        if (isAuthenticated) {
-
-            props.socket.on('see_online_status', (data: any) => {
-                setonlineUserList({
-                    gotStatus: true,
-                    statusLine: data
-                })
-
-            })
-        }
-
-    }, [isAuthenticated, props.socket])
-
-
-
-
-
-
-
+  
+ 
 
     return (
         <div
@@ -97,7 +45,7 @@ const MyFriends = (props: any) => {
                         return (
                             <div key={index}>
 
-                                <User index={index} goBack={props.goBack} user={data} idx={index + 1} onlineUserList={onlineUserList} usedFor="myFriend"
+                                <User index={index} goBack={props.goBack} user={data} idx={index + 1}  usedFor="myFriend"
 
                                 ></User>
                             </div>

@@ -44,7 +44,6 @@ const User = (props: any) => {
 
 
   const [userId, setuserId] = useState("")
-  const [status, setstatus] = useState("offline")
   const userDiv = useRef<HTMLInputElement>(null)
 
   const [add_friend, { loading, error, data }] = useMutation(ADD_FRIEND, {
@@ -74,16 +73,7 @@ const User = (props: any) => {
 
   }
 
-  function isOnline(id: string): string {
-
-    const res = props.onlineUserList.statusLine.findIndex((data: any) => data === id)
-    if (res === -1) {
-      return "offline"
-    } else {
-      return "online"
-    }
-  }
-
+  
 
   useEffect(() => {
     if (userId !== "") {
@@ -108,16 +98,7 @@ const User = (props: any) => {
 
   }, [data])
 
-  useEffect(() => {
-
-    if (props.onlineUserList) {
-
-      setstatus(isOnline(props.user.id as string))
-
-
-    }
-
-  }, [props.onlineUserList])
+   
 
 
 
@@ -162,7 +143,7 @@ const User = (props: any) => {
 
           {
 
-            <div className={status} >{status}</div>
+            <div  ></div>
           }
 
         </div>
