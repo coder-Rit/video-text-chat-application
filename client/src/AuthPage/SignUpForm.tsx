@@ -26,7 +26,7 @@ import { useSelector } from "react-redux";
 
 const CREATE_USER = gql`
  
-mutation CreateUser($firstName: String!, $email: String!, $password: String!, $profileImageURL: String!, $lastName: String, $userName: String) {
+ mutation CreateUser($firstName: String!, $email: String!, $password: String!, $profileImageURL: String!, $lastName: String, $userName: String) {
   createUser(firstName: $firstName, email: $email, password: $password, profileImageURL: $profileImageURL, lastName: $lastName, userName: $userName) {
     id
     userName
@@ -67,20 +67,11 @@ const SignUpForm = (props: LogInFormProps) => {
 
 
   const isMobile: boolean = useIsMobile();
-  const [createUser, { loading, error, data }] = useMutation(CREATE_USER, {
-    variables: {
-      userName,
-      firstName,
-      lastName,
-      email,
-      password,
-      profileImageURL
-    }
-  });
+  const [createUser, { loading, error, data }] = useMutation(CREATE_USER );
 
 
 
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit =   (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const userJson = {
@@ -92,14 +83,13 @@ const SignUpForm = (props: LogInFormProps) => {
       profileImageURL: profileImageURL,
       lastSeen:new Date().toISOString,
      };
+ 
+     
 
-
-
-
-    console.log(userJson);
-
-    await createUser()
-
+      createUser({
+        variables:userJson
+      })
+ 
   };
 
   useEffect(() => {
@@ -176,7 +166,7 @@ const SignUpForm = (props: LogInFormProps) => {
           }}
         /> */}
         <TextInput
-          label="text"
+          label="User Name"
           name="userName"
           placeholder="cavin456"
           style={{ width: isMobile ? "100%" : "calc(50% - 6px)" }}

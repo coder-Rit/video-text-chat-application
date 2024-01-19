@@ -1,13 +1,14 @@
 import React from "react";
 import { motion } from "framer-motion"
-
+import { DotLottiePlayer, Controls } from '@dotlottie/react-player';
+import '@dotlottie/react-player/dist/index.css';
 
 
 
 
 const DefaultCart = () => {
   const startAnimation = {
-     opacity: [0,1], // Fade out during the exit animation
+    opacity: [0, 1], // Fade out during the exit animation
     transition: {
       duration: 2,
       ease: "easeInOut",
@@ -15,7 +16,7 @@ const DefaultCart = () => {
   };
   const exitAnimation = {
     // Define the exit animation by changing the y property
-    opacity: [1,0], // Fade out during the exit animation
+    opacity: [1, 0], // Fade out during the exit animation
     transition: {
       duration: 2,
       ease: "easeInOut",
@@ -26,8 +27,16 @@ const DefaultCart = () => {
     <motion.div
       className="chat__conversation-board-default"
       animate={startAnimation}
-      // exit={exitAnimation}
+    // exit={exitAnimation}
     >
+      <DotLottiePlayer
+        src="./images/startChat.lottie"
+        autoplay
+        loop
+        style={{ width: "300px",height:"300px" }}
+        speed={1.5}
+      >
+      </DotLottiePlayer>
       <h1>Start messeging with end to end encryption </h1>
     </motion.div>
   );

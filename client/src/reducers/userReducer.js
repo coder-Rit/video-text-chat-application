@@ -9,7 +9,8 @@ import {
   LOGOUT_USER_REQUEST,
   USER_LIST,
   OPEN_SIDER,
-  CLOSE_SIDER
+  CLOSE_SIDER,
+  DELETE_FRIEND
 } from "../constants/userConstants";
 
 export const userReducer = (state = { user: {} }, action) => {
@@ -50,10 +51,27 @@ export const userReducer = (state = { user: {} }, action) => {
         ...state,
         error: null,
       };
+
+
+
+    case DELETE_FRIEND:
+       
+      // let newFriendList = JSON.parse(JSON.stringify(state.user.friendList));
+      // let idx = newFriendList.findIndexOf((data)=>data.id===action.userId)
+      state.user.friendList.slice(action.payload.index,1)
+      let newUserState = state.user
+      
+      return {
+        ...state,
+        user:newUserState,
+        error: null,
+      };
     default:
       return state;
   }
 };
+
+
 export const userList = (state = { users: {} }, action) => {
   switch (action.type) {
     

@@ -1,6 +1,9 @@
+import { useSelector } from "react-redux";
 import { UPDATE_CHATS,CHAT_INIT, SET_URL_IN_MESSAGE, BULK_CHAT_INIT } from "../constants/userConstants";
 import { actionI } from "../Interfaces/common";
 import {friendChatI, messageI} from "../Interfaces/message"
+import { rootState } from "../Interfaces";
+import { userInterface } from "../Interfaces/user";
 
 
 function findLastIndex(arr:messageI[], callback:(obj:messageI)=>boolean) {
@@ -14,7 +17,7 @@ function findLastIndex(arr:messageI[], callback:(obj:messageI)=>boolean) {
 
 
 
-export const chatReducer = (state:friendChatI|any =  {} , action:actionI ) => {
+export const chatReducer = (state:friendChatI|any =  {} , action:actionI |any) => {
     switch (action.type) {
       
       case CHAT_INIT:
@@ -35,8 +38,11 @@ export const chatReducer = (state:friendChatI|any =  {} , action:actionI ) => {
         } 
      
       case SET_URL_IN_MESSAGE:
-        const {url,uuid,senderId} = action.payload 
-        const len = state[senderId].length-1;  
+        let {url,uuid,senderId,receiverId} = action.payload 
+        
+        if (senderId === action.userId) {
+          senderId = receiverId
+        }
          
         const index = findLastIndex(state[senderId], (obj) => obj.uuid === uuid);
 

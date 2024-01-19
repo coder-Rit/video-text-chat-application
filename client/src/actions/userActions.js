@@ -6,7 +6,8 @@ import {
   REGISTER_USER_REQUEST,
   REGISTER_USER_SUCCESS,
   LOGOUT_USER_REQUEST,
-  USER_LIST
+  USER_LIST,
+  DELETE_FRIEND
 } from "../constants/userConstants";
 import Cookies from "js-cookie";
 export const register = (userData,success) => (dispatch) => {
@@ -72,4 +73,8 @@ export const userList = (list) => (dispatch) => {
      dispatch({ type: USER_LIST,payload:list });
   
   
+};
+
+export const removeFriend = (index) => (dispatch) => {
+  dispatch({ type: DELETE_FRIEND, payload: { index } });
 };

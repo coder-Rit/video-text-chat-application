@@ -19,14 +19,15 @@ import { useLazyQuery } from '@apollo/client';
 import { useDispatch } from 'react-redux';
 import { chatInit } from '../actions/chatAction';
 import { messageI } from '../Interfaces/message';
+import { userInterface } from '../Interfaces/user';
 
 
 
 
 
 const GET_CHATS = gql`
-query GetChats($friendId: ID) {
-  getChats(friendId: $friendId) {
+query GetChats($friendId: ID, $myId: ID) {
+  getChats(friendId: $friendId, myId: $myId) {
     friendId
     chats {
       senderId
@@ -44,6 +45,7 @@ query GetChats($friendId: ID) {
     }
   }
 }
+
 `
 
 
@@ -52,6 +54,7 @@ const FriendsPannel = (props: any) => {
 
 
     const { selectedFriend, isFriendSelected } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
+    const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
 
 
 
@@ -123,7 +126,8 @@ const FriendsPannel = (props: any) => {
         if (selectedFriend) {
             getChats({
                 variables: {
-                    friendId: selectedFriend.id
+                    friendId: selectedFriend.id,
+                    myId:user.id
                 }
             })
         }
@@ -132,7 +136,7 @@ const FriendsPannel = (props: any) => {
 
     useEffect(() => {
       
-        if (Dispaly.getScreenWidth()<=650) {
+        if (Dispaly.getScreenWidth()<=650) { 
             setleftGap(0)
         }else{
             setleftGap(70)

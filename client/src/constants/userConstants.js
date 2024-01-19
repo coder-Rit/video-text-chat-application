@@ -30,11 +30,9 @@ export const CLOSE_SIDER ="CLOSE_SIDER"
 
 export const FRIEND_NOT_SELECTED ="FRIEND_NOT_SELECTED" 
 export const FRIEND_SELECTED ="FRIEND_SELECTED"
+export const DELETE_FRIEND ="DELETE_FRIEND"
 
-
-
-
-
+ 
 export const UPDATE_CHATS ="UPDATE_CHATS" 
 export const CHAT_INIT ="CHAT_INIT" 
 export const SET_URL_IN_MESSAGE ="SET_URL_IN_MESSAGE" 

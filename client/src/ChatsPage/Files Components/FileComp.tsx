@@ -13,32 +13,18 @@ const FileComp = (props: any) => {
   const [imageUrl, setimageUrl] = useState("")
 
 
-  //  const  downloadFile=(selectedFile:any)=>{
-
-  //   const downloadLink = document.createElement('a');
-  //   downloadLink.download = fileName;
-
-  //   // Create a URL for the Blob and set it as the href attribute
-  //   downloadLink.href = URL.createObjectURL(selectedFile);
-
-  //   // Append the anchor element to the document body
-  //   document.body.appendChild(downloadLink);
-
-  //   // Trigger a click event on the anchor element
-  //   downloadLink.click();
-
-  //   // Remove the anchor element from the document
-  //   document.body.removeChild(downloadLink);
-  //   }
+   
 
 
 
 
 
   useEffect(() => {
-     
-    setimageUrl(extractFileType(mimeType)) 
-    
+    if (mimeType) {
+
+      setimageUrl(extractFileType(mimeType))
+    }
+
   }, [mimeType])
 
 
@@ -46,35 +32,37 @@ const FileComp = (props: any) => {
   if (props.For === "preview") {
 
     return (
-    <>
+      <>
 
 
-    <div className={`FileDisplay FileDisplay_Specific  ${imageUrl} `} style={{backgroundColor:props.fileCaption-1 === props.index ?"rgba(255, 255, 255, 0.081)":"rgba(0, 0,0, 0)"}} onClick={()=>props.set_fileCaption(props.index+1)}>
+        <div className={`FileDisplay FileDisplay_Specific  ${imageUrl} `} style={{ backgroundColor: props.fileCaption - 1 === props.index ? "rgba(255, 255, 255, 0.081)" : "rgba(0, 0,0, 0)" }} onClick={() => props.set_fileCaption(props.index + 1)}>
 
-      <span className="RemoveCircleOutlineIcon" onClick={() => {props.removeFile(props.index)
-      props.set_fileCaption(0)}} >
+          <span className="RemoveCircleOutlineIcon" onClick={() => {
+            props.removeFile(props.index)
+            props.set_fileCaption(0)
+          }} >
 
-        <RemoveCircleOutlineIcon sx={{ fontSize: "13px" }} ></RemoveCircleOutlineIcon>
-      </span>
+            <RemoveCircleOutlineIcon sx={{ fontSize: "13px" }} ></RemoveCircleOutlineIcon>
+          </span>
 
 
-      <img className='fileIcone' src={`./images/${imageUrl}.png`} alt="" />
+          <img className='fileIcone' src={`./images/${imageUrl}.png`} alt="" />
 
-      <div className='fileDetails'>
-        <span>{fileName}</span>
-        <div className='filesTechnical'>
-          <span>{imageUrl}</span>
-          <span style={{ textAlign: "right" }}>{formatBytes(fileSize)}</span>
+          <div className='fileDetails'>
+            <span>{fileName}</span>
+            <div className='filesTechnical'>
+              <span>{imageUrl}</span>
+              <span style={{ textAlign: "right" }}>{formatBytes(fileSize)}</span>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    </>
+      </>
 
     )
 
 
 
-  } else if(props.For==="downloadable_file") { 
+  } else if (props.For === "downloadable_file") {
 
     return (
 
@@ -84,7 +72,7 @@ const FileComp = (props: any) => {
           <div className='FileAnimation'>
             <Box sx={{ display: 'flex', justifyContent: "center", alignItems: "center" }}>
               {url === "" && <IndetermineProgress></IndetermineProgress>}
-              {url !== "" && <DownloadFileIcon></DownloadFileIcon>}
+              {url !== "" && <a href={url}  target='_blank'> <DownloadFileIcon  ></DownloadFileIcon></a>}
             </Box>
           </div>
           <img className={`fileIcone ${'opacity7'} `} src={`/images/${imageUrl}.png`} alt="" />

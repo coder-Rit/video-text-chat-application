@@ -97,6 +97,9 @@ const queries = {
  
 };
 
+
+
+
 const mutations = {
   createUser: async (_: any, payload: User) => {
     try {
@@ -112,8 +115,8 @@ const mutations = {
       throw new Error('Failed to create user');
     }
   },
-  addFriend: async (_: any, payload: { Fid: Types.ObjectId, Mid: Types.ObjectId }) => {
-
+  addFriend: async (_: any, payload: { Fid: Types.ObjectId, Mid: Types.ObjectId },context:any) => {
+    console.log("convte",context);
 
     try {
 

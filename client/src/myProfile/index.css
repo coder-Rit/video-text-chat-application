@@ -1,18 +1,17 @@
 .profile-container {
 	text-align: center;
-	padding: 50px;
+	padding: 20px;
 }
 
 .profile-image {
-	width: 200px;
-	height: 200px;
-	border-radius: 50%;
+	width: 150px;
+		border-radius: 50%;
 	object-fit: cover;
 	margin-bottom: 20px;
 }
 
 .profile-name {
-	font-size: 36px;
+	font-size: 20px;
 	margin-bottom: 10px;
 }
 

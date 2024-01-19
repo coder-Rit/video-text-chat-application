@@ -11,7 +11,8 @@ import { useLazyQuery } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { LoginAction } from "../actions/userActions";
-
+import { DotLottiePlayer, Controls } from '@dotlottie/react-player';
+import '@dotlottie/react-player/dist/index.css';
 
 const LOGIN = gql`
 query UserLogin($email: String!, $password: String!) {
@@ -50,16 +51,16 @@ const LogInForm = (props: LogInFormProps) => {
   let navigate = useNavigate();
 
   // const { setUser } = useContext(Context);
-   const Dispatch: any = useDispatch()
+  const Dispatch: any = useDispatch()
 
   const [loginUser, { loading, error, data }] = useLazyQuery(LOGIN, {
     variables: {
       email,
-      password, 
+      password,
     }
   });
 
-  
+
 
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -70,15 +71,24 @@ const LogInForm = (props: LogInFormProps) => {
 
   useEffect(() => {
     if (data) {
-       Dispatch(LoginAction(data.userLogin,true))
-       navigate('chatt')
+      Dispatch(LoginAction(data.userLogin, true))
+      navigate('chatt')
     }
-  }, [data ])
-  
+  }, [data])
+
 
   return (
     <div>
       <div className="form-title">Welcome Back</div>
+      <div>
+        here
+        <DotLottiePlayer
+          src="./images/car.lottie"
+          autoplay
+          loop
+        >
+        </DotLottiePlayer>
+      </div>
 
       <div className="form-subtitle">
         New here? <Link onClick={() => props.onHasNoAccount()}>Sign Up</Link>

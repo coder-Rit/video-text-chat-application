@@ -12,6 +12,8 @@ import { useDispatch } from 'react-redux';
 import { updateUrl } from '../actions/chatAction';
 import MessageBox from './Files Components/MessageBox';
 import ImageComp from './Files Components/ImageComp';
+import { DotLottiePlayer, Controls } from '@dotlottie/react-player';
+import '@dotlottie/react-player/dist/index.css';
 
 
 
@@ -128,12 +130,9 @@ const ChatCard = (props: any) => {
 
   useEffect((): any => {
 
-    console.log("TRYING");
     props.socket.on('RE_UPDATED_URL', (data: any) => {
       console.log("RE_UPDATED_URL");
-      if (data.senderId !== user.id) {
-        Dispatch(updateUrl(data))
-      }
+      Dispatch(updateUrl(data, user.id as string))
     })
     return () => props.socket.off('RE_UPDATED_URL');
   }, [props.socket])
@@ -142,11 +141,11 @@ const ChatCard = (props: any) => {
 
 
 
- 
 
- 
 
-  
+
+
+
 
   useEffect(() => {
     // Attach the scroll event listener when the component mounts
@@ -158,7 +157,7 @@ const ChatCard = (props: any) => {
     };
   }, []);
 
-  
+
 
 
 
@@ -175,7 +174,23 @@ const ChatCard = (props: any) => {
       <div>
         {renderChats()}
       </div>
- 
+
+      {
+        (chats.length === 0) && <div
+          className='Add_Friends_Lottie_Box'
+        >
+          <DotLottiePlayer
+            src="./images/Hello.lottie"
+            autoplay
+            loop
+            style={{ width: "300px" }}
+            speed={1.5}
+          >
+          </DotLottiePlayer>
+          <h2 >{`Say hello to ${user.friendList[idx-1].firstName }`}</h2>
+        </div>
+      }
+
 
     </motion.div>
 

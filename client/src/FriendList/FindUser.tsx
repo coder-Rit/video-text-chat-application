@@ -41,7 +41,6 @@ const FindUser = (props: any) => {
 
         onCompleted: (data) => {
             console.log(data);
-
             setUserList(data.searchFriend)
         }
 
@@ -113,7 +112,7 @@ const FindUser = (props: any) => {
                 </div>
             </div>
             <div className="user-list" ref={friendList_element} >
-                <UserSearchDisplay friendList={UserList} loading={loading} usedFor="findUser"></UserSearchDisplay>
+                <UserSearchDisplay friendList={UserList} loading={loading} usedFor="findUser"   ></UserSearchDisplay>
             </div>
         </ >
     )

@@ -10,6 +10,8 @@ import { Socket, Server } from 'socket.io';
 import { createServer } from "http";
 import { messageI, messageModel } from "./model/messageModel";
 import { UserModel } from "./model/userModel";
+import jwt from "jsonwebtoken";
+
 
 dotenv.config({ path: "./config/config.env" });
 
@@ -46,7 +48,7 @@ const saveMessage = async (updateMsg: messageI) => {
   try {
     const message = await messageModel.create(updateMsg)
     console.log(message);
-    
+
     await message.save()
   } catch (error: any) {
     new Error(`unable to send data to db ${error}`)
@@ -76,7 +78,25 @@ async function init() {
 
   const httpserver = createServer(app);
 
-  app.use("/graphql", expressMiddleware(await createApolloGraphqlServer()));
+  app.use("/graphql", expressMiddleware(await createApolloGraphqlServer(), {
+    context: ({ req }: { req: Request }) => {
+      const { authorization }: any = req.headers;
+
+      if (authorization) {
+        try {
+          console.log(process.env.JWT_SECREATE as string);
+
+          const data: any = jwt.verify(authorization, process.env.JWT_SECREATE as string);
+
+          return { id: data.id };
+        } catch (error) {
+          // Handle token verification error
+          throw new Error('Invalid token');
+        }
+      }
+      return {};
+    },
+  } as any));
 
   const io = new Server(httpserver, {
     cors: {
@@ -122,7 +142,6 @@ async function init() {
       socket.on('startChat', (data: messageI) => {
         console.log("room created by ", data);
         let room = getRoomNameBydata(data.senderId, data.receiverId)
-        console.log("startChatRoom", room)
         socket.join(room)
 
         if (io.sockets.adapter.rooms.has(room)) {
@@ -131,17 +150,6 @@ async function init() {
         } else {
           console.log(`Room ${room} does not exist.`);
         }
-
-      })
-
-      socket.on('get_online_status', (data) => {
-
-        if (onlineUser.includes(data.frdId)) {
-          data.state = "online"
-        }
-        socket.join(data.myId)
-
-        io.to(data.myId).emit('got_online_status', data)
 
       })
 
@@ -165,6 +173,7 @@ async function init() {
 
         io.in(room).emit('recive_msg', data)
         if (data[0].type === "text") {
+          console.log("recevice msg", data);
           saveMessage(data[0])
         } else {
           data.forEach(msg => {

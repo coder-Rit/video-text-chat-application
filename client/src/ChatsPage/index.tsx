@@ -21,6 +21,7 @@ import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion"
 import ChatCard from "./ChatCard";
 import useDisplay, { useDisplayI } from "../hooks/useDisplay";
+import { Toaster } from "sonner";
 
 
 
@@ -58,13 +59,14 @@ const ChatsPage = () => {
 
 
   return (
-    <div className="--dark-theme" id="chat">
+    <>
+      <Toaster richColors position="top-center" />
 
+      <div className="--dark-theme" id="chat">
 
-
-      {
-        screenWidth > 650 && <FriendsPannel socket={socket} ></FriendsPannel>
-      }
+        {
+          screenWidth > 650 && <FriendsPannel socket={socket} ></FriendsPannel>
+        }
 
 
 
@@ -94,13 +96,15 @@ const ChatsPage = () => {
           }
         </AnimatePresence>
 
-      {
-        screenWidth <= 650 && <FriendsPannel socket={socket} ></FriendsPannel>
-      }
+        {
+          screenWidth <= 650 && <FriendsPannel socket={socket} ></FriendsPannel>
+        }
 
 
 
-    </div>
+      </div>
+    </>
+
   );
 };
 

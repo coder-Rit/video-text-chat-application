@@ -15,7 +15,7 @@ const MyProfile = (props: any) => {
     <>
       <GoBack goBack={props.goBack} icon="goBack"></GoBack>
 
-      <div style={{ width: "300px" }}>
+      <div  >
         <h2 className='sidepanle_heading'>PROFILE</h2>
       </div>
 

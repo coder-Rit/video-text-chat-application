@@ -1,0 +1,71 @@
+.squareIcones{
+    border-radius: 3px;
+    background-color: white;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+.icone-red{
+    background-color: rgb(255, 158, 158);
+}
+.icone-white{
+    background-color: rgb(175, 191, 255);
+}
+
+
+
+
+
+.Add_Friends_Lottie_Box{
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    
+ }
+.Add_Friends_Lottie_Box>button{
+    background-color: var(--chat-primary-background);
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    width: 200px;
+    margin: auto;
+    text-decoration: none;
+    outline: none;
+    cursor: pointer;
+    font-weight: bold;
+ }
+
+  
+ 
+.loadingDiv {
+    width: 100%;
+    height: 80px;
+
+}
+
+.laoderClass {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin: 20px;
+
+
+}
+
+.loaderPersonal {
+    width: 15px;
+    height: 15px;
+    border: 2px solid #FFF;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}

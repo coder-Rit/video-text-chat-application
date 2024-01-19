@@ -13,16 +13,16 @@ const UserSearchDisplay = (props: any) => {
   return (
     <div>
       {props.friendList &&
-        props.friendList.map((data: userinterf) => {
+        props.friendList.map((data: userinterf,index:number) => {
           return (
-            <User user={data} usedFor ={props.usedFor}></User>
+            <User index={index} user={data} goBack= {props.goBack} usedFor ={props.usedFor}></User>
           )
         })
       }
 
       <div className='loadingDiv'>
         {!props.loading && <div className="laoderClass" id="laoderClass">
-          <span className="loader"></span>
+          <span className="loaderPersonal"></span>
           <span> Loading...</span>
         </div>}
       </div>

@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
-import AddBoxIcon from '@mui/icons-material/AddBox';
 import gql from 'graphql-tag';
+import { Toaster, toast } from 'sonner'
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import { rootState } from '../Interfaces';
 import { userInterface } from '../Interfaces/user';
-import { updateFriendList } from '../actions/userActions';
+import { removeFriend, updateFriendList } from '../actions/userActions';
 import { useDispatch } from 'react-redux';
 import { selectFriend } from '../actions/selectAction';
 import { FriendInterface } from '../Interfaces/common';
@@ -15,7 +15,9 @@ import useDisplay, { useDisplayI } from '../hooks/useDisplay';
 import { chatInit } from '../actions/chatAction';
 import { Skeleton } from '@mui/material';
 import { friendChatI } from '../Interfaces/message';
-
+import RemoveIcon from '@mui/icons-material/Remove';
+import AddIcon from '@mui/icons-material/Add';
+import "./index.css"
 
 
 const ADD_FRIEND = gql`
@@ -31,7 +33,6 @@ mutation AddFriend($fid: String!, $mid: String!) {
     }
   }
 }
-
 `
 
 
@@ -47,14 +48,14 @@ const User = (props: any) => {
 
 
   const [userId, setuserId] = useState("")
+  const [actionState, SetactionState] = useState<string>("")
   const [lastMsg, setlastMsg] = useState<string | null>(null)
   const userDiv = useRef<HTMLInputElement>(null)
 
   const [add_friend, { loading, error, data }] = useMutation(ADD_FRIEND, {
-    variables: {
-      fid: userId,
-      mid: user.id
-    }
+    onError(error) {
+      toast.error(error.message)
+    },
   });
 
 
@@ -67,10 +68,6 @@ const User = (props: any) => {
 
     Dispatch(selectFriend(props.user, props.idx))
 
-
-
-
-
     if (Display.getScreenWidth() < 1000) {
       props.goBack('index')
     }
@@ -79,15 +76,27 @@ const User = (props: any) => {
 
 
 
-  useEffect(() => {
-    if (userId !== "") {
-      console.log(userId);
 
 
-      add_friend()
-
+  const updateFriend = (userId: string, action: string) => {
+    SetactionState(action)
+    if (action === "Added") {
+      add_friend({
+        variables: {
+          fid: userId,
+          mid: user.id
+        }
+      })
+    } else {
+      Dispatch(removeFriend(props.index))
+      add_friend({
+        variables: {
+          fid: userId,
+          mid: user.id
+        }
+      })
     }
-  }, [userId])
+  }
 
 
 
@@ -97,6 +106,7 @@ const User = (props: any) => {
 
       console.log(data);
 
+      toast.success(`${props.user.userName} is ${actionState}`)
       Dispatch(updateFriendList(user, data.addFriend.friendList))
     }
 
@@ -130,7 +140,7 @@ const User = (props: any) => {
 
       if (msgArr) {
         if (msgArr.length !== 0) {
-          const msgObject = msgArr[msgArr.length-1]
+          const msgObject = msgArr[msgArr.length - 1]
           if (msgObject.type === "text") {
             setlastMsg(msgObject.msg)
           } else {
@@ -148,24 +158,22 @@ const User = (props: any) => {
 
       }
 
-
-
     }
-
 
   }, [allChats])
 
 
 
 
+
   return (
-    <motion.div className="user" onClick={selectFriendFunc} ref={userDiv}
+    <motion.div className="user" ref={userDiv}
 
       initial={{ opacity: 0, x: -400 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{
         duration: 0.5,
-        delay: 0.1 * props.idx,
+        delay: 0.1 * props.index,
         ease: 'easeInOut', // You 
       }}
 
@@ -175,7 +183,7 @@ const User = (props: any) => {
       </div>
 
       {
-        props.usedFor === "myFriend" && <div className="detailsDiv">
+        props.usedFor === "myFriend" && <div className="detailsDiv" onClick={selectFriendFunc} >
           <span>{props.user.userName}</span>
 
           {
@@ -184,8 +192,6 @@ const User = (props: any) => {
           {
             !lastMsg && <Skeleton variant="text" width={200} sx={{ fontSize: '1rem', bgcolor: '#f3e5f5' }} />
           }
-
-
           {
 
             <div  ></div>
@@ -201,7 +207,24 @@ const User = (props: any) => {
           <div> </div>
         </div>
 
-        <span onClick={() => setuserId(props.user.id)}><AddBoxIcon ></AddBoxIcon></span>
+        <span onClick={() => setuserId(props.user.id)}>
+
+          {
+
+            user.friendList.filter((data) => data.id === props.user.id)[0] ?
+              <span className='squareIcones icone-red' onClick={() => updateFriend(props.user.id, "Removed")}>
+                <RemoveIcon ></RemoveIcon>
+              </span>
+              :
+              <span className='squareIcones icone-white' onClick={() => updateFriend(props.user.id, "Added")}>
+                <AddIcon ></AddIcon>
+              </span>
+
+
+
+          }
+
+        </span>
 
       </div>}
 

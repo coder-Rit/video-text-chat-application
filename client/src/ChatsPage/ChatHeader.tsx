@@ -8,6 +8,7 @@ import { motion } from "framer-motion"
 import { typingInter } from "../Interfaces/common";
 import { userInterface } from '../Interfaces/user';
 import useDisplay from '../hooks/useDisplay';
+import { toast } from 'sonner';
 const ChatHeader = (props: any) => {
 
   const { selectedFriend, isFriendSelected } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
@@ -130,7 +131,7 @@ const ChatHeader = (props: any) => {
 
             </span>
           </div>
-          <div className="chat_conversation-header-icons">
+          <div className="chat_conversation-header-icons" onClick={()=> toast.warning(`Feature under development`)}>
             <CallIcon sx={{ cursor: "pointer" }}></CallIcon>
             <VideoCallIcon sx={{ scale: "1.3", cursor: "pointer" }}></VideoCallIcon>
           </div>
