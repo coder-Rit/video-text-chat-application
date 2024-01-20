@@ -20,6 +20,7 @@ import { useDispatch } from 'react-redux';
 import { chatInit } from '../actions/chatAction';
 import { messageI } from '../Interfaces/message';
 import { userInterface } from '../Interfaces/user';
+import SettingPage from '../AuthPage/SettingPage';
 
 
 
@@ -67,6 +68,7 @@ const FriendsPannel = (props: any) => {
     const profile = useRef<HTMLDivElement>(null)
     const friends = useRef<HTMLDivElement>(null)
     const addFriend = useRef<HTMLDivElement>(null)
+    const settings = useRef<HTMLDivElement>(null)
     const index = useRef<HTMLDivElement>(null)
 
     const [openSiderState, setopenSiderState] = useState<string>("friends")
@@ -83,7 +85,7 @@ const FriendsPannel = (props: any) => {
 
 
 
-    function setActiveClass(active: any, ...deactive: any) { 
+    function setActiveClass(active: any, ...deactive: any) {
 
         active.current?.classList.add("active")
         active.current?.classList.remove("deactive")
@@ -100,16 +102,19 @@ const FriendsPannel = (props: any) => {
 
         switch (openSiderState) {
             case "addFriend":
-                setActiveClass(addFriend, friends, profile, index)
+                setActiveClass(addFriend, friends, profile, settings, index)
                 break;
             case "profile":
-                setActiveClass(profile, friends, addFriend, index)
+                setActiveClass(profile, friends, addFriend, settings, index)
                 break;
             case "friends":
-                setActiveClass(friends, addFriend, profile, index)
+                setActiveClass(friends, addFriend, profile, settings, index)
+                break;
+            case "settings":
+                setActiveClass(settings, friends, addFriend, profile, index)
                 break;
             case "index":
-                setActiveClass(index, addFriend, profile, friends)
+                setActiveClass(index, addFriend, profile, settings, friends)
                 break;
             default:
 
@@ -127,7 +132,7 @@ const FriendsPannel = (props: any) => {
             getChats({
                 variables: {
                     friendId: selectedFriend.id,
-                    myId:user.id
+                    myId: user.id
                 }
             })
         }
@@ -135,36 +140,21 @@ const FriendsPannel = (props: any) => {
     }, [selectedFriend])
 
     useEffect(() => {
-      
-        if (Dispaly.getScreenWidth()<=650) { 
+
+        if (Dispaly.getScreenWidth() <= 650) {
             setleftGap(0)
-        }else{
+        } else {
             setleftGap(70)
         }
-       
+
     }, [window.innerWidth])
-    
+
 
 
     return (
         <>
 
-            {/* {
-                openSiderState === "friends" && <div className="addFriendDiv" style={{ left: openSiderState === "friends" ? "70px" : "-600px" }}   >
-                    <MyFriends socket={socket} goBack={setopenSiderState}></MyFriends>
-                </div>
-            } 
-            {
-                openSiderState === "addFriend" && <div className="addFriendDiv" style={{ left: openSiderState === "addFriend" ? "70px" : "-600px" }}   >
-                    <FindUser goBack={setopenSiderState}></FindUser>
-                </div>
-            } 
-            {
-                openSiderState === "profile" && <div className="addFriendDiv" style={{ left: openSiderState === "profile" ? "70px" : "-600px" }}   >
-                    <MyProfile goBack={setopenSiderState}></MyProfile>
-                </div>
-            } */}
-
+          
 
             {
                 openSiderState === "profile" && <motion.div className="addFriendDiv"
@@ -203,6 +193,18 @@ const FriendsPannel = (props: any) => {
                     <FindUser goBack={setopenSiderState}></FindUser>
                 </motion.div>
             }
+            {
+                openSiderState === "settings" && <motion.div className="addFriendDiv"
+                    initial={{ opacity: 0, x: -400 }}
+                    animate={{ opacity: 1, x: leftGap }}
+                    transition={{
+                        duration: 0.2,
+
+                    }}
+                >
+                    <SettingPage goBack={setopenSiderState}></SettingPage>
+                </motion.div>
+            }
 
 
 
@@ -218,7 +220,7 @@ const FriendsPannel = (props: any) => {
                             Dispaly.getScreenWidth() < 1000 && <div ref={index} className='zInxex2' onClick={() => setopenSiderState("index")}><GoBack goBack={setopenSiderState} icon="message"></GoBack></div>
                         }
                         <div ref={addFriend} className='zInxex2' onClick={() => setopenSiderState("addFriend")} ><PersonAddIcon></PersonAddIcon></div>
-                        <div className='deactive zIndex2'><SettingsIcon></SettingsIcon></div>
+                        <div ref={settings} className='zIndex2' onClick={() => setopenSiderState("settings")}><SettingsIcon></SettingsIcon></div>
 
                     </div>
 

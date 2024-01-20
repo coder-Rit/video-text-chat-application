@@ -72,6 +72,8 @@ const LogInForm = (props: LogInFormProps) => {
   useEffect(() => {
     if (data) {
       Dispatch(LoginAction(data.userLogin, true))
+      sessionStorage.setItem("login", "true")
+
       navigate('chatt')
     }
   }, [data])

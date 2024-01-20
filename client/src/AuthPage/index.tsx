@@ -8,8 +8,9 @@ import { userInterface } from "../Interfaces/user";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { rootState } from "../Interfaces";
+import { Toaster, toast } from "sonner";
 
-
+import cookies from "js-cookie";
 
 const AuthPage = () => {
   const [hasAccount, setHasAccount] = useState(false);
@@ -19,9 +20,17 @@ const AuthPage = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("chatt")
+      navigate("/chatt")
     }
   }, [isAuthenticated])
+
+  
+  useEffect(() => { 
+    if (sessionStorage.getItem('login')==="false") {
+      toast.success("Log Out Successful") 
+    } 
+  }, [ ])
+  
 
 
   const backgroundImage = {
@@ -30,6 +39,8 @@ const AuthPage = () => {
 
   return (
     <div className="background-image" style={backgroundImage}>
+      <Toaster richColors position="top-center" />
+      
       <div className="background-gradient-dark">
         <div style={styles.formContainerStyle}>
           <div style={styles.titleStyle}>Pretty</div>

@@ -51,6 +51,9 @@ body {
 
 
 
+.mui-icone-default{
+     
+}
 
 .form-title {
     font-size: 42px;
@@ -660,6 +663,7 @@ h3 {
 
 
 .sidepanle_heading {
+    letter-spacing: 2px;
     text-align: center;
     font-weight: bolder;
     color: rgb(233, 233, 233);
@@ -769,6 +773,7 @@ h3 {
 
 
 .addFriendDiv {
+    min-width: 300px;
     position: absolute;
     transition: all 0.7s;
     height: 100%;
@@ -1112,4 +1117,31 @@ h3 {
     #chat {
         padding: 8px;
     }
+}
+
+
+.settingDiv>div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+}
+.settingDiv>div>p{
+   font-size: 20px;
+   margin: 0;
+   color: rgb(174, 174, 174);
+}
+.settingDiv>div>button{
+    color: black;
+    background-color: white;
+    border-radius: 7px;
+    outline: none;
+    padding: 5px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
 }

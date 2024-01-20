@@ -96,9 +96,9 @@ const SignUpForm = (props: LogInFormProps) => {
     console.log(data);
 
     if (data) {
-      navigate("chatt")
+      sessionStorage.setItem("login", "true")
       Dispatch(register(data.createUser,true));
-
+      navigate("chatt")
     }
 
   }, [data])

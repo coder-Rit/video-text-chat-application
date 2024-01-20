@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import { User, UserModel } from "../../model/userModel";
 import { messageModel } from "../../model/messageModel";
 import jwt from "jsonwebtoken";
+import { GraphQLError } from "graphql";
 
 
 interface tokenPayload {
@@ -12,8 +13,11 @@ interface tokenPayload {
 const queries = {
   loadUser: async (
     _: any,
-    payload: { token: string }
+    payload: { token: string }, context: { id: string }
   ) => {
+    if (!context.id) {
+      return new GraphQLError("User not Varified")
+    }
     try {
       const tokenData = jwt.decode(payload.token, { complete: true }) as { payload: tokenPayload } | null;
 
@@ -75,7 +79,7 @@ const queries = {
 
   },
   searchFriend: async (_: any, payload: { userName: string, load: number }) => {
-
+    
     try {
       const regex = new RegExp(payload.userName, 'i')
       const users = await UserModel.find({ userName: regex })
@@ -93,8 +97,8 @@ const queries = {
 
 
   },
- 
- 
+
+
 };
 
 
@@ -115,14 +119,14 @@ const mutations = {
       throw new Error('Failed to create user');
     }
   },
-  addFriend: async (_: any, payload: { Fid: Types.ObjectId, Mid: Types.ObjectId },context:any) => {
-    console.log("convte",context);
+  addFriend: async (_: any, payload: { Fid: Types.ObjectId, Mid: Types.ObjectId }, context: { id: string }) => {
+    if (!context.id) {
+      return new GraphQLError("User not Varified")
+    }
 
     try {
 
       const MidUser = await UserModel.findById(payload.Mid)
-
-
 
       let isFriendExist = false;
 

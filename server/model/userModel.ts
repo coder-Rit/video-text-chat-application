@@ -14,8 +14,8 @@ interface User {
   profileImageURL?: string;
   token: string;
   idList: Types.ObjectId[];
-  friendList?:User[];
-  lastSeen:Date
+  friendList?: User[];
+  lastSeen: Date
 
 
   comparePassword(password: string): Promise<boolean>;
@@ -31,13 +31,13 @@ const userSchema = new Schema<UserDocument>({
   email: { type: String },
   password: { type: String },
   profileImageURL: { type: String },
-  idList:[ {
-    type:  Types.ObjectId,
-    ref:"User",
+  idList: [{
+    type: Types.ObjectId,
+    ref: "User",
   }],
-  lastSeen:{
-    type:Date
-     
+  lastSeen: {
+    type: Date
+
   }
 });
 

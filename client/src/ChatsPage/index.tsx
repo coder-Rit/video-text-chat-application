@@ -21,7 +21,7 @@ import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion"
 import ChatCard from "./ChatCard";
 import useDisplay, { useDisplayI } from "../hooks/useDisplay";
-import { Toaster } from "sonner";
+import { Toaster, toast } from "sonner";
 
 
 
@@ -48,6 +48,15 @@ const ChatsPage = () => {
   }
 
 
+  useEffect(() => {
+
+    if (sessionStorage.getItem('login')==="true") {
+      toast.success("Log In Successful")
+
+    }
+    
+  }, [ ])
+  
 
 
 
