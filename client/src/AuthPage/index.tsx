@@ -9,8 +9,11 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { rootState } from "../Interfaces";
 import { Toaster, toast } from "sonner";
+import DummyUser from "./DummyUser";
 
-import cookies from "js-cookie";
+
+
+
 
 const AuthPage = () => {
   const [hasAccount, setHasAccount] = useState(false);
@@ -18,19 +21,35 @@ const AuthPage = () => {
 
   const { isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
 
+
+
+  const DemoUserData =[{
+    url:"/",
+    email:"john.doe@example.com",
+    password:"123",
+    username:"johndoe"
+    
+  },{
+    url:"/",
+    email:"catherine.brown@example.com",
+    password:"123",
+    username:"catherinebrown"
+  },]
+
+
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/chatt")
     }
   }, [isAuthenticated])
+  useEffect(() => {
+    if (sessionStorage.getItem('login') === "false") {
+      toast.success("Log Out Successful")
+      sessionStorage.setItem("login", "")
 
-  
-  useEffect(() => { 
-    if (sessionStorage.getItem('login')==="false") {
-      toast.success("Log Out Successful") 
-    } 
-  }, [ ])
-  
+    }
+  }, [])
+
 
 
   const backgroundImage = {
@@ -40,17 +59,38 @@ const AuthPage = () => {
   return (
     <div className="background-image" style={backgroundImage}>
       <Toaster richColors position="top-center" />
-      
-      <div className="background-gradient-dark">
-        <div style={styles.formContainerStyle}>
-          <div style={styles.titleStyle}>Pretty</div>
 
-          {hasAccount ? (
-            <LogInForm onHasNoAccount={() => setHasAccount(false)} />
-          ) : (
-            <SignUpForm onHasNoAccount={() => setHasAccount(true)} />
-          )}
+      <div className="background-gradient-dark">
+        <div style={styles.titleStyle}>Pretty</div>
+        <div className="form-users-div" >
+          <div style={styles.formContainerStyle}>
+
+            {hasAccount ? (
+              <LogInForm onHasNoAccount={() => setHasAccount(false)} />
+            ) : (
+              <SignUpForm onHasNoAccount={() => setHasAccount(true)} />
+            )}
+          </div>
+          <div className="hrLine">
+            
+          </div>
+          <div className="dummyUserDiv">
+            <div className="form-title">Direct Login</div>
+
+            <div className="form-subtitle">
+              Test demo accounts
+
+            </div>
+            <div className="dummyUsers">
+              {
+                DemoUserData.map(user=> <DummyUser user={user}></DummyUser>)
+              }
+             
+               
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
   );
@@ -60,14 +100,14 @@ const styles = {
   formContainerStyle: {
     width: "100%",
     maxWidth: "650px",
-    padding: "36px 72px",
+    
   } as CSSProperties,
   titleStyle: {
     fontSize: "24px",
     fontFamily: "VisbyRoundCF-Heavy",
     letterSpacing: "0.5px",
     color: "white",
-    paddingBottom: "11vw",
+    paddingBottom: "4vw",
   } as CSSProperties,
 };
 

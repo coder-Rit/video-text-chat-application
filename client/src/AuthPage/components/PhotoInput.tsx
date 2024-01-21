@@ -6,6 +6,7 @@ interface PhotoInputProps {
   name: string;
   placeholder?: string;
   style?: CSSProperties;
+
   onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
@@ -13,6 +14,12 @@ const PhotoInput = (props: PhotoInputProps) => {
   const [selectedImage, setSelectedImage] = useState<File | undefined>(
     undefined
   );
+
+
+  
+
+
+
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     if (event.target.files !== null) {

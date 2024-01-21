@@ -49,7 +49,6 @@ const MyFriends = (props: any) => {
     const [loadInitialChats, { data, loading, error }] = useLazyQuery(LOAD_ALL_CHATS, {
         onCompleted: ({ loadInitialChats }) => {
             let allChats = {}
-
             loadInitialChats.map((data: any) => {
                 const { friendId, chats } = data
 
@@ -72,7 +71,7 @@ const MyFriends = (props: any) => {
 
 
     useEffect(() => {
-        if (isAuthenticated) {
+        if (isAuthenticated && user.friendList) {
             const friendIds = user.friendList.map(data => data.id)
             loadInitialChats({
                 variables: {
@@ -101,9 +100,7 @@ const MyFriends = (props: any) => {
 
                         return (
                             <div key={index}>
-
                                 <UserElement index={index} goBack={props.goBack} lastMsg={allChats[data.id as string]} user={data} idx={index + 1} usedFor="myFriend"
-
                                 ></UserElement>
                             </div>
                         )

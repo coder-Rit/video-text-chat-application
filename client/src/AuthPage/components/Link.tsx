@@ -28,7 +28,7 @@ const Link = (props: LinkProps) => {
 
 const styles = {
   style: {
-    color: "#fa541c",
+    color: "#915effe1",
     cursor: "pointer",
     transition: "all .44s ease",
     WebkitTransition: "all .44s ease",

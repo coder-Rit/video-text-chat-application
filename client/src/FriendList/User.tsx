@@ -18,6 +18,7 @@ import { friendChatI } from '../Interfaces/message';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import "./index.css"
+import ProfileImage from '../AuthPage/components/ProfileImage';
 
 
 const ADD_FRIEND = gql`
@@ -179,8 +180,8 @@ const User = (props: any) => {
 
     >
       <div className="imageDiv">
-        <img src={`https://api.multiavatar.com/${props.user.userName}.png`} alt={props.user.userName} loading="lazy" />
-      </div>
+        <ProfileImage url={props.user.profileImageURL} username={props.user.userName} className=''></ProfileImage>
+       </div>
 
       {
         props.usedFor === "myFriend" && <div className="detailsDiv" onClick={selectFriendFunc} >

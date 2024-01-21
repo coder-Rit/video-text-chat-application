@@ -73,7 +73,6 @@ const LogInForm = (props: LogInFormProps) => {
     if (data) {
       Dispatch(LoginAction(data.userLogin, true))
       sessionStorage.setItem("login", "true")
-
       navigate('chatt')
     }
   }, [data])
@@ -82,16 +81,6 @@ const LogInForm = (props: LogInFormProps) => {
   return (
     <div>
       <div className="form-title">Welcome Back</div>
-      <div>
-        here
-        <DotLottiePlayer
-          src="./images/car.lottie"
-          autoplay
-          loop
-        >
-        </DotLottiePlayer>
-      </div>
-
       <div className="form-subtitle">
         New here? <Link onClick={() => props.onHasNoAccount()}>Sign Up</Link>
       </div>

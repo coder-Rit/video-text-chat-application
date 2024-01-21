@@ -11,7 +11,7 @@ const UserSearchDisplay = (props: any) => {
  
 
   return (
-    <div>
+    < >
       {props.friendList &&
         props.friendList.map((data: userinterf,index:number) => {
           return (
@@ -20,13 +20,11 @@ const UserSearchDisplay = (props: any) => {
         })
       }
 
-      <div className='loadingDiv'>
         {!props.loading && <div className="laoderClass" id="laoderClass">
           <span className="loaderPersonal"></span>
           <span> Loading...</span>
         </div>}
-      </div>
-    </div>
+    </ >
   )
 }
 

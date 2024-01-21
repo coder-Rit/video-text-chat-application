@@ -154,7 +154,7 @@ const FriendsPannel = (props: any) => {
     return (
         <>
 
-          
+
 
             {
                 openSiderState === "profile" && <motion.div className="addFriendDiv"
@@ -214,12 +214,12 @@ const FriendsPannel = (props: any) => {
             <div className="grid-item">
                 <div className="sidepanle">
                     <div className='sidepanle_btns'>
-                        <div ref={profile} className='zInxex2' onClick={() => setopenSiderState("profile")}><PersonIcon></PersonIcon></div>
-                        <div ref={friends} className='zInxex2' onClick={() => setopenSiderState("friends")}><PeopleIcon></PeopleIcon></div>
+                        <div ref={profile} className='zIndex2' onClick={() => setopenSiderState("profile")}><PersonIcon></PersonIcon></div>
+                        <div ref={friends} className='zIndex2' onClick={() => setopenSiderState("friends")}><PeopleIcon></PeopleIcon></div>
                         {
-                            Dispaly.getScreenWidth() < 1000 && <div ref={index} className='zInxex2' onClick={() => setopenSiderState("index")}><GoBack goBack={setopenSiderState} icon="message"></GoBack></div>
+                            Dispaly.getScreenWidth() < 1000 && <div ref={index} className='zIndex2' onClick={() => setopenSiderState("index")}><GoBack goBack={setopenSiderState} icon="message"></GoBack></div>
                         }
-                        <div ref={addFriend} className='zInxex2' onClick={() => setopenSiderState("addFriend")} ><PersonAddIcon></PersonAddIcon></div>
+                        <div ref={addFriend} className='zIndex2' onClick={() => setopenSiderState("addFriend")} ><PersonAddIcon></PersonAddIcon></div>
                         <div ref={settings} className='zIndex2' onClick={() => setopenSiderState("settings")}><SettingsIcon></SettingsIcon></div>
 
                     </div>

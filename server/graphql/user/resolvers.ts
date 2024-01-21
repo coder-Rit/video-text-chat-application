@@ -120,6 +120,7 @@ const mutations = {
     }
   },
   addFriend: async (_: any, payload: { Fid: Types.ObjectId, Mid: Types.ObjectId }, context: { id: string }) => {
+    console.log(context)
     if (!context.id) {
       return new GraphQLError("User not Varified")
     }

@@ -1,0 +1,127 @@
+.login-form-container {
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid white;
+
+  background: rgba(255, 255, 255, 0);
+  backdrop-filter: blur(9.5px);
+  -webkit-backdrop-filter: blur(9.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.login-logo {
+  width: 70px;
+  border-radius: 50%;
+}
+
+.imageNname {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.demo-user-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.685);
+}
+
+.login-div {
+  width: 200px;
+}
+
+.dummyUserDiv {
+  display: flex;
+  flex-direction: column;
+}
+.dummyUsers {
+  display: flex;
+  gap: 1vw;
+ }
+.hrLine{
+  height: 130%;
+  width: 1px;
+  margin: 20px;
+  background-color: rgba(255, 255, 255, 0.29);
+}
+.flex{
+  display: flex;
+}
+.form-users-div{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.login-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #915effe1;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.5s;
+  font-weight: bold;
+  font-family: "VisbyRoundCF-DemiBold";
+  outline: none;
+}
+
+.login-button:hover {
+  filter: brightness(145%)
+}
+
+.login-note {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #777;
+}
+
+@media only screen and (max-width: 1000px){
+  .dummyUsers{
+    flex-direction: column;
+    width: max-content;
+  }
+  .imageNname{
+    flex-direction: row;
+  }
+  .login-div{
+    width: 50px;
+  }
+  .login-form-container{
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+  }
+   
+}
+
+@media only screen and (max-width: 700px){
+ .form-users-div{
+  flex-direction: column;
+  gap: 30px;
+ }
+ .hrLine{
+  width: 90vw;
+  height: 1px;
+ }
+ .dummyUsers{
+  width: 85vw;
+  gap: 10px ;
+ }
+   
+}

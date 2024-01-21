@@ -35,7 +35,8 @@ const FileComp = (props: any) => {
       <>
 
 
-        <div className={`FileDisplay FileDisplay_Specific  ${imageUrl} `} style={{ backgroundColor: props.fileCaption - 1 === props.index ? "rgba(255, 255, 255, 0.081)" : "rgba(0, 0,0, 0)" }} onClick={() => props.set_fileCaption(props.index + 1)}>
+        <div  style={{ backgroundColor: props.fileCaption - 1 === props.index ? "rgba(255, 255, 255, 0.081)" : "rgba(0, 0,0, 0)" }} onClick={() => props.set_fileCaption(props.index + 1)}>
+      <div className={`FileDisplay FileDisplay_Specific  ${imageUrl} `}>
 
           <span className="RemoveCircleOutlineIcon" onClick={() => {
             props.removeFile(props.index)
@@ -55,7 +56,11 @@ const FileComp = (props: any) => {
               <span style={{ textAlign: "right" }}>{formatBytes(fileSize)}</span>
             </div>
           </div>
+
+
         </div>
+      </div>
+
       </>
 
     )

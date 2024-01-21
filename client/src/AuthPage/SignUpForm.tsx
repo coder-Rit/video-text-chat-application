@@ -12,12 +12,15 @@ import TextInput from "./components/TextInput";
 import PhotoInput from "./components/PhotoInput";
 import Button from "./components/Button";
 import Link from "./components/Link";
-import { User,  userInterface } from "../Interfaces/user";
+import { User, userInterface } from "../Interfaces/user";
 import { } from "../functions/context";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { register } from "../actions/userActions";
 import { useSelector } from "react-redux";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { storage } from "../Firebase/Firebase";
+import { toast } from "sonner";
 
 
 
@@ -58,46 +61,91 @@ const SignUpForm = (props: LogInFormProps) => {
   const [userName, setuserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [profileImageURL, setprofileImageURL] = useState("//");
+  const [profileImageURL, setprofileImageURL] = useState("");
+  const [ProfileImgFile, setProfileImgFile] = useState<File | undefined>(
+    undefined
+  );
+  const [progresspercent, setProgresspercent] = useState(0);
+
+
+
   // Hooks
   let navigate = useNavigate();
 
   // const { setUser } = useContext(Context);
-   const Dispatch: any = useDispatch()
+  const Dispatch: any = useDispatch()
 
 
   const isMobile: boolean = useIsMobile();
-  const [createUser, { loading, error, data }] = useMutation(CREATE_USER );
+  const [createUser, { loading, error, data }] = useMutation(CREATE_USER);
 
 
 
-  const onSubmit =   (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (!firstName || !lastName || !email || !password) {
+      toast.error("Please provide complete details")
+      return;
+    }
+
+
+
     const userJson = {
-      userName: userName,
+      userName: firstName + lastName,
       firstName: firstName,
       lastName: lastName,
       email: email,
       password: password,
       profileImageURL: profileImageURL,
-      lastSeen:new Date().toISOString,
-     };
- 
-     
+      lastSeen: new Date().toISOString,
+    };
 
-      createUser({
-        variables:userJson
-      })
- 
+
+
+    createUser({
+      variables: userJson
+    })
+
   };
+
+  const uploadFiles = (file: File) => {
+
+    if (!file) return;
+
+    const storageRef = ref(storage, `ProfilesImages/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on("state_changed",
+      (snapshot) => {
+        const progress =
+          Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        setProgresspercent(progress);
+      },
+      (error) => {
+        alert(error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setprofileImageURL(downloadURL)
+          console.log(downloadURL);
+
+        });
+      }
+    );
+
+  }
+
+
+
+
 
   useEffect(() => {
     console.log(data);
 
     if (data) {
       sessionStorage.setItem("login", "true")
-      Dispatch(register(data.createUser,true));
+      Dispatch(register(data.createUser, true));
       navigate("chatt")
     }
 
@@ -154,27 +202,25 @@ const SignUpForm = (props: LogInFormProps) => {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {/* <PhotoInput
+        <PhotoInput
           label="Profile picture"
           name="avatar"
           id="avatar-picker"
+
           style={{ width: isMobile ? "100%" : "calc(50% - 6px)" }}
           onChange={(e) => {
             if (e.target.files !== null) {
-              setprofileImageURL("");
+              setprofileImageURL("/");
+              console.log(e.target.files[0]);
+
+              uploadFiles(e.target.files[0])
             }
           }}
-        /> */}
-        <TextInput
-          label="User Name"
-          name="userName"
-          placeholder="cavin456"
-          style={{ width: isMobile ? "100%" : "calc(50% - 6px)" }}
-          onChange={(e) => setuserName(e.target.value)}
         />
 
         <Button
           type="submit"
+
           style={{
             width: isMobile ? "100%" : "calc(50% - 6px)",
             float: "right",

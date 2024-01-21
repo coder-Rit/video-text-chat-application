@@ -4,14 +4,14 @@ import { rootState } from '../Interfaces';
 import { FriendInterface } from '../Interfaces/common';
 import { friendChatI, messageI } from '../Interfaces/message';
 import { useSelector } from 'react-redux';
-import Image from './Files Components/ImageComp';
-import FileComp from './Files Components/FileComp';
+import Image from './Components/ImageComp';
+import FileComp from './Components/FileComp';
 import { motion } from "framer-motion"
 import { extractFileType } from './commonFunc';
 import { useDispatch } from 'react-redux';
 import { updateUrl } from '../actions/chatAction';
-import MessageBox from './Files Components/MessageBox';
-import ImageComp from './Files Components/ImageComp';
+import MessageBox from './Components/MessageBox';
+import ImageComp from './Components/ImageComp';
 import { DotLottiePlayer, Controls } from '@dotlottie/react-player';
 import '@dotlottie/react-player/dist/index.css';
 

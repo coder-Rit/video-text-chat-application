@@ -21,36 +21,48 @@ const FIND_USER = gql`
 }
 
 `
+const SCROLL_THRESHOLD = 100;
 
 
 const FindUser = (props: any) => {
-    const { goBack } = props
+    const { goBack } = props 
 
-
-    // const { setUser } = useContext(Context);
+    // hooks
     const Dispatch: any = useDispatch()
+    
+    const friendList_element = useRef<HTMLDivElement>(null)
 
-    const friendList_element = useRef<HTMLInputElement>(null)
-
-    const [UserList, setUserList] = useState([{
-    }])
+    // stats
+    const [UserList, setUserList] = useState([{ }])
     const [userName, setuserName] = useState("")
     const [load, setload] = useState(8)
 
-    const [searchFriend, { data, error, loading }] = useLazyQuery(FIND_USER, {
 
+    // querys
+    const [searchFriend, { data, error, loading }] = useLazyQuery(FIND_USER, {
         onCompleted: (data) => {
             console.log(data);
             setUserList(data.searchFriend)
         }
-
     })
 
+ 
 
+
+    // Debounce utility function
+    function debounce(func: Function, delay: number) {
+        let timeoutId: NodeJS.Timeout;
+
+        return function (this: any, ...args: any[]) {
+            const context = this;
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(context, args);
+            }, delay);
+        };
+    }
 
     useEffect(() => {
-
-        console.log(userName);
         if (userName !== "" || !userName) {
 
             const timeoutId = setTimeout(() => {
@@ -64,8 +76,7 @@ const FindUser = (props: any) => {
             return () => clearTimeout(timeoutId);
         }
 
-    }, [userName])
-
+    }, [userName, load])
 
     useEffect(() => {
         Dispatch(userList(UserList))
@@ -74,27 +85,31 @@ const FindUser = (props: any) => {
 
 
     useEffect(() => {
-        console.log(load);
-
         const handleScroll = () => {
             if (!friendList_element.current) {
                 return;
             }
 
-            // Check if the user has scrolled to the bottom of the target div
             const targetDiv = friendList_element.current;
             const scrollPosition = window.innerHeight + window.scrollY;
             const divBottom = targetDiv.offsetTop + targetDiv.clientHeight;
 
-            if (scrollPosition >= divBottom) {
-                setload(load + 10);
+            // Check if the user has scrolled close to the bottom with a threshold
+            if (scrollPosition >= divBottom - SCROLL_THRESHOLD) {
+                setload((prevLoad) => prevLoad + 10);
             }
         };
 
-        window.addEventListener('scroll', handleScroll);
+        const debouncedHandleScroll = debounce(handleScroll, 200); // Adjust debounce time as needed
+
+        if (friendList_element.current) {
+            friendList_element.current.addEventListener('scroll', debouncedHandleScroll);
+        }
 
         return () => {
-            window.removeEventListener('scroll', handleScroll);
+            if (friendList_element.current) {
+                friendList_element.current.removeEventListener('scroll', debouncedHandleScroll);
+            }
         };
     }, [load]);
 
@@ -102,7 +117,7 @@ const FindUser = (props: any) => {
     return (
 
         < >
-            <GoBack goBack={props.goBack} icon="goBack"></GoBack>
+            <GoBack goBack={goBack} icon="goBack"></GoBack>
 
             <div className="searchUserheader" >
                 <h2 className='sidepanle_heading'>ADD FRIENDS</h2>

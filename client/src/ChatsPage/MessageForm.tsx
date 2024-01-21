@@ -25,7 +25,7 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../Firebase/Firebase";
 import { v4 as uuidv4 } from 'uuid';
-import FileComp from "./Files Components/FileComp";
+import FileComp from "./Components/FileComp";
 import CloseIcon from '@mui/icons-material/Close';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
@@ -231,7 +231,7 @@ const MessageForm = (props: any) => {
     console.log(tempMsgObj[idx].msg.msg);
     setFilesQ(tempMsgObj);
   }
- 
+
   function dynamicInputComp(fileCaption: number): ReactNode {
     if (fileCaption) {
       const cpation = FilesQ[fileCaption - 1].msg.msg;

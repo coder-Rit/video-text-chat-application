@@ -5,6 +5,7 @@ import "./index.css"
 import { rootState } from '../Interfaces';
 import { userInterface } from '../Interfaces/user';
 import { useSelector } from 'react-redux';
+import ProfileImage from '../AuthPage/components/ProfileImage';
 
 
 const MyProfile = (props: any) => {
@@ -19,9 +20,9 @@ const MyProfile = (props: any) => {
         <h2 className='sidepanle_heading'>PROFILE</h2>
       </div>
 
-      <div>
+      <div> 
         <div className="profile-container">
-          <img src={`https://api.multiavatar.com/${user.userName}.png`}  alt={user.userName} className="profile-image" />
+        <ProfileImage url={user.profileImageURL} username={user.userName} className='profile-image'></ProfileImage>
           <h1 className="profile-name">{user.userName}</h1>
           <p className="profile-email">{user.email}</p>
           <p className="profile-fullname">{user.firstName+" "+ user.lastName}</p>
