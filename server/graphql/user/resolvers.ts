@@ -71,7 +71,7 @@ const queries = {
       } else {
         throw new Error("User or Password is incorrect")
       }
-
+      
 
     } catch (error: any) {
       throw new Error(error)

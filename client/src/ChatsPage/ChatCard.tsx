@@ -82,16 +82,7 @@ const ChatCard = (props: any) => {
 
 
   }
-
-
-  const handleScroll = () => {
-    // You can implement logic here to check if the user has scrolled to the top
-    // and then load more chats by updating the visibleChats state.
-    // This is just a basic example; you might need to adjust this based on your actual UI and scroll behavior.
-    if (window.scrollY === 0) {
-      setVisibleChats((prevVisibleChats) => prevVisibleChats + 10);
-    }
-  };
+ 
 
   const renderChats = () => {
     // Render only the last `visibleChats` number of chats
@@ -121,12 +112,7 @@ const ChatCard = (props: any) => {
 
   }, [idx, allChats])
 
-  useLayoutEffect(() => {
-    const chatboardRef = props.chatboard.current;
-    if (chatboardRef) {
-      chatboardRef.scrollTop = chatboardRef.scrollHeight
-    }
-  }, [chats]);
+ 
 
   useEffect((): any => {
 
@@ -137,29 +123,9 @@ const ChatCard = (props: any) => {
     return () => props.socket.off('RE_UPDATED_URL');
   }, [props.socket])
 
-
-
-
-
-
-
-
-
-
-
-  useEffect(() => {
-    // Attach the scroll event listener when the component mounts
-    window.addEventListener('scroll', handleScroll);
-
-    // Detach the scroll event listener when the component unmounts
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-
-
-
+ 
+  
+ 
 
   return (
 
@@ -171,10 +137,8 @@ const ChatCard = (props: any) => {
       }}
       ref={props.chatboard}>
 
-      <div>
-        {renderChats()}
-      </div>
-
+         {renderChats()}
+ 
       {
         (chats.length === 0) && <div
           className='Add_Friends_Lottie_Box'

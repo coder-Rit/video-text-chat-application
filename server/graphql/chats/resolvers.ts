@@ -1,28 +1,25 @@
-import { Types } from "mongoose";
-import { User, UserModel } from "../../model/userModel";
+
 import { messageModel } from "../../model/messageModel";
-import jwt from "jsonwebtoken";
-import fs from "fs";
-import path from "path";
+
 import { GraphQLError } from "graphql";
 
 
 
 const queries = {
 
-  getChats: async (_: any, payload: { friendId: string, myId: string }, context: { id: string }) => {
+  getChats: async (_: any, payload: { friendId: string, myId: string, load: number }, context: { id: string }) => {
     if (!context.id) {
       return new GraphQLError("User not Varified")
     }
-    const { friendId, myId } = payload;
+    const { friendId, myId, load } = payload;
 
     let messages = await messageModel.find({
       $or: [
         { senderId: friendId, receiverId: myId },
         { receiverId: friendId, senderId: myId },
       ],
-    }).sort({ createdAt: -1 }).limit(15)
-
+    }).sort({ createdAt: -1 }).limit(load)
+ 
     messages.reverse()
     const tempObj = {
       friendId: friendId,
@@ -32,6 +29,8 @@ const queries = {
     return tempObj
 
   },
+
+
   loadInitialChats: async (_: any, payload: { friendIds: string[], myId: string }, context: { id: string }) => {
     if (!context.id) {
       return new GraphQLError("User not Varified")

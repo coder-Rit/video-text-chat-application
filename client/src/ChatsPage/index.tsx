@@ -22,16 +22,45 @@ import { motion } from "framer-motion"
 import ChatCard from "./ChatCard";
 import useDisplay, { useDisplayI } from "../hooks/useDisplay";
 import { Toaster, toast } from "sonner";
+import { gql, useLazyQuery } from "@apollo/client";
+import { chatInit } from "../actions/chatAction";
+import { messageI } from "../Interfaces/message";
 
 
 
 
 const socket = io("http://localhost:4000/");
 
+const SCROLL_THRESHOLD = 100
+
+const GET_CHATS = gql`
+query GetChats($friendId: ID, $myId: ID, $load: Int) {
+  getChats(friendId: $friendId, myId: $myId, load: $load) {
+    friendId
+    chats {
+      senderId
+      receiverId
+      msg
+      createdAt
+      id
+      fileData {
+        mimeType
+        fileSize
+        fileName
+        url
+      }
+      type
+    }
+  }
+}
+
+`
+
+
 
 const ChatsPage = () => {
 
-  const { isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
+  const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
 
   const { idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
 
@@ -41,31 +70,36 @@ const ChatsPage = () => {
   const screenWidth: number = useDisplay().getScreenWidth()
 
 
+  const [getChats, { data }] = useLazyQuery(GET_CHATS, {
+    onCompleted: (data) => {
+      Dispatch(chatInit(data.getChats.friendId as string, data.getChats.chats as messageI[]))
+    },
+  })
+ 
+  
+  useEffect(() => {
+    if (idx) {
+      getChats({
+        variables: {
+          friendId: user.friendList[idx - 1].id,
+          myId: user.id,
+          load: SCROLL_THRESHOLD
+        }
+      })
+    }
+  }, [idx])
 
-  const opentheSider = () => {
-    Dispatch({ type: OPEN_SIDER })
-
-  }
 
 
   useEffect(() => {
 
-    if (sessionStorage.getItem('login')==="true") {
+    if (sessionStorage.getItem('login') === "true") {
       toast.success("Log In Successful")
 
     }
-    
-  }, [ ])
-  
 
-
-
-
-
-
-
-
-
+  }, [])
+ 
 
   return (
     <>

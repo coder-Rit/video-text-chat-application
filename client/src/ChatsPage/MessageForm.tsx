@@ -89,8 +89,6 @@ const MessageForm = (props: any) => {
 
   }
 
-
-
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 

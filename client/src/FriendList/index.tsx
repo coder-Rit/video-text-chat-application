@@ -26,36 +26,10 @@ import SettingPage from '../AuthPage/SettingPage';
 
 
 
-const GET_CHATS = gql`
-query GetChats($friendId: ID, $myId: ID) {
-  getChats(friendId: $friendId, myId: $myId) {
-    friendId
-    chats {
-      senderId
-      receiverId
-      msg
-      createdAt
-      id
-      fileData {
-        mimeType
-        fileSize
-        fileName
-        url
-      }
-      type
-    }
-  }
-}
-
-`
-
-
 
 const FriendsPannel = (props: any) => {
 
 
-    const { selectedFriend, isFriendSelected } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
-    const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
 
 
 
@@ -75,11 +49,7 @@ const FriendsPannel = (props: any) => {
     const [leftGap, setleftGap] = useState<number>(70)
 
 
-    const [getChats, { data }] = useLazyQuery(GET_CHATS, {
-        onCompleted: (data) => {
-            Dispatch(chatInit(data.getChats.friendId as string, data.getChats.chats as messageI[]))
-        },
-    })
+    
 
 
 
@@ -126,18 +96,7 @@ const FriendsPannel = (props: any) => {
 
 
 
-    useEffect(() => {
-
-        if (selectedFriend) {
-            getChats({
-                variables: {
-                    friendId: selectedFriend.id,
-                    myId: user.id
-                }
-            })
-        }
-
-    }, [selectedFriend])
+    
 
     useEffect(() => {
 
