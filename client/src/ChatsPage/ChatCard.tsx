@@ -14,6 +14,7 @@ import MessageBox from './Components/MessageBox';
 import ImageComp from './Components/ImageComp';
 import { DotLottiePlayer, Controls } from '@dotlottie/react-player';
 import '@dotlottie/react-player/dist/index.css';
+import LoadingFile from './Components/LoadingFile';
 
 
 
@@ -57,16 +58,37 @@ const ChatCard = (props: any) => {
     return <MessageBox main={main} res={data.senderId === user.id} idx={idx} ></MessageBox>
   }
 
+
   function fileMaper(data: messageI, idx: number) {
-    const main = <>
-      {data.fileData?.url === "" && <span className='userIsUploading'>Uploading <span className='loadingDots dot1'>.</span><span className='loadingDots dot2'>.</span><span className='loadingDots dot2'>.</span></span>}
 
-      <FileComp For="downloadable_file" fileData={data.fileData} ></FileComp>
-      {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
-      <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
-    </>
+    console.log(data.fileData);
+    
+    let forReceiver = data.senderId === user.id
 
-    return <MessageBox main={main} res={data.senderId === user.id} idx={idx} ></MessageBox>
+    let main = <></>
+
+    if (forReceiver ) {
+      main = <>
+        <FileComp For="downloadable_file" fileData={data.fileData}></FileComp>
+        {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
+        <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
+      </>
+    } else {
+      if (data.fileData?.url ==="") {
+      main = <>
+        <LoadingFile  ></LoadingFile>
+      </>
+      }else{
+        main = <>
+        <FileComp For="downloadable_file" fileData={data.fileData}></FileComp>
+        {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
+        <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
+      </>
+      }
+
+    }
+
+    return <MessageBox main={main} res={forReceiver} idx={idx} ></MessageBox>
 
 
   }
@@ -82,7 +104,7 @@ const ChatCard = (props: any) => {
 
 
   }
- 
+
 
   const renderChats = () => {
     // Render only the last `visibleChats` number of chats
@@ -118,7 +140,7 @@ const ChatCard = (props: any) => {
 
   }, [idx, allChats])
 
- 
+
 
   useEffect((): any => {
 
@@ -129,9 +151,9 @@ const ChatCard = (props: any) => {
     return () => props.socket.off('RE_UPDATED_URL');
   }, [props.socket])
 
- 
-  
- 
+
+
+
 
   return (
 
@@ -143,8 +165,8 @@ const ChatCard = (props: any) => {
       }}
       ref={props.chatboard}>
 
-         {renderChats()}
- 
+      {renderChats()}
+
       {
         (chats.length === 0) && <div
           className='Add_Friends_Lottie_Box'
@@ -157,7 +179,7 @@ const ChatCard = (props: any) => {
             speed={1.5}
           >
           </DotLottiePlayer>
-          <h2 >{`Say hello to ${user.friendList[idx-1].firstName }`}</h2>
+          <h2 >{`Say hello to ${user.friendList[idx - 1].firstName}`}</h2>
         </div>
       }
 

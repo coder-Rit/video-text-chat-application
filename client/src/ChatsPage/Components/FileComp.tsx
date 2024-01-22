@@ -4,11 +4,14 @@ import DownloadFileIcon from '../../AuthPage/components/DownloadFileIcon'
 import IndetermineProgress from '../../AuthPage/components/IndetermineProgress'
 import { Box } from '@mui/material'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import { useSelector } from 'react-redux'
+import { rootState } from '../../Interfaces'
+import { userInterface } from '../../Interfaces/user'
 
 
 const FileComp = (props: any) => {
 
-  const { fileName, fileSize, url, mimeType } = props.fileData
+  const { fileName, fileSize, url, mimeType } = props.fileData 
 
   const [imageUrl, setimageUrl] = useState("")
 
@@ -68,11 +71,10 @@ const FileComp = (props: any) => {
 
 
   } else if (props.For === "downloadable_file") {
+    
 
     return (
-
       <div className={`FileDisplay ${imageUrl} `}>
-
         <div className='fileIconeDiv'>
           <div className='FileAnimation'>
             <Box sx={{ display: 'flex', justifyContent: "center", alignItems: "center" }}>
@@ -92,6 +94,9 @@ const FileComp = (props: any) => {
         </div>
       </div>
     )
+
+  
+ 
   }
 
 
