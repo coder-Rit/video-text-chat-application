@@ -1,5 +1,8 @@
 import { Skeleton } from '@mui/material'
 import React, { useEffect, useState } from 'react'
+import { Img } from 'react-image';
+
+
 
 const ImageComp = (props: any) => {
 
@@ -10,14 +13,12 @@ const ImageComp = (props: any) => {
   useEffect(() => {
 
     if (url) {
-
       const img = new Image();
       img.src = url;
 
       img.onload = () => {
         setImageLoaded(true);
       };
-
     }
 
   }, [url]);
@@ -27,7 +28,7 @@ const ImageComp = (props: any) => {
   return (
     <div>
       {imageLoaded ? (
-        <img src={url} className='imageFile' style={{marginBottom:"10px"}} alt={fileName} />
+         <Img src={url} className='imageFile' style={{marginBottom:"10px"}} alt={fileName}  />
       ) : (
         <Skeleton
           sx={{ bgcolor: 'grey.900' }}
