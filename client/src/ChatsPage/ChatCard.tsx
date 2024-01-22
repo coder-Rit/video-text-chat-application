@@ -97,6 +97,12 @@ const ChatCard = (props: any) => {
     });
   };
 
+  useLayoutEffect(() => {
+    const chatboardRef = props.chatboard.current;
+    if (chatboardRef) {
+      chatboardRef.scrollTop = chatboardRef.scrollHeight
+    }
+  }, [chats]);
 
   useEffect(() => {
 
