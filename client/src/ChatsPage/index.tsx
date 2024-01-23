@@ -73,10 +73,11 @@ const ChatsPage = () => {
   const [getChats, { data }] = useLazyQuery(GET_CHATS, {
     onCompleted: (data) => {
       Dispatch(chatInit(data.getChats.friendId as string, data.getChats.chats as messageI[]))
+      
     },
   })
- 
-  
+
+
   useEffect(() => {
     if (idx) {
       getChats({
@@ -90,6 +91,16 @@ const ChatsPage = () => {
   }, [idx])
 
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      let friendsIds = user.friendList?.map(data => data.id)
+      socket.emit('set_online_status', {
+        myId: user.id,
+        friendsIds
+      })
+    }
+  }, [isAuthenticated])
+  
 
   useEffect(() => {
 
@@ -99,7 +110,8 @@ const ChatsPage = () => {
     }
 
   }, [])
- 
+
+
 
   return (
     <>

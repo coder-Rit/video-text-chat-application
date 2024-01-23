@@ -61,7 +61,6 @@ const ChatCard = (props: any) => {
 
   function fileMaper(data: messageI, idx: number) {
 
-    console.log(data.fileData);
     
     let forReceiver = data.senderId === user.id
 

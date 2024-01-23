@@ -11,7 +11,7 @@ import useDisplay from '../hooks/useDisplay';
 import { toast } from 'sonner';
 const ChatHeader = (props: any) => {
 
-  const { selectedFriend, isFriendSelected } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
+  const { selectedFriend, isFriendSelected, idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
 
 
@@ -66,33 +66,37 @@ const ChatHeader = (props: any) => {
 
   useEffect(() => {
     props.socket.on('is_typing_started', (data: typingInter) => {
-      if (data.senderId !== user.id) {
-        if (data.state === "online" || data.state === "typing") {
-          setlastSeenState(data.state)
-        } else {
-          setlastSeenState(getLastSeenTimeString(selectedFriend.lastSeen))
-        }
+      console.log(data.state);
 
+      if ((data.state === "typing" || data.state === "online") && user.id === data.senderId) {
+        setlastSeenState("online")
+      } else {
+        
+        setlastSeenState(data.state)
       }
+
+
     })
 
   }, [props.socket])
 
 
-  useEffect(() => {
-    let data = {
-      myId: user.id,
-      frdId: selectedFriend.id,
-      state: getLastSeenTimeString(selectedFriend.lastSeen)
-    }
-    props.socket.emit("get_online_status", data)
-  }, [])
+  // useEffect(() => {
+  //   if (idx) {
+  //     let data = {
+  //       senderId: user.id,
+  //       receiverId: user.friendList[idx-1].id,
+  //       state: user.friendList[idx-1].lastSeen
+  //     }
+  //     props.socket.emit("is_typing_started", data)
+  //     console.log("sended");
 
-  useEffect(() => {
-    props.socket.on("got_online_status", (data: any) => {
-      setlastSeenState(data.state)
-    })
-  }, [props.socket])
+  //   }
+
+  // }, [idx])
+
+
+
 
 
 
@@ -120,18 +124,18 @@ const ChatHeader = (props: any) => {
           <div className="chat_conversation-header-details">
             <h3>{selectedFriend.firstName} {selectedFriend.lastName}  </h3>
             <span>
-              {lastSeenState === "typing" ? <div className='typing'>
+              {lastSeenState === "typing" ? <div className='typing '>
                 <span></span>
                 <span></span>
                 <span></span>
-              </div> : lastSeenState
+              </div> : <div className={`${lastSeenState}`}>{lastSeenState}</div>
 
               }
 
 
             </span>
           </div>
-          <div className="chat_conversation-header-icons" onClick={()=> toast.warning(`Feature under development`)}>
+          <div className="chat_conversation-header-icons" onClick={() => toast.warning(`Feature under development`)}>
             <CallIcon sx={{ cursor: "pointer" }}></CallIcon>
             <VideoCallIcon sx={{ scale: "1.3", cursor: "pointer" }}></VideoCallIcon>
           </div>

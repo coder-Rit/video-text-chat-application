@@ -40,6 +40,7 @@ const AuthPage = () => {
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/chatt")
+      
     }
   }, [isAuthenticated])
   useEffect(() => {

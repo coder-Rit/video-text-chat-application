@@ -162,7 +162,6 @@ body {
     overflow-y: scroll;
     height: calc(75vh - 50px);
     transition: 0.5s all;
-    scroll-behavior: smooth;
 }
 
 #chat .chat__conversation-board__message-container.reversed {
