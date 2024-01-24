@@ -1,20 +1,19 @@
 
 
-import AuthPage from "./AuthPage";
-import ChatsPage from "./ChatsPage";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { useEffect } from "react";
+import Cookies from "js-cookie";
 
 
 import "./app.css";
-import gql from "graphql-tag";
-import { useLazyQuery, useQuery } from "@apollo/client";
-import { useEffect } from "react";
-import { validate } from "graphql";
-import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
-import { loadUser, register } from "./actions/userActions";
+import { loadUser } from "./actions/userActions"; 
 import { LOAD_USER } from "./graphQL/user/query";
 
+
+import Main from "./Components/main";
+import AuthPage from "./Components/AuthPage";
 
 
 
@@ -48,7 +47,7 @@ function App() {
 
       <Routes>
         <Route index element={<AuthPage />} />
-        <Route path="chatt" element={<ChatsPage />} />
+        <Route path="chatt" element={<Main />} />
       </Routes>
     </Router>
   )

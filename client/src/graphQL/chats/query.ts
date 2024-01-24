@@ -30,3 +30,25 @@ query LoadInitialChats($friendIds: [ID], $myId: ID) {
   }
 }
 `
+export const GET_CHATS = gql`
+query GetChats($friendId: ID, $myId: ID, $load: Int) {
+  getChats(friendId: $friendId, myId: $myId, load: $load) {
+    friendId
+    chats {
+      senderId
+      receiverId
+      msg
+      createdAt
+      id
+      fileData {
+        mimeType
+        fileSize
+        fileName
+        url
+      }
+      type
+    }
+  }
+}
+
+`
