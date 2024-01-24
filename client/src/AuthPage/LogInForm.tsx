@@ -13,29 +13,8 @@ import { useDispatch } from "react-redux";
 import { LoginAction } from "../actions/userActions";
 import { DotLottiePlayer, Controls } from '@dotlottie/react-player';
 import '@dotlottie/react-player/dist/index.css';
-
-const LOGIN = gql`
-query UserLogin($email: String!, $password: String!) {
-  userLogin(email: $email, password: $password) {
-    id
-    userName
-    firstName
-    lastName
-    email
-    profileImageURL
-    token
-    friendList {
-      id
-      userName
-      firstName
-      lastName
-      profileImageURL
-      lastSeen
-    }
-  }
-}
-
-`
+import { LOGIN } from "../graphQL/user/query";
+ 
 
 
 
@@ -56,7 +35,7 @@ const LogInForm = (props: LogInFormProps) => {
   const [loginUser, { loading, error, data }] = useLazyQuery(LOGIN, {
     variables: {
       email,
-      password,
+      password, 
     }
   });
 

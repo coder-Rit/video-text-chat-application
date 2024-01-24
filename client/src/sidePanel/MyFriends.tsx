@@ -15,25 +15,10 @@ import { FriendInterface } from '../Interfaces/common';
 import UserElement from './User';
 import { DotLottiePlayer, Controls } from '@dotlottie/react-player';
 import '@dotlottie/react-player/dist/index.css';
+import { LOAD_ALL_CHATS } from '../graphQL/chats/query';
 
 
-const LOAD_ALL_CHATS = gql`
-query LoadInitialChats($friendIds: [ID], $myId: ID) {
-  loadInitialChats(friendIds: $friendIds, myId: $myId) {
-    friendId
-    chats {
-      type
-      senderId
-      receiverId
-      msg
-      createdAt
-      fileData {
-        fileName
-      }
-    }
-  }
-}
-`
+
 
 
 
@@ -89,7 +74,7 @@ const MyFriends = (props: any) => {
         <div
             className='users'
         >
-            <GoBack goBack={props.goBack} icon="goBack"></GoBack>
+            <GoBack goBack={props.goBack} icon="backIcon"></GoBack>
             <h2 className='sidepanle_heading'>MY CONTACTS</h2>
             <div className='user-list'>
 

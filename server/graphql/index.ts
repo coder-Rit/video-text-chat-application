@@ -42,4 +42,23 @@ async function createApolloGraphqlServer() {
   return gqlServer;
 }
 
+export const MyContext =  ({ req }: { req: Request }) => {
+    const { authorization }: any = req.headers;
+
+    if (authorization) {
+      try {
+        console.log(process.env.JWT_SECREATE as string);
+
+        const data: any = jwt.verify(authorization, process.env.JWT_SECREATE as string);
+
+        return { id: data.id };
+      } catch (error) {
+        // Handle token verification error
+        throw new Error('Invalid token');
+      }
+    }
+    return {};
+  }
+
+
 export default createApolloGraphqlServer;

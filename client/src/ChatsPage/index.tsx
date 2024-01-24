@@ -10,7 +10,7 @@ import { redirect, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logOut } from "../actions/userActions";
 import { rootState } from "../Interfaces";
-import FriendsPannel from "../FriendList/index";
+import FriendsPannel from "../sidePanel/index";
 import { CLOSE_SIDER, OPEN_SIDER } from "../constants/userConstants";
 import { FriendInterface, siderStateInterface } from "../Interfaces/common";
 import MessageForm from "./MessageForm";
@@ -26,7 +26,7 @@ import { gql, useLazyQuery } from "@apollo/client";
 import { chatInit } from "../actions/chatAction";
 import { messageI } from "../Interfaces/message";
 
-
+ 
 
 
 const socket = io("http://localhost:4000/");

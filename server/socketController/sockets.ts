@@ -1,41 +1,12 @@
 import { Server, Socket } from "socket.io";
 import { messageI, messageModel } from "../model/messageModel";
 import { UserModel } from "../model/userModel";
-
-const getRoomNameBydata = (senderId: string, receiverId: string): string => {
-
-    if (senderId > receiverId) {
-        return senderId + receiverId
-    } else {
-        return receiverId + senderId
-
-    }
-}
-
-const saveMessage = async (updateMsg: messageI) => {
-    try {
-        const message = await messageModel.create(updateMsg)
-        console.log(message);
-
-        await message.save()
-    } catch (error: any) {
-        new Error(`unable to send data to db ${error}`)
-    }
-}
+import { friendChatI, onlineStatusChecker_I, typingInter } from "../utils/helpers";
+import { getRoomNameBydata, saveMessage } from "../utils/interfaces";
 
 
-export interface friendChatI {
-    [key: string]: messageI
-}
-interface onlineStatusChecker_I {
-    myId: string,
-    friendsIds: string[]
-}
-interface typingInter {
-    senderId: string,
-    receiverId: string,
-    state: string
-  }
+
+
 
 let onlineUser: string[] = []
 let userBysocketId: any = {
@@ -46,13 +17,13 @@ let UrlLessMsg: friendChatI = {
 }
 
 export interface socketControllerI {
-    initializeChat:(data: messageI)=>void,
-    chatSetup:(data: messageI)=>void,
-    exchangeMessage:(data: messageI)=>void;
+    initializeChat: (data: messageI) => void,
+    chatSetup: (data: messageI) => void,
+    exchangeMessage: (data: messageI) => void;
 }
 
 
-function socketController( socket: Socket,io:any) { 
+function socketController(socket: Socket, io: any) {
 
     function initializeChat(data: messageI) {
         let room = getRoomNameBydata(data.senderId, data.receiverId)
@@ -82,30 +53,30 @@ function socketController( socket: Socket,io:any) {
 
         }
     }
-    
-    function userStatus(data:typingInter) {
+
+    function userStatus(data: typingInter) {
         const room = getRoomNameBydata(data.senderId, data.receiverId)
 
         if (data.state === "typing") {
-          io.in(room).emit('is_typing_started', data)
+            io.in(room).emit('is_typing_started', data)
         } else if (onlineUser.includes(data.receiverId)) {
 
-          console.log(onlineUser);
-          data.state = "online"
+            console.log(onlineUser);
+            data.state = "online"
         } else {
-          console.log("else");
-          io.in(room).emit('is_typing_started', data)
+            console.log("else");
+            io.in(room).emit('is_typing_started', data)
         }
     }
 
-    function updateURL(data:any) {
+    function updateURL(data: any) {
         let room = getRoomNameBydata(data.senderId, data.receiverId)
         io.in(room).emit('RE_UPDATED_URL', data);
 
         let updateMsg = UrlLessMsg[data.uuid];
 
         if (updateMsg && updateMsg.fileData) {
-          updateMsg.fileData.url = data.url;
+            updateMsg.fileData.url = data.url;
         }
 
         saveMessage(updateMsg)
@@ -117,7 +88,7 @@ function socketController( socket: Socket,io:any) {
         const disconnectedUser = userBysocketId[socket.id]
 
         onlineUser = onlineUser.filter(data => {
-          return data !== disconnectedUser
+            return data !== disconnectedUser
         })
 
         delete userBysocketId[socket.id]
@@ -128,15 +99,15 @@ function socketController( socket: Socket,io:any) {
         //updateLastSeen
         try {
 
-          console.log(disconnectedUser);
+            console.log(disconnectedUser);
 
-          const newUpdate = await UserModel.findByIdAndUpdate(disconnectedUser, {
-            lastSeen: new Date().toISOString()
-          })
-          console.log(newUpdate);
+            const newUpdate = await UserModel.findByIdAndUpdate(disconnectedUser, {
+                lastSeen: new Date().toISOString()
+            })
+            console.log(newUpdate);
 
         } catch (error: any) {
-          new Error(error)
+            new Error(error)
         }
     }
 

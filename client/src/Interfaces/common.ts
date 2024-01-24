@@ -30,5 +30,7 @@ export interface siderStateInterface {
      
   }
 
-
-  
+  export interface goBackI{
+    goBack:(str:string)=>void,
+    icon:string
+  }

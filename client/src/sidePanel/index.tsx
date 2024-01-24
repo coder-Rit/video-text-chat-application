@@ -11,15 +11,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import GoBack from '../AuthPage/components/GoBack';
 import useDisplay, { useDisplayI } from '../hooks/useDisplay';
 import { motion } from "framer-motion";
-import { FriendInterface } from '../Interfaces/common';
-import { rootState } from '../Interfaces';
-import { useSelector } from 'react-redux';
-import gql from 'graphql-tag';
-import { useLazyQuery } from '@apollo/client';
 import { useDispatch } from 'react-redux';
-import { chatInit } from '../actions/chatAction';
-import { messageI } from '../Interfaces/message';
-import { userInterface } from '../Interfaces/user';
 import SettingPage from '../AuthPage/SettingPage';
 
 
@@ -47,12 +39,7 @@ const FriendsPannel = (props: any) => {
 
     const [openSiderState, setopenSiderState] = useState<string>("friends")
     const [leftGap, setleftGap] = useState<number>(70)
-
-
-    
-
-
-
+ 
 
 
     function setActiveClass(active: any, ...deactive: any) {
@@ -123,7 +110,7 @@ const FriendsPannel = (props: any) => {
                         duration: 0.2,
 
                     }}   >
-                    <MyProfile goBack={setopenSiderState}></MyProfile>
+                    <MyProfile goBack={setopenSiderState} icon=""></MyProfile>
                 </motion.div>
             }
 
@@ -136,7 +123,7 @@ const FriendsPannel = (props: any) => {
 
                     }}
                 >
-                    <MyFriends socket={socket} goBack={setopenSiderState}></MyFriends>
+                    <MyFriends socket={socket} goBack={setopenSiderState}  icon=""></MyFriends>
                 </motion.div>
             }
 

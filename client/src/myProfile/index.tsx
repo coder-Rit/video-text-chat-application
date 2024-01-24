@@ -6,15 +6,17 @@ import { rootState } from '../Interfaces';
 import { userInterface } from '../Interfaces/user';
 import { useSelector } from 'react-redux';
 import ProfileImage from '../AuthPage/components/ProfileImage';
+import { goBackI } from '../Interfaces/common';
 
+ 
 
-const MyProfile = (props: any) => {
-  const { setopenSiderState } = props
+const MyProfile = (props: goBackI) => {
+  const { goBack } = props
   const { user } = useSelector<rootState, userInterface>((state) => state.user);
   
   return (
     <>
-      <GoBack goBack={props.goBack} icon="goBack"></GoBack>
+      <GoBack goBack={goBack} icon="backIcon"></GoBack>
 
       <div  >
         <h2 className='sidepanle_heading'>PROFILE</h2>

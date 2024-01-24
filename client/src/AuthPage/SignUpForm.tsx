@@ -21,34 +21,14 @@ import { useSelector } from "react-redux";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../Firebase/Firebase";
 import { toast } from "sonner";
+import { CREATE_USER } from "../graphQL/user/query";
 
 
 
 
 
 
-const CREATE_USER = gql`
- 
- mutation CreateUser($firstName: String!, $email: String!, $password: String!, $profileImageURL: String!, $lastName: String, $userName: String) {
-  createUser(firstName: $firstName, email: $email, password: $password, profileImageURL: $profileImageURL, lastName: $lastName, userName: $userName) {
-    id
-    userName
-    firstName
-    lastName
-    email
-    profileImageURL
-    token
-    friendList {
-      id
-      userName
-      firstName
-      lastName
-      profileImageURL
-      lastSeen
-    }
-  }
-}
-`;
+
 
 interface LogInFormProps {
   onHasNoAccount: () => void;

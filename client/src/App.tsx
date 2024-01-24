@@ -13,30 +13,9 @@ import { validate } from "graphql";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { loadUser, register } from "./actions/userActions";
+import { LOAD_USER } from "./graphQL/user/query";
 
-const LOAD_USER = gql`
 
-query LoadUser($token: String!) {
-  loadUser(token: $token) {
-    id
-    userName
-    firstName
-    lastName
-    email
-    profileImageURL
-    token
-    friendList {
-      id
-      userName
-      firstName
-      lastName
-      profileImageURL
-      lastSeen
-    }
-  }
-}
-
-`
 
 
 function App() {

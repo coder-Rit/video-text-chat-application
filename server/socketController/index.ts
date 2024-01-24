@@ -1,5 +1,4 @@
 import { Server, Socket } from "socket.io";
-import { createServer } from "http";
 import socketController from "./sockets";
 
 
@@ -10,7 +9,7 @@ function intializeScoketIO(httpserver: any, app: any) {
 
     const io = new Server(httpserver, {
         cors: {
-            origin: "http://localhost:3000",
+            origin: process.env.ORIGIN,
             methods: ['GET', 'POST']
         },
     });
@@ -25,10 +24,6 @@ function intializeScoketIO(httpserver: any, app: any) {
         socket.on('is_typing_started', (data) => CS.userStatus(data))
         socket.on('UPDATE_URL', (data) => CS.updateURL(data))
         socket.on('disconnect', async () => CS.disconnect())
-
-
-
-
 
     });
 

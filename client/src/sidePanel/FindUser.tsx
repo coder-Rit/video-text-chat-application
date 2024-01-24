@@ -7,20 +7,9 @@ import { userList } from "../actions/userActions";
 import UserSearchDisplay from "./UserSearchDisplay";
 import SearchIcon from '@mui/icons-material/Search';
 import GoBack from "../AuthPage/components/GoBack";
+import { FIND_USER } from "../graphQL/chats/query";
 
-const FIND_USER = gql`
- 
- query SearchFriend($userName: String!, $load: Int) {
-  searchFriend(userName: $userName, load: $load) {
-    userName
-    profileImageURL
-    id
-    lastName
-      firstName
-  }
-}
 
-`
 const SCROLL_THRESHOLD = 100;
 
 
@@ -117,7 +106,7 @@ const FindUser = (props: any) => {
     return (
 
         < >
-            <GoBack goBack={goBack} icon="goBack"></GoBack>
+            <GoBack goBack={goBack} icon="backIcon"></GoBack>
 
             <div className="searchUserheader" >
                 <h2 className='sidepanle_heading'>ADD FRIENDS</h2>

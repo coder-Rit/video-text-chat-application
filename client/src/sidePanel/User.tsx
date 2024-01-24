@@ -19,22 +19,10 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import "./index.css"
 import ProfileImage from '../AuthPage/components/ProfileImage';
+import { ADD_FRIEND } from '../graphQL/user/mutation';
 
 
-const ADD_FRIEND = gql`
 
-mutation AddFriend($fid: String!, $mid: String!) {
-  addFriend(Fid: $fid, Mid: $mid) {
-    friendList {
-      userName
-      profileImageURL
-      id
-      lastName
-      firstName
-    }
-  }
-}
-`
 
 
 const User = (props: any) => {
