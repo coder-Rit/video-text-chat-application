@@ -22,9 +22,8 @@ import SettingPage from './SettingPage';
 
 
 
-const FriendsPannel = (props: any) => { 
+const FriendsPannel = () => { 
     
-    const { socket } = props
 
     //hooks
     const Dispaly: useDisplayI = useDisplay()
@@ -124,7 +123,7 @@ const FriendsPannel = (props: any) => {
 
                     }}
                 >
-                    <MyFriends socket={socket} goBack={setopenSiderState}  icon=""></MyFriends>
+                    <MyFriends goBack={setopenSiderState}  icon=""></MyFriends>
                 </motion.div>
             }
 
@@ -137,7 +136,7 @@ const FriendsPannel = (props: any) => {
 
                     }}
                 >
-                    <FindUser goBack={setopenSiderState}></FindUser>
+                    <FindUser goBack={setopenSiderState} icon=""></FindUser>
                 </motion.div>
             }
 
@@ -150,7 +149,7 @@ const FriendsPannel = (props: any) => {
 
                     }}
                 >
-                    <SettingPage goBack={setopenSiderState}></SettingPage>
+                    <SettingPage goBack={setopenSiderState} icon=""></SettingPage>
                 </motion.div>
             }
 

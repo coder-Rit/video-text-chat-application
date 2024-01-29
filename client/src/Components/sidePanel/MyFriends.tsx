@@ -10,14 +10,14 @@ import { rootState } from '../../Interfaces';
 import { User, userInterface } from '../../Interfaces/user';
 import { BulkChatInit } from '../../actions/chatAction';
 import { friendChatI } from '../../Interfaces/message';
-import { FriendInterface } from '../../Interfaces/common';
+import { FriendInterface, sidePanle_I } from '../../Interfaces/common';
 import { DotLottiePlayer } from '@dotlottie/react-player';
 import '@dotlottie/react-player/dist/index.css';
 import { LOAD_ALL_CHATS } from '../../graphQL/chats/query';
 
 //components
 import GoBack from '../../Components/AuthPage/components/GoBack';
-import UserElement from './components/User';
+import { FriendComp } from './components/User';
 
 
 
@@ -26,7 +26,7 @@ import UserElement from './components/User';
 
 
 
-const MyFriends = (props: any) => {
+const MyFriends = (props: sidePanle_I) => {
 
     const Dispatch: any = useDispatch()
 
@@ -54,20 +54,31 @@ const MyFriends = (props: any) => {
             Dispatch(BulkChatInit(allChats))
         }
     })
- 
+
 
 
 
     //calling chats
     useEffect(() => {
         if (isAuthenticated && user.friendList) {
-            const friendIds = user.friendList.map(data => data.id)
-            loadInitialChats({
-                variables: {
-                    friendIds,
-                    myId:user.id
+            let isAlreadyFetched = true;
+            for (let i = 0; i < user.friendList.length; i++) {
+                const element = user.friendList[i].id as string;
+                if (allChats[element]) {
+                    isAlreadyFetched = false
+                    break;
                 }
-            })
+            }
+
+            if (isAlreadyFetched) {
+                const friendIds = user.friendList.map(data => data.id)
+                loadInitialChats({
+                    variables: {
+                        friendIds,
+                        myId: user.id
+                    }
+                })
+            }
         }
     }, [isAuthenticated])
 
@@ -75,9 +86,7 @@ const MyFriends = (props: any) => {
 
 
     return (
-        <div
-            className='users'
-        >
+        <div className='users' >
             <GoBack goBack={props.goBack} icon="backIcon"></GoBack>
             <h2 className='sidepanle_heading'>MY CONTACTS</h2>
             <div className='user-list'>
@@ -89,8 +98,8 @@ const MyFriends = (props: any) => {
 
                         return (
                             <div key={index}>
-                                <UserElement index={index} goBack={props.goBack} lastMsg={allChats[data.id as string]} user={data} idx={index + 1} usedFor="myFriend"
-                                ></UserElement>
+                                <FriendComp index={index} goBack={props.goBack} lastMsg={allChats[data.id as string]} user={data}
+                                ></FriendComp>
                             </div>
                         )
                     })
@@ -108,7 +117,7 @@ const MyFriends = (props: any) => {
                             speed={1.5}
                         >
                         </DotLottiePlayer>
-                        <button onClick={()=>props.goBack('addFriend')}>Add Some Friends</button>
+                        <button onClick={() => props.goBack('addFriend')}>Add Some Friends</button>
                     </div>
                 }
 

@@ -99,8 +99,6 @@ const SignUpForm = (props: LogInFormProps) => {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setprofileImageURL(downloadURL)
-          console.log(downloadURL);
-
         });
       }
     );
@@ -112,7 +110,6 @@ const SignUpForm = (props: LogInFormProps) => {
 
 
   useEffect(() => {
-    console.log(data);
 
     if (data) {
       sessionStorage.setItem("login", "true")
@@ -182,8 +179,6 @@ const SignUpForm = (props: LogInFormProps) => {
           onChange={(e) => {
             if (e.target.files !== null) {
               setprofileImageURL("/");
-              console.log(e.target.files[0]);
-
               uploadFiles(e.target.files[0])
             }
           }}

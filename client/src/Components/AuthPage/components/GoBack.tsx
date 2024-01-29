@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 import useDisplay, { useDisplayI } from '../../../hooks/useDisplay'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MessageIcon from '@mui/icons-material/Message';
-import { goBackI } from '../../../Interfaces/common';
+import { sidePanle_I } from '../../../Interfaces/common';
 
 
 
-const GoBack = (props: goBackI) => {
+const GoBack = (props: sidePanle_I) => {
 
   const Display: useDisplayI = useDisplay()
   const [width, setWidth] = useState(1200)

@@ -62,8 +62,6 @@ export const logOut = () => (dispatch) => {
 
 export const updateFriendList = (userData ,newFriendList) => (dispatch) => {
   let upUserData =JSON.parse(JSON.stringify(userData))
-  console.log(upUserData);
-  console.log(newFriendList);
   upUserData.friendList = newFriendList
     dispatch({ type: LOAD_USER_SUCCESS ,payload:upUserData});
   

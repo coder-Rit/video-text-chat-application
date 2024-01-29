@@ -23,20 +23,21 @@ import ImageComp from './Components/ImageComp';
 
 
 const ChatCard = (props: any) => {
+
+  // hooks
   const Dispatch: any = useDispatch()
 
+  //state
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
   const allChats = useSelector<rootState, friendChatI>((state) => state.chats);
   const { idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
 
-
   const [chats, setChats] = useState<messageI[]>([])
-  const [visibleChats, setVisibleChats] = useState<number>(10);
 
 
 
 
-
+  // iso string formator
   function formatTimeFromISOString(isoTimeString: string) {
 
     const date = new Date(parseInt(isoTimeString));
@@ -50,7 +51,7 @@ const ChatCard = (props: any) => {
     return formattedTimeString;
   }
 
-
+  // map text
   function textMaper(data: messageI, idx: number) {
 
     const main = <>
@@ -62,6 +63,7 @@ const ChatCard = (props: any) => {
     return <MessageBox main={main} res={data.senderId === user.id} idx={idx} ></MessageBox>
   }
 
+  // map file 
   function fileMaper(data: messageI, idx: number) {
 
 
@@ -95,6 +97,7 @@ const ChatCard = (props: any) => {
 
   }
 
+  // map images
   function imageMaper(data: messageI, idx: number) {
     const main = <>
       <ImageComp fileData={data.fileData} ></ImageComp>
@@ -107,7 +110,7 @@ const ChatCard = (props: any) => {
 
   }
 
-
+  // message dispencor based on type
   const renderChats = () => {
     // Render only the last `visibleChats` number of chats
     return isAuthenticated && chats.map((data, idx: number) => {
@@ -121,6 +124,7 @@ const ChatCard = (props: any) => {
     });
   };
 
+  // scroller
   useLayoutEffect(() => {
     const chatboardRef = props.chatboard.current;
     if (chatboardRef) {
@@ -128,6 +132,7 @@ const ChatCard = (props: any) => {
     }
   }, [chats]);
 
+  // load chats based on user id
   useEffect(() => {
 
     if (idx) {
@@ -143,11 +148,10 @@ const ChatCard = (props: any) => {
   }, [idx, allChats])
 
 
-
+  // send url to update message
   useEffect((): any => {
 
     props.socket.on('RE_UPDATED_URL', (data: any) => {
-      console.log("RE_UPDATED_URL");
       Dispatch(updateUrl(data, user.id as string))
     })
     return () => props.socket.off('RE_UPDATED_URL');

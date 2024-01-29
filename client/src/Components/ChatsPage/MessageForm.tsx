@@ -67,7 +67,6 @@ const MessageForm = (props: any) => {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log("UPLOADING ENDED");
 
           let msgUpdator: urlUpdateObjectI = {
             uuid,
@@ -118,7 +117,6 @@ const MessageForm = (props: any) => {
       socket.emit('send_msg', messageArray)
 
 
-      console.log("UPLOADING STARTED");
 
       for (let i = 0; i < fileArray.length; i++) {
         const msgData: any = fileArray[i];
@@ -206,7 +204,6 @@ const MessageForm = (props: any) => {
   function setTextInMsg(idx: number, text: string) {
     let tempMsgObj = [...FilesQ]; // create a copy of FilesQ
     tempMsgObj[idx].msg.msg = text;
-    console.log(tempMsgObj[idx].msg.msg);
     setFilesQ(tempMsgObj);
   }
 

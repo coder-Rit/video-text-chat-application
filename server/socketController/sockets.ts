@@ -36,7 +36,6 @@ function socketController(socket: Socket, io: any) {
             onlineUser.push(data.myId)
             userBysocketId[socket.id as string] = data.myId;
         }
-        console.log(onlineUser);
     }
 
     function exchangeMessage(data: messageI[]) {
@@ -44,7 +43,6 @@ function socketController(socket: Socket, io: any) {
 
         io.in(room).emit('recive_msg', data)
         if (data[0].type === "text") {
-            console.log("recevice msg", data);
             saveMessage(data[0])
         } else {
             data.forEach(msg => {
@@ -61,10 +59,8 @@ function socketController(socket: Socket, io: any) {
             io.in(room).emit('is_typing_started', data)
         } else if (onlineUser.includes(data.receiverId)) {
 
-            console.log(onlineUser);
             data.state = "online"
         } else {
-            console.log("else");
             io.in(room).emit('is_typing_started', data)
         }
     }
@@ -99,12 +95,9 @@ function socketController(socket: Socket, io: any) {
         //updateLastSeen
         try {
 
-            console.log(disconnectedUser);
-
             const newUpdate = await UserModel.findByIdAndUpdate(disconnectedUser, {
                 lastSeen: new Date().toISOString()
             })
-            console.log(newUpdate);
 
         } catch (error: any) {
             new Error(error)

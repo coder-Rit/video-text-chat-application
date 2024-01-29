@@ -29,8 +29,6 @@ function App() {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
-
       Dispatch(loadUser(data.loadUser, true));
 
     }

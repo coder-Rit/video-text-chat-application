@@ -3,7 +3,7 @@
 import { User as userinterf } from '../../Interfaces/user'
 
 //components
-import User from './components/User';
+import { UsersComp } from './components/User';
 
 
 
@@ -16,7 +16,7 @@ const UserSearchDisplay = (props: any) => {
       {props.friendList &&
         props.friendList.map((data: userinterf,index:number) => {
           return (
-            <User index={index} user={data} goBack= {props.goBack} usedFor ={props.usedFor}></User>
+            <UsersComp index={index} user={data} goBack= {props.goBack}  ></UsersComp>
           )
         })
       }

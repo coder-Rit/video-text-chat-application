@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 //utils
 import "./index.css"
-import { goBackI } from '../../Interfaces/common';
+import {  sidePanle_I } from '../../Interfaces/common';
 import { rootState } from '../../Interfaces';
 import { userInterface } from '../../Interfaces/user';
 
@@ -15,7 +15,8 @@ import ProfileImage from '../AuthPage/components/ProfileImage';
 
  
 
-const MyProfile = (props: goBackI) => {
+
+const MyProfile = (props: sidePanle_I) => {
   const { goBack } = props
   
   const { user } = useSelector<rootState, userInterface>((state) => state.user);

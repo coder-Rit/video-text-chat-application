@@ -76,7 +76,6 @@ const ChatHeader = (props: any) => {
   // get typing states of sender 
   useEffect(() => {
     props.socket.on('is_typing_started', (data: typingInter) => {
-      console.log(data.state);
 
       if ((data.state === "typing" || data.state === "online") && user.id === data.senderId) {
         setlastSeenState("online")
@@ -99,7 +98,6 @@ const ChatHeader = (props: any) => {
   //       state: user.friendList[idx-1].lastSeen
   //     }
   //     props.socket.emit("is_typing_started", data)
-  //     console.log("sended");
 
   //   }
 

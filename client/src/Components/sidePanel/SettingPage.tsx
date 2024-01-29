@@ -10,9 +10,10 @@ import { logOut } from '../../actions/userActions';
 
 //components
 import GoBack from '../AuthPage/components/GoBack'
+import { sidePanle_I } from '../../Interfaces/common';
 
 
-const SettingPage = (props: any) => {
+const SettingPage = (props: sidePanle_I) => {
 
     //hooks
     let navigate = useNavigate();

@@ -11,12 +11,13 @@ import { FIND_USER } from "../../graphQL/chats/query";
 //components
 import GoBack from "../../Components/AuthPage/components/GoBack";
 import UserSearchDisplay from "./UserSearchDisplay";
+import { sidePanle_I } from "../../Interfaces/common";
 
 
 const SCROLL_THRESHOLD = 100;
 
 
-const FindUser = (props: any) => {
+const FindUser = (props: sidePanle_I) => {
     const { goBack } = props 
 
     // hooks
@@ -34,7 +35,6 @@ const FindUser = (props: any) => {
     // querys
     const [searchFriend, { data, error, loading }] = useLazyQuery(FIND_USER, {
         onCompleted: (data) => {
-            console.log(data);
             setUserList(data.searchFriend)
         }
     })

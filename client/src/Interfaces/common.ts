@@ -30,7 +30,9 @@ export interface siderStateInterface {
      
   }
 
-  export interface goBackI{
+  export interface sidePanle_I{
     goBack:(str:string)=>void,
     icon:string
   }
+
+  
