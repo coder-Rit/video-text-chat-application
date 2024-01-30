@@ -69,7 +69,7 @@ const SignUpForm = (props: LogInFormProps) => {
       email: email,
       password: password,
       profileImageURL: profileImageURL,
-      lastSeen: new Date().toISOString,
+      lastSeen: "1999-12-31T23:00:00.000Z",
     };
 
 

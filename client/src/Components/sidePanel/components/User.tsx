@@ -141,7 +141,7 @@ export const FriendComp = (props: FriendComp_I) => {
               sx={{ fontSize: "1rem", bgcolor: "#f3e5f5" }}
             />
           )}
-          {<div></div>}
+          {<div className={props.user.lastSeen==="946681200000"?"online":""}>{props.user.lastSeen==="946681200000"?"online":null}</div>}
         </div>
 
 

@@ -268,12 +268,12 @@ const MessageForm = (props: any) => {
   useEffect(() => {
 
     socket.on('recive_msg', (data: messageI[]) => {
-      Dispatch(appendMsg(selectedFriend.id as string, data))
+      Dispatch(appendMsg(user.friendList[idx-1].id as string, data))
     })
 
 
     return () => socket.off('recive_msg');
-  }, [socket, selectedFriend])
+  }, [socket, idx])
 
 
   // send typing state
@@ -282,13 +282,13 @@ const MessageForm = (props: any) => {
     ) {
       let data = {
         senderId: user.id,
-        receiverId: selectedFriend.id,
+        receiverId: user.friendList[idx-1].id,
         state: "typing"
       }
       if (text !== "") {
         socket.emit("is_typing_started", data)
       } else {
-        data.state = selectedFriend.lastSeen
+        data.state = user.friendList[idx-1].lastSeen
         socket.emit("is_typing_started", data)
       }
     }

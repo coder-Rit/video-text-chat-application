@@ -18,7 +18,7 @@ function intializeScoketIO(httpserver: any, app: any) {
         console.log(`User connected ${socket.id}`);
         const CS = socketController(socket, io)
 
-        socket.on('set_online_status', (data) => CS.chatSetup(data))
+        socket.on('USER_CONNECTED', (data) => CS.userConnected(data.id))
         socket.on('startChat', (data) => CS.initializeChat(data))
         socket.on('send_msg', (data) => CS.exchangeMessage(data))
         socket.on('is_typing_started', (data) => CS.userStatus(data))

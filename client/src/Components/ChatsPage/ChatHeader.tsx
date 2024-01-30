@@ -77,17 +77,38 @@ const ChatHeader = (props: any) => {
   useEffect(() => {
     props.socket.on('is_typing_started', (data: typingInter) => {
 
-      if ((data.state === "typing" || data.state === "online") && user.id === data.senderId) {
-        setlastSeenState("online")
-      } else {
+      
+      if (user.id !== data.senderId) {
+        console.log(data.state);
         
-        setlastSeenState(data.state)
-      }
-
-
+         if (data.state === "typing") {
+           setlastSeenState("typing")
+          }else  if (data.state==="946681200000") {
+           setlastSeenState("online")
+          }else{
+           setlastSeenState(data.state)
+         }
+        //  else if (data.state === "typing") {
+           
+        //    setlastSeenState("typing")
+        //  }
+        //  else {
+        //    if (user.friendList[idx-1].lastSeen==="946681200000") {
+        //      setlastSeenState("online")
+        //    }else{
+        //      setlastSeenState( data.state)
+        //    }
+        //  }
+        
+       }
+      
     })
 
   }, [props.socket])
+
+
+   
+  
 
 
   // useEffect(() => {
@@ -105,14 +126,16 @@ const ChatHeader = (props: any) => {
 
 
 
-
-
-
-
-
-
-
-
+  useEffect(() => {
+    if (user.friendList[idx-1].lastSeen==="946681200000") {
+      console.log(user.friendList[idx-1].lastSeen);
+      setlastSeenState("online")
+    }else{
+      setlastSeenState(getLastSeenTimeString( user.friendList[idx-1].lastSeen))
+    }
+  }, [ idx])
+  
+ 
 
 
   return (

@@ -1,4 +1,6 @@
+import mongoose, { ObjectId } from "mongoose"
 import { messageI, messageModel } from "../model/messageModel"
+import { UserModel } from "../model/userModel"
  
 export const getRoomNameBydata = (senderId: string, receiverId: string): string => {
 
@@ -17,6 +19,16 @@ export const saveMessage = async (updateMsg: messageI) => {
 
         await message.save()
     } catch (error: any) {
+        new Error(`unable to send data to db ${error}`)
+    }
+}
+
+export const userUpdate = async (id:string,context:any) => {
+    try {
+         
+        await UserModel.findByIdAndUpdate(id,context)
+          
+     } catch (error: any) {
         new Error(`unable to send data to db ${error}`)
     }
 }

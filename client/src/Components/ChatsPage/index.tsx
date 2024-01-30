@@ -22,51 +22,36 @@ import ChatHeader from "./ChatHeader";
 import DefaultCart from "./Components/DefaultCart";
 import ChatCard from "./ChatCard";
 import { io } from "socket.io-client";
-import useDisplay from "../../hooks/useDisplay";
-
+ 
 
 
 
 const SCROLL_THRESHOLD = 100
 
 
-const socket = io("http://localhost:4000/");
 
 
-const ChatsPage = ( ) => {
+const ChatsPage = (props:any) => {
 
   // hooks
   const chatboard = useRef<HTMLDivElement>(null)
-  const screenWidth: number = useDisplay().getScreenWidth()
   const Dispatch: any = useDispatch()
-  
+
   // states
   const { idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
+
+
+  // queries
+  const [getChats, { data }] = useLazyQuery(GET_CHATS, {
+    onCompleted: (data) => {
+      Dispatch(chatInit(data.getChats.friendId as string, data.getChats.chats as messageI[]))
+
+    },
+  })
+
  
 
-    // queries
-    const [getChats, { data }] = useLazyQuery(GET_CHATS, {
-      onCompleted: (data) => {
-        Dispatch(chatInit(data.getChats.friendId as string, data.getChats.chats as messageI[]))
-  
-      },
-    })
-  
-
-
-  // get online 
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     let friendsIds = user.friendList?.map(data => data.id)
-  //     props.socket.emit('set_online_status', {
-  //       myId: user.id,
-  //       friendsIds
-  //     })
-  //   }
-  // }, [isAuthenticated])
-
-  
 
   // load chats as selected user change
   useEffect(() => {
@@ -80,7 +65,7 @@ const ChatsPage = ( ) => {
       })
     }
   }, [idx])
-  
+
 
   // toast(login)
   useEffect(() => {
@@ -90,6 +75,8 @@ const ChatsPage = ( ) => {
     }
 
   }, [])
+
+ 
 
 
 
@@ -108,9 +95,9 @@ const ChatsPage = ( ) => {
           }}
         >
 
-          <ChatHeader socket={socket}                      ></ChatHeader>
-          <ChatCard socket={socket} chatboard={chatboard}></ChatCard>
-          <MessageForm socket={socket} chatboard={chatboard}></MessageForm>
+          <ChatHeader socket={props.socket}                      ></ChatHeader>
+          <ChatCard socket={props.socket} chatboard={chatboard}></ChatCard>
+          <MessageForm socket={props.socket} chatboard={chatboard}></MessageForm>
 
         </motion.div>
       }

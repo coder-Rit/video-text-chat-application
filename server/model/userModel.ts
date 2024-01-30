@@ -15,7 +15,7 @@ interface User {
   token: string;
   idList: Types.ObjectId[];
   friendList?: User[];
-  lastSeen: Date
+  lastSeen: Date;
 
 
   comparePassword(password: string): Promise<boolean>;

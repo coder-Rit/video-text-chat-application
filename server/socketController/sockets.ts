@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import { messageI, messageModel } from "../model/messageModel";
 import { UserModel } from "../model/userModel";
 import { friendChatI, onlineStatusChecker_I, typingInter } from "../utils/helpers";
-import { getRoomNameBydata, saveMessage } from "../utils/interfaces";
+import { getRoomNameBydata, saveMessage, userUpdate } from "../utils/functions";
 
 
 
@@ -25,18 +25,20 @@ export interface socketControllerI {
 
 function socketController(socket: Socket, io: any) {
 
+    async function userConnected(id: string) {
+
+        await userUpdate(id, { lastSeen: "1999-12-31T23:00:00.000Z" })
+
+    }
+
     function initializeChat(data: messageI) {
         let room = getRoomNameBydata(data.senderId, data.receiverId)
+        userBysocketId[socket.id as string] = data.senderId;
         socket.join(room)
 
     }
 
-    function chatSetup(data: onlineStatusChecker_I) {
-        if (!onlineUser.includes(data.myId)) {
-            onlineUser.push(data.myId)
-            userBysocketId[socket.id as string] = data.myId;
-        }
-    }
+
 
     function exchangeMessage(data: messageI[]) {
         const room = getRoomNameBydata(data[0].senderId, data[0].receiverId)
@@ -57,9 +59,6 @@ function socketController(socket: Socket, io: any) {
 
         if (data.state === "typing") {
             io.in(room).emit('is_typing_started', data)
-        } else if (onlineUser.includes(data.receiverId)) {
-
-            data.state = "online"
         } else {
             io.in(room).emit('is_typing_started', data)
         }
@@ -89,16 +88,9 @@ function socketController(socket: Socket, io: any) {
 
         delete userBysocketId[socket.id]
 
-
-        io.emit('see_online_status', onlineUser)
-
         //updateLastSeen
         try {
-
-            const newUpdate = await UserModel.findByIdAndUpdate(disconnectedUser, {
-                lastSeen: new Date().toISOString()
-            })
-
+            await userUpdate(disconnectedUser, { lastSeen: new Date().toISOString() })
         } catch (error: any) {
             new Error(error)
         }
@@ -106,7 +98,7 @@ function socketController(socket: Socket, io: any) {
 
     return {
         initializeChat,
-        chatSetup,
+        userConnected,
         exchangeMessage,
         userStatus,
         updateURL,

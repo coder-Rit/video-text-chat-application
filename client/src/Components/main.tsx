@@ -1,6 +1,7 @@
 
 //packeges
 import { Toaster } from 'sonner'
+import { io } from 'socket.io-client';
 
 //utile
 import useDisplay from '../hooks/useDisplay';
@@ -9,27 +10,30 @@ import useDisplay from '../hooks/useDisplay';
 //components
 import FriendsPannel from "./sidePanel/index";
 import ChatsPage from './ChatsPage'
-import { io } from 'socket.io-client';
-import { useLazyQuery } from '@apollo/client';
-import { GET_CHATS } from '../graphQL/chats/query';
-import { chatInit } from '../actions/chatAction';
-import { messageI } from '../Interfaces/message';
-import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { rootState } from '../Interfaces';
 import { userInterface } from '../Interfaces/user';
-import { useEffect } from 'react';
-import { FriendInterface } from '../Interfaces/common';
 
 
-const SCROLL_THRESHOLD = 100
+ const socket = io("http://localhost:4000/");
 
 
 const Main = () => {
+    const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
+
 
     const screenWidth: number = useDisplay().getScreenWidth()
 
 
+    useEffect(() => {
+
+        if (isAuthenticated) {
+            socket.emit('USER_CONNECTED', {
+                id: user.id
+            })
+        }
+    }, [isAuthenticated])
 
 
 
@@ -40,7 +44,7 @@ const Main = () => {
                 {
                     screenWidth > 650 && <FriendsPannel   ></FriendsPannel>
                 }
-                <ChatsPage  ></ChatsPage>
+                <ChatsPage socket={socket} ></ChatsPage>
                 {
                     screenWidth <= 650 && <FriendsPannel   ></FriendsPannel>
                 }
