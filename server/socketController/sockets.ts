@@ -25,11 +25,7 @@ export interface socketControllerI {
 
 function socketController(socket: Socket, io: any) {
 
-    // async function userConnected(id: string) {
-    //     userBysocketId[socket.id as string] = id; 
-    //     await userUpdate(id, { lastSeen: "1999-12-31T23:00:00.000Z" })
-
-    // }
+     
     async function userConnected(id: string) {
         userBysocketId[socket.id as string] = id;
         socket.join(id)
@@ -58,19 +54,7 @@ function socketController(socket: Socket, io: any) {
 
         }
     }
-    // function exchangeMessage(data: messageI[]) {
-    //     const room = getRoomNameBydata(data[0].senderId, data[0].receiverId)
-
-    //     io.in(room).emit('recive_msg', data)
-    //     if (data[0].type === "text") {
-    //         saveMessage(data[0])
-    //     } else {
-    //         data.forEach(msg => {
-    //             UrlLessMsg[msg.uuid] = msg
-    //         })
-
-    //     }
-    // }
+     
 
     function userStatus(data: typingInter) {
         const room = getRoomNameBydata(data.senderId, data.receiverId)

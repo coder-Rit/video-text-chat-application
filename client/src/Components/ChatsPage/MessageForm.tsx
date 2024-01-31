@@ -13,7 +13,7 @@ import { rootState } from "../../Interfaces";
 import { userInterface } from "../../Interfaces/user";
 import { FriendInterface } from "../../Interfaces/common";
 import { FilesQI, fileI, fileUrl, friendChatI, headerStatusI, messageI, urlUpdateObjectI } from "../../Interfaces/message";
-import { appendMsg } from "../../actions/chatAction";
+import { appendMsg, updateUrl } from "../../actions/chatAction";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../Firebase/Firebase";
 
@@ -76,6 +76,7 @@ const MessageForm = (props: any) => {
             url: downloadURL
           }
           emit_urlUpdator(msgUpdator)
+          Dispatch(updateUrl(msgUpdator, user.id as string))
         });
       }
     );
@@ -100,7 +101,9 @@ const MessageForm = (props: any) => {
         createdAt,
         type: "text"
       }
+      Dispatch(appendMsg(msg.receiverId as string, [msg]));
       emit_exchangeMessage([msg])
+
     }
 
     // for files 
@@ -114,6 +117,8 @@ const MessageForm = (props: any) => {
         data.msg.createdAt = createdAt
         return data.msg
       })
+
+      Dispatch(appendMsg(messageArray[0].receiverId as string, messageArray));
       emit_exchangeMessage(messageArray)
 
 

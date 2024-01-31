@@ -33,8 +33,7 @@ export const On_headerStatus = ({ setlastSeenState }: { setlastSeenState: (str: 
     useEffect(() => {
         socket.on('is_typing_started', (data: typingInter) => {
             if (user.id !== data.senderId) {
-                console.log(data.state);
-                if (data.state === "typing") {
+                 if (data.state === "typing") {
                     setlastSeenState("typing")
                 } else if (data.state === "946681200000") {
                     setlastSeenState("online")

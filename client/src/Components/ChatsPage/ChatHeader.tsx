@@ -22,7 +22,7 @@ const ChatHeader = (props: any) => {
   const screenWidth: number = useDisplay().getScreenWidth()
 
   //state
-  const { selectedFriend, isFriendSelected, idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
+  const { idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
   const [lastSeenState, setlastSeenState] = useState("")
 
@@ -75,7 +75,6 @@ const ChatHeader = (props: any) => {
   
   useEffect(() => {
     if (user.friendList[idx - 1].lastSeen === "946681200000") {
-      console.log(user.friendList[idx - 1].lastSeen);
       setlastSeenState("online")
     } else {
       setlastSeenState(getLastSeenTimeString(user.friendList[idx - 1].lastSeen))
@@ -91,7 +90,7 @@ const ChatHeader = (props: any) => {
         On_headerStatus({ setlastSeenState })
       }
       {
-        isFriendSelected && <motion.div
+        idx && <motion.div
           className="chat_conversation-header"
           initial={{ opacity: 0, y: -150 }}
           animate={{ opacity: 1, y: 0 }}
@@ -101,9 +100,9 @@ const ChatHeader = (props: any) => {
           }}
 
         >
-          <div><img className="chat_conversation-header-image" src={`https://api.multiavatar.com/${selectedFriend.userName}.png`} alt="" /></div>
+          <div><img className="chat_conversation-header-image" src={`https://api.multiavatar.com/${user.friendList[idx-1].userName}.png`} alt="" /></div>
           <div className="chat_conversation-header-details">
-            <h3>{selectedFriend.firstName} {selectedFriend.lastName}  </h3>
+            <h3>{user.friendList[idx-1].firstName} {user.friendList[idx-1].lastName}  </h3>
             <span>
               {lastSeenState === "typing" ? <div className='typing '>
                 <span></span>

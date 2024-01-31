@@ -30,8 +30,7 @@ export const chatReducer = (state:friendChatI|any =  {} , action:actionI |any) =
       case UPDATE_CHATS: 
         const {friendId,msg} = action.payload
 
-        console.log(friendId,msg );
-        
+         
         return {
           ...state,
           [friendId]:[...state[friendId],...msg]
