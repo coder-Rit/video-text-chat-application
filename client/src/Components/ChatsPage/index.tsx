@@ -21,8 +21,7 @@ import MessageForm from "./MessageForm";
 import ChatHeader from "./ChatHeader";
 import DefaultCart from "./Components/DefaultCart";
 import ChatCard from "./ChatCard";
-import { io } from "socket.io-client";
- 
+  
 
 
 
@@ -95,9 +94,9 @@ const ChatsPage = (props:any) => {
           }}
         >
 
-          <ChatHeader socket={props.socket}                      ></ChatHeader>
-          <ChatCard socket={props.socket} chatboard={chatboard}></ChatCard>
-          <MessageForm socket={props.socket} chatboard={chatboard}></MessageForm>
+          <ChatHeader                        ></ChatHeader>
+          <ChatCard   chatboard={chatboard}></ChatCard>
+          <MessageForm   chatboard={chatboard}></MessageForm>
 
         </motion.div>
       }

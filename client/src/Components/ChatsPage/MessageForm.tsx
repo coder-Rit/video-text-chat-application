@@ -1,6 +1,6 @@
 
 //packages
-import { ChangeEvent, ReactNode,   useEffect, useState } from "react";
+import { ChangeEvent, ReactNode, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { motion } from "framer-motion"
@@ -12,7 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { rootState } from "../../Interfaces";
 import { userInterface } from "../../Interfaces/user";
 import { FriendInterface } from "../../Interfaces/common";
-import { FilesQI, fileI, fileUrl, friendChatI, messageI, urlUpdateObjectI } from "../../Interfaces/message";
+import { FilesQI, fileI, fileUrl, friendChatI, headerStatusI, messageI, urlUpdateObjectI } from "../../Interfaces/message";
 import { appendMsg } from "../../actions/chatAction";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../Firebase/Firebase";
@@ -22,14 +22,15 @@ import EmojiComp from "./Components/EmojiComp";
 import SelectFileType from "./Components/SelectFileType";
 import { v4 as uuidv4 } from 'uuid';
 import FileComp from "./Components/FileComp";
+import { emit_InitChat, emit_exchangeMessage, emit_headerStatus, emit_urlUpdator } from "../../socket.io/emiters";
+import { On_exchangeMessage } from "../../socket.io/lisnner";
 
 
 
 const MessageForm = (props: any) => {
-  
-  const { socket } = props
 
-// hooks
+
+  // hooks
   const Dispatch: any = useDispatch()
 
   //states
@@ -41,7 +42,7 @@ const MessageForm = (props: any) => {
   const [SelectFileState, setSelectFileState] = useState<boolean>(false)
   const [selectedType, setselectedType] = useState<'doc' | 'img' | 'text'>("text")
   const [fileUrls, setfileUrls] = useState<fileUrl[]>([]);
-  const [progresspercent, setProgresspercent] = useState<number>(0); 
+  const [progresspercent, setProgresspercent] = useState<number>(0);
   const [FilesQ, setFilesQ] = useState<FilesQI[]>([]);
   const [previewFileList, setpreviewFileList] = useState<any>([]);
   const [fileCaption, set_fileCaption] = useState<number>(0);
@@ -74,7 +75,7 @@ const MessageForm = (props: any) => {
             receiverId: user.friendList[idx - 1].id as string,
             url: downloadURL
           }
-          socket.emit('UPDATE_URL', msgUpdator)
+          emit_urlUpdator(msgUpdator)
         });
       }
     );
@@ -99,8 +100,7 @@ const MessageForm = (props: any) => {
         createdAt,
         type: "text"
       }
-
-      socket.emit('send_msg', [msg])
+      emit_exchangeMessage([msg])
     }
 
     // for files 
@@ -114,8 +114,7 @@ const MessageForm = (props: any) => {
         data.msg.createdAt = createdAt
         return data.msg
       })
-      socket.emit('send_msg', messageArray)
-
+      emit_exchangeMessage(messageArray)
 
 
       for (let i = 0; i < fileArray.length; i++) {
@@ -142,7 +141,7 @@ const MessageForm = (props: any) => {
 
 
   };
- 
+
   // sotre file to upload queue
   const storeFile = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -160,7 +159,7 @@ const MessageForm = (props: any) => {
           fileSize: file["size"],
           url: ""
         }
- 
+
         filesData.push(tempObj)
         tempFilesQ.push(mapFilesInMessages(file))
       }
@@ -231,7 +230,7 @@ const MessageForm = (props: any) => {
     }
   }
 
- 
+
   //remove file hanler
   function removeFile(idx: number) {
 
@@ -254,42 +253,34 @@ const MessageForm = (props: any) => {
     if (isAuthenticated && idx
     ) {
 
-      socket.emit("startChat", {
+      emit_InitChat({
         msg: user.userName,
-        senderId: user.id,
-        receiverId: selectedFriend.id,
-        createdAt: new Date().toISOString,
+        senderId: user.id as string,
+        receiverId: selectedFriend.id as string,
+        createdAt: new Date().toISOString(),
       })
     }
 
   }, [isAuthenticated, idx])
 
-  // receive messages
-  useEffect(() => {
-
-    socket.on('recive_msg', (data: messageI[]) => {
-      Dispatch(appendMsg(user.friendList[idx-1].id as string, data))
-    })
 
 
-    return () => socket.off('recive_msg');
-  }, [socket, idx])
 
 
   // send typing state
   useEffect(() => {
     if (isAuthenticated && idx
     ) {
-      let data = {
-        senderId: user.id,
-        receiverId: user.friendList[idx-1].id,
+      let headerStatus: headerStatusI = {
+        senderId: user.id as string,
+        receiverId: user.friendList[idx - 1].id as string,
         state: "typing"
       }
       if (text !== "") {
-        socket.emit("is_typing_started", data)
+        emit_headerStatus(headerStatus)
       } else {
-        data.state = user.friendList[idx-1].lastSeen
-        socket.emit("is_typing_started", data)
+        headerStatus.state = user.friendList[idx - 1].lastSeen
+        emit_headerStatus(headerStatus)
       }
     }
   }, [text])
@@ -305,14 +296,14 @@ const MessageForm = (props: any) => {
 
   }, [previewFileList])
 
- 
+
 
 
 
   return (
 
     <>
-
+ 
 
       <motion.form onSubmit={onSubmit}
         initial={{ opacity: 0, y: 150 }}

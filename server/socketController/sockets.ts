@@ -25,14 +25,20 @@ export interface socketControllerI {
 
 function socketController(socket: Socket, io: any) {
 
+    // async function userConnected(id: string) {
+    //     userBysocketId[socket.id as string] = id; 
+    //     await userUpdate(id, { lastSeen: "1999-12-31T23:00:00.000Z" })
+
+    // }
     async function userConnected(id: string) {
         userBysocketId[socket.id as string] = id;
-
+        socket.join(id)
+        console.log ("sockejoined by ", id)
         await userUpdate(id, { lastSeen: "1999-12-31T23:00:00.000Z" })
 
     }
 
-     
+
     function initializeChat(data: messageI) {
         let room = getRoomNameBydata(data.senderId, data.receiverId)
         socket.join(room)
@@ -41,9 +47,8 @@ function socketController(socket: Socket, io: any) {
 
 
     function exchangeMessage(data: messageI[]) {
-        const room = getRoomNameBydata(data[0].senderId, data[0].receiverId)
 
-        io.in(room).emit('recive_msg', data)
+        io.in(data[0].receiverId).emit('recive_msg', data)
         if (data[0].type === "text") {
             saveMessage(data[0])
         } else {
@@ -53,6 +58,19 @@ function socketController(socket: Socket, io: any) {
 
         }
     }
+    // function exchangeMessage(data: messageI[]) {
+    //     const room = getRoomNameBydata(data[0].senderId, data[0].receiverId)
+
+    //     io.in(room).emit('recive_msg', data)
+    //     if (data[0].type === "text") {
+    //         saveMessage(data[0])
+    //     } else {
+    //         data.forEach(msg => {
+    //             UrlLessMsg[msg.uuid] = msg
+    //         })
+
+    //     }
+    // }
 
     function userStatus(data: typingInter) {
         const room = getRoomNameBydata(data.senderId, data.receiverId)
@@ -65,8 +83,8 @@ function socketController(socket: Socket, io: any) {
     }
 
     function updateURL(data: any) {
-        let room = getRoomNameBydata(data.senderId, data.receiverId)
-        io.in(room).emit('RE_UPDATED_URL', data);
+
+        io.in(data.receiverId).emit('RE_UPDATED_URL', data);
 
         let updateMsg = UrlLessMsg[data.uuid];
 
@@ -90,9 +108,9 @@ function socketController(socket: Socket, io: any) {
 
         //updateLastSeen
         try {
-           const ab =  await userUpdate(disconnectedUser, { lastSeen: new Date().toISOString() })
+            const ab = await userUpdate(disconnectedUser, { lastSeen: new Date().toISOString() })
             console.log(ab);
-            
+
         } catch (error: any) {
             new Error(error)
         }

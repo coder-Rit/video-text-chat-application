@@ -33,13 +33,20 @@ export interface FilesQI {
   msg:messageI
 }
 
-
+ 
 export interface urlUpdateObjectI {
   uuid:string
   url: string,
   senderId: string,
   receiverId: string,
 }
+
+export interface headerStatusI {
+  senderId: string,
+  receiverId: string,
+  state: string,
+}
+
 
 
 

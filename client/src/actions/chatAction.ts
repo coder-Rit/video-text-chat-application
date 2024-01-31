@@ -18,6 +18,7 @@ export const BulkChatInit = (directState: friendChatI) => (dispatch: any) => {
 
 
 export const appendMsg = (friendId: string, msg: messageI[]) => (dispatch: any) => {
+    console.log("message",msg);
 
     dispatch({ type: UPDATE_CHATS, payload: { friendId, msg } });
 

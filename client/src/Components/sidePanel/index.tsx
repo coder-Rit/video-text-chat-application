@@ -16,15 +16,12 @@ import MyProfile from '../myProfile';
 import MyFriends from './MyFriends';
 import GoBack from '../../Components/AuthPage/components/GoBack';
 import SettingPage from './SettingPage';
+import { On_exchangeMessage } from '../../socket.io/lisnner';
 
 
- 
-interface FriendsPannelI {
-    closeSocket:()=>void
-}
+  
 
-
-const FriendsPannel = (props:FriendsPannelI) => { 
+const FriendsPannel = () => { 
     
 
     //hooks
@@ -102,7 +99,7 @@ const FriendsPannel = (props:FriendsPannelI) => {
     return (
         <>
 
-
+            {On_exchangeMessage()}
         
             {// user profile comp
                 openSiderState === "profile" && <motion.div className="addFriendDiv"
@@ -151,7 +148,7 @@ const FriendsPannel = (props:FriendsPannelI) => {
 
                     }}
                 >
-                    <SettingPage goBack={setopenSiderState} closeSocket={props.closeSocket} ></SettingPage>
+                    <SettingPage goBack={setopenSiderState}  ></SettingPage>
                 </motion.div>
             }
 

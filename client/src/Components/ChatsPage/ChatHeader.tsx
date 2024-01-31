@@ -13,6 +13,7 @@ import { rootState } from '../../Interfaces';
 import { typingInter } from "../../Interfaces/common";
 import { userInterface } from '../../Interfaces/user';
 import useDisplay from '../../hooks/useDisplay';
+import { On_headerStatus } from '../../socket.io/lisnner';
 
 
 const ChatHeader = (props: any) => {
@@ -71,75 +72,24 @@ const ChatHeader = (props: any) => {
     }
   }
 
-
-
-  // get typing states of sender 
-  useEffect(() => {
-    props.socket.on('is_typing_started', (data: typingInter) => {
-
-      
-      if (user.id !== data.senderId) {
-        console.log(data.state);
-        
-         if (data.state === "typing") {
-           setlastSeenState("typing")
-          }else  if (data.state==="946681200000") {
-           setlastSeenState("online")
-          }else{
-           setlastSeenState(data.state)
-         }
-        //  else if (data.state === "typing") {
-           
-        //    setlastSeenState("typing")
-        //  }
-        //  else {
-        //    if (user.friendList[idx-1].lastSeen==="946681200000") {
-        //      setlastSeenState("online")
-        //    }else{
-        //      setlastSeenState( data.state)
-        //    }
-        //  }
-        
-       }
-      
-    })
-
-  }, [props.socket])
-
-
-   
   
-
-
-  // useEffect(() => {
-  //   if (idx) {
-  //     let data = {
-  //       senderId: user.id,
-  //       receiverId: user.friendList[idx-1].id,
-  //       state: user.friendList[idx-1].lastSeen
-  //     }
-  //     props.socket.emit("is_typing_started", data)
-
-  //   }
-
-  // }, [idx])
-
-
-
   useEffect(() => {
-    if (user.friendList[idx-1].lastSeen==="946681200000") {
-      console.log(user.friendList[idx-1].lastSeen);
+    if (user.friendList[idx - 1].lastSeen === "946681200000") {
+      console.log(user.friendList[idx - 1].lastSeen);
       setlastSeenState("online")
-    }else{
-      setlastSeenState(getLastSeenTimeString( user.friendList[idx-1].lastSeen))
+    } else {
+      setlastSeenState(getLastSeenTimeString(user.friendList[idx - 1].lastSeen))
     }
-  }, [ idx])
-  
- 
+  }, [idx])
+
+
 
 
   return (
     <>
+      {
+        On_headerStatus({ setlastSeenState })
+      }
       {
         isFriendSelected && <motion.div
           className="chat_conversation-header"

@@ -19,6 +19,7 @@ import LoadingFile from './Components/LoadingFile';
 import FileComp from './Components/FileComp';
 import MessageBox from './Components/MessageBox';
 import ImageComp from './Components/ImageComp';
+import { On_urlUpdate } from '../../socket.io/lisnner';
 
 
 
@@ -148,49 +149,43 @@ const ChatCard = (props: any) => {
   }, [idx, allChats])
 
 
-  // send url to update message
-  useEffect((): any => {
 
-    props.socket.on('RE_UPDATED_URL', (data: any) => {
-      Dispatch(updateUrl(data, user.id as string))
-    })
-    return () => props.socket.off('RE_UPDATED_URL');
-  }, [props.socket])
 
 
 
 
 
   return (
+    <>
+      {On_urlUpdate()}
+      <motion.div className="chat__conversation-board" id='chatboard'
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{
+          duration: 0.5,
+        }}
+        ref={props.chatboard}>
+        {renderChats()}
 
-    <motion.div className="chat__conversation-board" id='chatboard'
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{
-        duration: 0.5,
-      }}
-      ref={props.chatboard}>
-
-      {renderChats()}
-
-      {
-        (chats.length === 0) && <div
-          className='Add_Friends_Lottie_Box'
-        >
-          <DotLottiePlayer
-            src="./images/Hello.lottie"
-            autoplay
-            loop
-            style={{ width: "300px" }}
-            speed={1.5}
+        {
+          (chats.length === 0) && <div
+            className='Add_Friends_Lottie_Box'
           >
-          </DotLottiePlayer>
-          <h2 >{`Say hello to ${user.friendList[idx - 1].firstName}`}</h2>
-        </div>
-      }
+            <DotLottiePlayer
+              src="./images/Hello.lottie"
+              autoplay
+              loop
+              style={{ width: "300px" }}
+              speed={1.5}
+            >
+            </DotLottiePlayer>
+            <h2 >{`Say hello to ${user.friendList[idx - 1].firstName}`}</h2>
+          </div>
+        }
 
 
-    </motion.div>
+      </motion.div>
+    </>
 
   )
 }

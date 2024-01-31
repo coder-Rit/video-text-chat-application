@@ -10,11 +10,10 @@ import { logOut } from '../../actions/userActions';
 
 //components
 import GoBack from '../AuthPage/components/GoBack'
+import { closeSocket } from '../../socket.io/emiters';
  
 interface SettingPage{
     goBack:(str:string)=>void,
-    closeSocket:()=>void,
-
 }
 
 const SettingPage = (props: SettingPage) => {
@@ -30,7 +29,7 @@ const SettingPage = (props: SettingPage) => {
         sessionStorage.setItem("login", "false")
         Dispatch(logOut())
         navigate("/")
-        props.closeSocket()
+        closeSocket()
 
     }
 
