@@ -52,3 +52,12 @@ query GetChats($friendId: ID, $myId: ID, $load: Int) {
 }
 
 `
+
+export const GET_USER_STATUS =gql`
+query GetOnlineStatus($ids: [ID]) {
+  getOnlineStatus(ids: $ids)  {
+    lastSeen
+    id
+  }
+}
+`

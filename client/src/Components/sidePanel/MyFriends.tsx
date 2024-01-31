@@ -1,6 +1,6 @@
 //packages
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useLazyQuery } from '@apollo/client';
@@ -13,11 +13,13 @@ import { friendChatI } from '../../Interfaces/message';
 import { FriendInterface, sidePanle_I } from '../../Interfaces/common';
 import { DotLottiePlayer } from '@dotlottie/react-player';
 import '@dotlottie/react-player/dist/index.css';
-import { LOAD_ALL_CHATS } from '../../graphQL/chats/query';
+import { GET_USER_STATUS, LOAD_ALL_CHATS } from '../../graphQL/chats/query';
 
 //components
 import GoBack from '../../Components/AuthPage/components/GoBack';
 import { FriendComp } from './components/User';
+import { updateUsersStatus } from '../../actions/userActions';
+
 
 
 
@@ -29,11 +31,13 @@ import { FriendComp } from './components/User';
 const MyFriends = (props: sidePanle_I) => {
 
     const Dispatch: any = useDispatch()
-
+    const { idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
     const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
     const allChats = useSelector<rootState, friendChatI>((state) => state.chats);
 
-    const [loadInitialChats, { data, loading, error }] = useLazyQuery(LOAD_ALL_CHATS, {
+    const [friendList, setfriendList] = useState<(string|undefined)[]>([])
+
+    const [loadInitialChats, { data:chatData }] = useLazyQuery(LOAD_ALL_CHATS, {
         onCompleted: ({ loadInitialChats }) => {
             let allChats = {}
             loadInitialChats.map((data: any) => {
@@ -55,6 +59,8 @@ const MyFriends = (props: sidePanle_I) => {
         }
     })
 
+    const [GetOnlineStatus, { data:statusData,loading,error }] = useLazyQuery(GET_USER_STATUS)
+
 
 
 
@@ -72,6 +78,7 @@ const MyFriends = (props: sidePanle_I) => {
 
             if (isAlreadyFetched) {
                 const friendIds = user.friendList.map(data => data.id)
+                setfriendList(friendIds)
                 loadInitialChats({
                     variables: {
                         friendIds,
@@ -83,6 +90,24 @@ const MyFriends = (props: sidePanle_I) => {
     }, [isAuthenticated])
 
 
+
+    useEffect(() => {
+        if (idx&&friendList) {
+            GetOnlineStatus({
+                variables: {
+                    ids:friendList
+                },
+                fetchPolicy: 'no-cache',
+            })
+        }
+    }, [idx,friendList])
+
+    useEffect(() => {
+        if (statusData) {
+             Dispatch(updateUsersStatus(statusData.getOnlineStatus,user))
+        }
+    }, [statusData])
+    
 
 
     return (

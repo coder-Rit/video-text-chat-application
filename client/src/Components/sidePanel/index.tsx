@@ -18,11 +18,13 @@ import GoBack from '../../Components/AuthPage/components/GoBack';
 import SettingPage from './SettingPage';
 
 
+ 
+interface FriendsPannelI {
+    closeSocket:()=>void
+}
 
 
-
-
-const FriendsPannel = () => { 
+const FriendsPannel = (props:FriendsPannelI) => { 
     
 
     //hooks
@@ -149,7 +151,7 @@ const FriendsPannel = () => {
 
                     }}
                 >
-                    <SettingPage goBack={setopenSiderState} icon=""></SettingPage>
+                    <SettingPage goBack={setopenSiderState} closeSocket={props.closeSocket} ></SettingPage>
                 </motion.div>
             }
 

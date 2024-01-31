@@ -119,7 +119,7 @@ const FindUser = (props: sidePanle_I) => {
                 <h2 className='sidepanle_heading'>ADD FRIENDS</h2>
                 <div className="searchGrp">
                     <SearchIcon sx={{ opacity: "0.5", width: "25px", marginTop: "5px" }}></SearchIcon>
-                    <input type="text" name="userName" className="userNameInput" value={userName} id="" onChange={(e) => setuserName(e.target.value)} placeholder="Search username" />
+                    <input type="text"  className="userNameInput" value={userName}  autoComplete="new-user" onChange={(e) => setuserName(e.target.value)} placeholder="Search username" />
                 </div>
             </div>
             <div className="user-list" ref={friendList_element} >

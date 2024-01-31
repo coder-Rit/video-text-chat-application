@@ -26,16 +26,16 @@ export interface socketControllerI {
 function socketController(socket: Socket, io: any) {
 
     async function userConnected(id: string) {
+        userBysocketId[socket.id as string] = id;
 
         await userUpdate(id, { lastSeen: "1999-12-31T23:00:00.000Z" })
 
     }
 
+     
     function initializeChat(data: messageI) {
         let room = getRoomNameBydata(data.senderId, data.receiverId)
-        userBysocketId[socket.id as string] = data.senderId;
         socket.join(room)
-
     }
 
 
@@ -90,7 +90,9 @@ function socketController(socket: Socket, io: any) {
 
         //updateLastSeen
         try {
-            await userUpdate(disconnectedUser, { lastSeen: new Date().toISOString() })
+           const ab =  await userUpdate(disconnectedUser, { lastSeen: new Date().toISOString() })
+            console.log(ab);
+            
         } catch (error: any) {
             new Error(error)
         }

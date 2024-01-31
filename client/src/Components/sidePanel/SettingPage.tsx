@@ -10,10 +10,14 @@ import { logOut } from '../../actions/userActions';
 
 //components
 import GoBack from '../AuthPage/components/GoBack'
-import { sidePanle_I } from '../../Interfaces/common';
+ 
+interface SettingPage{
+    goBack:(str:string)=>void,
+    closeSocket:()=>void,
 
+}
 
-const SettingPage = (props: sidePanle_I) => {
+const SettingPage = (props: SettingPage) => {
 
     //hooks
     let navigate = useNavigate();
@@ -26,6 +30,7 @@ const SettingPage = (props: sidePanle_I) => {
         sessionStorage.setItem("login", "false")
         Dispatch(logOut())
         navigate("/")
+        props.closeSocket()
 
     }
 

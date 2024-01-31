@@ -35,6 +35,10 @@ const Main = () => {
         }
     }, [isAuthenticated])
 
+    const closeSocket = ()=>{
+        socket.close()
+    }
+
 
 
     return (
@@ -42,11 +46,11 @@ const Main = () => {
             <Toaster richColors position="top-center" />
             <div className="--dark-theme" id="chat">
                 {
-                    screenWidth > 650 && <FriendsPannel   ></FriendsPannel>
+                    screenWidth > 650 && <FriendsPannel  closeSocket={closeSocket} ></FriendsPannel>
                 }
                 <ChatsPage socket={socket} ></ChatsPage>
                 {
-                    screenWidth <= 650 && <FriendsPannel   ></FriendsPannel>
+                    screenWidth <= 650 && <FriendsPannel  closeSocket={closeSocket} ></FriendsPannel>
                 }
 
             </div>

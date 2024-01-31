@@ -71,7 +71,7 @@ const queries = {
       } else {
         throw new Error("User or Password is incorrect")
       }
-      
+
 
     } catch (error: any) {
       throw new Error(error)
@@ -79,7 +79,7 @@ const queries = {
 
   },
   searchFriend: async (_: any, payload: { userName: string, load: number }) => {
-    
+
     try {
       const regex = new RegExp(payload.userName, 'i')
       const users = await UserModel.find({ userName: regex })
@@ -97,6 +97,17 @@ const queries = {
 
 
   },
+  getOnlineStatus: async (_: any, payload: { ids: string[] }) => {
+
+    try {
+      const status =  await UserModel.find({_id:{$in:payload.ids}})
+      return status;
+    } catch (error) {
+      console.error('Error while geting user status:', error);
+      
+    }
+
+  }
 
 
 };

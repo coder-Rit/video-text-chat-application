@@ -10,7 +10,8 @@ import {
   USER_LIST,
   OPEN_SIDER,
   CLOSE_SIDER,
-  DELETE_FRIEND
+  DELETE_FRIEND,
+  UPDATE_USER_STATUS
 } from "../constants/userConstants";
 
 export const userReducer = (state = { user: {} }, action) => {
@@ -45,6 +46,13 @@ export const userReducer = (state = { user: {} }, action) => {
         isAuthenticated: false, 
         error: {},
       };
+
+
+    case UPDATE_USER_STATUS :
+      return {
+        ...state,
+        user:action.payload
+      }
 
     case CLEAR_ERRORS:
       return {

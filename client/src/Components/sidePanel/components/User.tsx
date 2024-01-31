@@ -214,7 +214,7 @@ export const UsersComp = (props: UsersComp_I) => {
       animate={{ opacity: 1, x: 0 }}
       transition={{
         duration: 0.5,
-        delay: 0.1 * props.index,
+        delay: 0.1 *props.index,
         ease: "easeInOut", // You
       }}
     >

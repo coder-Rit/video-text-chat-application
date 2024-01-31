@@ -1,9 +1,7 @@
-import { useSelector } from "react-redux";
 import { UPDATE_CHATS,CHAT_INIT, SET_URL_IN_MESSAGE, BULK_CHAT_INIT } from "../constants/userConstants";
 import { actionI } from "../Interfaces/common";
 import {friendChatI, messageI} from "../Interfaces/message"
-import { rootState } from "../Interfaces";
-import { userInterface } from "../Interfaces/user";
+ 
 
 
 function findLastIndex(arr:messageI[], callback:(obj:messageI)=>boolean) {

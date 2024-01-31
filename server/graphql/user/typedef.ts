@@ -14,6 +14,12 @@ export const typeDefs = `#graphql
     idList: [ID]
     lastSeen:String
   }
+
+  type onlineStatus{
+    id:ID
+    lastSeen:String
+
+  }
  
       
 `;
