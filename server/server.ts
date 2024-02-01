@@ -31,6 +31,10 @@ async function init() {
   //connect to database
   connectToDatabase();
 
+  app.get("/",(req,res)=>{
+    res.send("working fine")
+  })
+
 
   // Create GraphQL Server  
   app.use("/graphql", expressMiddleware(await createApolloGraphqlServer(), {

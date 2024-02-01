@@ -68,7 +68,7 @@ const FileComp = (props: any) => {
 
 
 
-  } else if (props.For === "downloadable_file") {
+  } else   {
     
 
     return (

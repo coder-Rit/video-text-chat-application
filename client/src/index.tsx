@@ -11,7 +11,7 @@ import cookies from "js-cookie";
 import { GET_USER_STATUS } from './graphQL/chats/query';
 
 
-const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' });
+const httpLink = new HttpLink({ uri: 'https://chattapp-server-render.onrender.com/graphql' });
 
 
 const authLink = new ApolloLink((operation, forward) => {
