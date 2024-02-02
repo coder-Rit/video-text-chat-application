@@ -8,10 +8,10 @@ import { ApolloProvider } from '@apollo/client/react';
 import store from './store';
 import { Provider } from 'react-redux';
 import cookies from "js-cookie";
-import { GET_USER_STATUS } from './graphQL/chats/query';
+  import { SERVER_API  } from "./config/config";
 
 
-const httpLink = new HttpLink({ uri: 'https://chattapp-server-render.onrender.com/graphql' });
+const httpLink = new HttpLink({ uri: `${SERVER_API}/graphql` });
 
 
 const authLink = new ApolloLink((operation, forward) => {
@@ -29,7 +29,7 @@ const authLink = new ApolloLink((operation, forward) => {
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
-   
+
 });
 
 

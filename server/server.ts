@@ -17,7 +17,7 @@ dotenv.config({ path: "./config/config.env" });
 async function init() {
 
   const app: Express = express();
-  const PORT = Number(process.env.PORT) || 8000;
+  const PORT = Number(process.env.PORT) || 4000;
 
 
   //cors halder
@@ -54,15 +54,4 @@ async function init() {
 init();
 
 
-
-
-    // socket.on('get_online_status', (data) => {
-
-    //   if (onlineUser.includes(data.frdId)) {
-    //     data.state = "online"
-    //   }
-    //   socket.join(data.myId)
-
-    //   io.to(data.myId).emit('got_online_status', data)
-
-    // })
+ 

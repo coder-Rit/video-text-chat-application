@@ -1,6 +1,7 @@
  import { io } from "socket.io-client";
+import { SERVER_API } from "../config/config";
 
- const socket =  io("https://chattapp-server-render.onrender.com/");
+ const socket =  io(SERVER_API);
 
 export default socket
 
