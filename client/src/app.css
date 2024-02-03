@@ -636,10 +636,8 @@ h3 {
     display: flex;
     height: 100%;
     color: white;
-
     border-radius: 10px;
     gap: 10px;
-
 }
 
 .zIndex2 {
