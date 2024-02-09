@@ -15,7 +15,7 @@ import os from'os';
 
 dotenv.config({ path: "./config/config.env" });
 
-schedule.scheduleJob(' */13 * * * *', function async(){
+schedule.scheduleJob('*/1 * * * * *', function (){
       console.log("🍏🍏 server refresh 🍏🍏");
       
 });
@@ -60,23 +60,4 @@ async function init() {
 }
 
 
-
-
-//clustiring
-if (cluster.isPrimary) {
-  // Fork workers
-  console.log(`We have ${os.cpus().length} 🤖 available`);
-  
-  for (let i = 0; i < os.cpus().length; i++) {
-    cluster.fork();
-  }
-
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died`);
-  });
-} else {
-  
-  console.log(`Worker 🧑‍🏭 ${process.pid} started`);
-  init();
-
-}
+init()

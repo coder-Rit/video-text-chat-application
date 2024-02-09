@@ -18,8 +18,7 @@ Charler cutting edge server that built on top of modern tech stack.
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=flat&logo=typescript&logoColor=white) ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=flat&logo=node.js&logoColor=white) ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=flat&logo=mongodb&logoColor=white) ![GraphQL](https://img.shields.io/badge/-GraphQL-E10098?style=flat&logo=graphql&logoColor=white) ![Socket.io](https://img.shields.io/badge/Socket.io-black?style=flat&logo=socket.io&badgeColor=010101) ![Render](https://img.shields.io/badge/Render-%46E3B7.svg?style=flat&logo=render&logoColor=white)
 
 ---
-
-[![](https://visitcount.itsvg.in/api?id=coder-rit&icon=0&color=0)](https://visitcount.itsvg.in)
+ 
 
 <!-- Proudly created with GPRM ( https://gprm.itsvg.in ) -->
 
@@ -35,7 +34,7 @@ These are the features provied by chaler.
 - Video call using webRTC (upcoming).
 - Voice call. (upcoming).
 
-##### Node server up-scaling features
+#### Node server up-scaling features
 
 - Clustering.
 - File Streams to reduce memory space.
