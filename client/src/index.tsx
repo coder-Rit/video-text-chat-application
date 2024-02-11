@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from "./App";
 import "./assets/VisbyRoundCF-Regular.woff";
@@ -29,6 +29,11 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 
 });
+
+useEffect(() => {
+ console.log(`${process.env.REACT_APP_SERVER_API}/graphql`);
+ 
+}, [ ])
 
  
 
