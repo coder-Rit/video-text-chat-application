@@ -38,11 +38,7 @@ function App() {
     loadUserQ()
     
   }, [])
-
-  useEffect(() => {
-    console.log(`${process.env.REACT_APP_SERVER_API}/graphql`);
-    
-   }, [ ])
+ 
  
   return (
     <Router>
