@@ -25,6 +25,7 @@ import { User  } from '../../../Interfaces/user'
 
 //components
 import ProfileImage from "../../AuthPage/components/ProfileImage";
+import { decryptMessage } from "../../../functions/cryptographer";
 
 
 
@@ -95,10 +96,10 @@ export const FriendComp = (props: FriendComp_I) => {
         if (msgArr.length !== 0) {
           const msgObject = msgArr[msgArr.length - 1];
           if (msgObject.type === "text") {
-            setlastMsg(msgObject.msg);
+            setlastMsg(decryptMessage(msgObject.msg));
           } else {
             if (msgObject.msg !== "") {
-              setlastMsg(msgObject.msg);
+              setlastMsg(decryptMessage(msgObject.msg));
             } else {
               setlastMsg(msgObject.fileData?.fileName as string);
             }

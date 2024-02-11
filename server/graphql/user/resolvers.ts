@@ -3,6 +3,7 @@ import { User, UserModel } from "../../model/userModel";
 import { messageModel } from "../../model/messageModel";
 import jwt from "jsonwebtoken";
 import { GraphQLError } from "graphql";
+import { counterModel } from "../../model/pageCountModel";
 
 
 interface tokenPayload {
@@ -100,11 +101,11 @@ const queries = {
   getOnlineStatus: async (_: any, payload: { ids: string[] }) => {
 
     try {
-      const status =  await UserModel.find({_id:{$in:payload.ids}})
+      const status = await UserModel.find({ _id: { $in: payload.ids } })
       return status;
     } catch (error) {
       console.error('Error while geting user status:', error);
-      
+
     }
 
   }
@@ -197,7 +198,7 @@ const mutations = {
 
 
   }
-
+  
 
 };
 

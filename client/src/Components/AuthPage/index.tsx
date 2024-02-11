@@ -5,7 +5,7 @@ import { userInterface } from "../../Interfaces/user";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Toaster, toast } from "sonner";
-
+import VisibilityIcon from '@mui/icons-material/Visibility';
 //utils
 import valley from "../../assets/valley.jpeg";
 import { rootState } from "../../Interfaces";
@@ -14,9 +14,14 @@ import { rootState } from "../../Interfaces";
 import DummyUser from "./DummyUser";
 import SignUpForm from "./SignUpForm";
 import LogInForm from "./LogInForm";
+import SocialMedia from "./components/SocialMedia";
+import axios from "axios";
+ 
+let counted = false
 
 const AuthPage = () => {
   const [hasAccount, setHasAccount] = useState(false);
+   const [PageCount, setPageCount] = useState(0);
   let navigate = useNavigate();
 
   const { isAuthenticated } = useSelector<rootState, userInterface>(
@@ -43,13 +48,35 @@ const AuthPage = () => {
       navigate("/chatt");
     }
   }, [isAuthenticated]);
-  
+
   useEffect(() => {
     if (sessionStorage.getItem("login") === "false") {
       toast.success("Log Out Successful");
       sessionStorage.setItem("login", "");
+
     }
+
+   
+
   }, []);
+
+
+  useEffect(() => {
+    if (!counted) {
+      counted = false
+      axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/pagedViewed`)
+      .then(res => {
+        setPageCount(res.data.count as number);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    }
+  }, [counted])
+  
+
+
+
 
   const backgroundImage = {
     backgroundImage: `url(${valley})`, // Here due to variable
@@ -60,7 +87,13 @@ const AuthPage = () => {
       <Toaster richColors position="top-center" />
 
       <div className="background-gradient-dark">
-        <div style={styles.titleStyle}>Pretty</div>
+        <div className="nameAndSocialMedia">
+          <div style={styles.titleStyle}>Charler</div>
+          <div>
+
+          </div>
+          <SocialMedia></SocialMedia>
+        </div>
         <div className="form-users-div">
           <div style={styles.formContainerStyle}>
             {hasAccount ? (
@@ -80,6 +113,15 @@ const AuthPage = () => {
             </div>
           </div>
         </div>
+
+        <div className="pageViewDiv">
+
+
+          {PageCount}
+
+          <VisibilityIcon></VisibilityIcon>
+        </div>
+
       </div>
     </div>
   );
@@ -95,7 +137,6 @@ const styles = {
     fontFamily: "VisbyRoundCF-Heavy",
     letterSpacing: "0.5px",
     color: "white",
-    paddingBottom: "4vw",
   } as CSSProperties,
 };
 

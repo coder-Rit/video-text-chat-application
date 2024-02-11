@@ -10,22 +10,24 @@ import schedule from "node-schedule";
 import createApolloGraphqlServer, { MyContext } from "./graphql";
 import intializeScoketIO from "./socketController";
 import connectToDatabase from "./config/dataBase";
-import cluster from'cluster';
-import os from'os';
+import userRouter from "./router/userRouter"
+import pageCountRouter from "./router/pageCountRouter"
+import cluster from 'cluster';
+import os from 'os';
+import axios from "axios";
 
 dotenv.config({ path: "./config/config.env" });
 
-schedule.scheduleJob('*/1 * * * * *', function (){
-      console.log("🍏🍏 server refresh 🍏🍏");
-      
-});
  
- 
+
+
+
 
 async function init() {
 
   const app: Express = express();
   const PORT = Number(process.env.PORT) || 4000;
+
 
 
   //cors halder
@@ -34,28 +36,40 @@ async function init() {
     origin: process.env.ORIGIN
   }))
   app.use(express.json());
- 
+
 
   //connect to database
   connectToDatabase();
 
-  app.get("/",(req,res)=>{
+  app.get("/", (req, res) => {
     res.send("working fine")
   })
+
+  app.use("/api/v1", userRouter)
+  app.use("/api/v1", pageCountRouter)
+
 
 
   // Create GraphQL Server  
   app.use("/graphql", expressMiddleware(await createApolloGraphqlServer(), {
-    context:  MyContext
+    context: MyContext
   } as any));
- 
+
 
   // http server for socketio
-  const httpserver = createServer(app);  
+  const httpserver = createServer(app);
   httpserver.listen(PORT, async () => {
     console.log(` 🔌🔌 Server started at PORT:${PORT} 🔌🔌 `);
     //intialize Scoket.io
     intializeScoketIO(httpserver, app)
+  });
+
+  
+  schedule.scheduleJob('*/59 * * * * *', async function () {
+
+    axios.get(`https://api.multiavatar.com/Binx%20Bond.svg`).then(data => console.log("🍏🍏 server refresh 🍏🍏")
+    )
+
   });
 }
 

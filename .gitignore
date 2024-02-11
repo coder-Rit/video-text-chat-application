@@ -1,5 +1,6 @@
 .DS_STORE
 client/node_modules
+client/.env
 server/node_modules
 node_modules
 scripts/flow/*/.flowconfig

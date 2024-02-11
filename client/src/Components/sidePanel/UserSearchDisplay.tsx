@@ -10,7 +10,7 @@ import { UsersComp } from './components/User';
 const UserSearchDisplay = (props: any) => {
 
  
-
+ 
   return (
     < >
       {props.friendList &&

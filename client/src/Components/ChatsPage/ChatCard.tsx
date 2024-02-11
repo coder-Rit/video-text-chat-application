@@ -20,6 +20,7 @@ import FileComp from './Components/FileComp';
 import MessageBox from './Components/MessageBox';
 import ImageComp from './Components/ImageComp';
 import { On_urlUpdate } from '../../socket.io/lisnner';
+import { decryptMessage } from '../../functions/cryptographer';
 
 
 
@@ -54,9 +55,11 @@ const ChatCard = (props: any) => {
 
   // map text
   function textMaper(data: messageI, idx: number) {
+    const de_msg =  decryptMessage(data.msg)
 
     const main = <>
-      <span className='msgTxt'>{data.msg}</span>
+    
+      <span className='msgTxt'>{de_msg}</span>
       <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
     </>
 

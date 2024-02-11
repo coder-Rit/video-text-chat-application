@@ -37,7 +37,7 @@ const DefaultCart = () => {
         speed={1.5}
       >
       </DotLottiePlayer>
-      <p>Chat with 560 online users</p>
+      <p>End-to-End Encryption Charler</p>
     </motion.div>
   );
 };

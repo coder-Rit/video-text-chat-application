@@ -24,6 +24,7 @@ import { v4 as uuidv4 } from 'uuid';
 import FileComp from "./Components/FileComp";
 import { emit_InitChat, emit_exchangeMessage, emit_headerStatus, emit_urlUpdator } from "../../socket.io/emiters";
 import { On_exchangeMessage } from "../../socket.io/lisnner";
+import { encryptMessage } from "../../functions/cryptographer";
 
 
 
@@ -47,7 +48,7 @@ const MessageForm = (props: any) => {
   const [previewFileList, setpreviewFileList] = useState<any>([]);
   const [fileCaption, set_fileCaption] = useState<number>(0);
 
-
+  
 
   //upload files
   const uploadFiles = (file: File, uuid: string) => {
@@ -84,7 +85,7 @@ const MessageForm = (props: any) => {
   }
 
   // send messages
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
 
@@ -93,9 +94,12 @@ const MessageForm = (props: any) => {
 
     // for text
     if (selectedType === "text") {
+
+
+
       const msg: messageI = {
         uuid: "",
-        msg: text,
+        msg:   encryptMessage(text) ,
         senderId: user.id as string,
         receiverId: selectedFriend.id as string,
         createdAt,

@@ -125,3 +125,41 @@
  }
    
 }
+
+
+/* SocialMediaDiv */
+.nameAndSocialMedia{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 4vw;
+}
+.SocialMediaDiv{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+
+
+
+
+.pageViewDiv{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+   
+  width: 60px;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.066);
+  color: white;
+  gap: 5px;
+  font-size: 14px;
+  margin-top: 50px;
+  border-radius: 5px;
+  font-weight: bold;
+  border: 1px solid rgba(255, 255, 255, 0.225);
+  border-top: none;
+  border-left: none;
+}

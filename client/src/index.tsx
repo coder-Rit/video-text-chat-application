@@ -1,17 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from "./App";
-
 import "./assets/VisbyRoundCF-Regular.woff";
 import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
 import store from './store';
 import { Provider } from 'react-redux';
 import cookies from "js-cookie";
-  import { SERVER_API  } from "./config/config";
+ 
 
-
-const httpLink = new HttpLink({ uri: `${SERVER_API}/graphql` });
+const httpLink = new HttpLink({ uri: `${process.env.REACT_APP_SERVER_API}/graphql` });
 
 
 const authLink = new ApolloLink((operation, forward) => {
@@ -32,7 +30,7 @@ const client = new ApolloClient({
 
 });
 
-
+ 
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
