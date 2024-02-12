@@ -16,12 +16,13 @@ import SignUpForm from "./SignUpForm";
 import LogInForm from "./LogInForm";
 import SocialMedia from "./components/SocialMedia";
 import axios from "axios";
- 
+import { Alert } from "@mui/material";
+
 let counted = false
 
 const AuthPage = () => {
   const [hasAccount, setHasAccount] = useState(false);
-   const [PageCount, setPageCount] = useState(0);
+  const [PageCount, setPageCount] = useState(0);
   let navigate = useNavigate();
 
   const { isAuthenticated } = useSelector<rootState, userInterface>(
@@ -56,24 +57,28 @@ const AuthPage = () => {
 
     }
 
-   
+
 
   }, []);
 
 
   useEffect(() => {
-    if (!counted) {
-      counted = false
+
+    if (!sessionStorage.getItem("count")) {
       axios.get(`${process.env.REACT_APP_SERVER_API}/api/v1/pagedViewed`)
-      .then(res => {
-        setPageCount(res.data.count as number);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+        .then(res => {
+          setPageCount(res.data.count as number);
+          sessionStorage.setItem("count", `${res.data.count as number}`)
+          toast(<Alert severity="success">Server is ready, plaease login</Alert>)
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      setPageCount(JSON.parse(sessionStorage.getItem("count") as string));
     }
   }, [counted])
-  
+
 
 
 

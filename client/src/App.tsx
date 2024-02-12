@@ -8,12 +8,14 @@ import Cookies from "js-cookie";
 
 import "./app.css";
 import { useDispatch } from "react-redux";
-import { loadUser } from "./actions/userActions"; 
+import { loadUser } from "./actions/userActions";
 import { LOAD_USER } from "./graphQL/user/query";
 
 
 import Main from "./Components/main";
 import AuthPage from "./Components/AuthPage";
+import { toast } from "sonner";
+import { Alert } from "@mui/material";
 
 
 
@@ -36,10 +38,14 @@ function App() {
 
   useEffect(() => {
     loadUserQ()
-    
+    if (!sessionStorage.getItem("count")) {
+      toast(
+        <Alert severity="info">Preparing server,<b> plaease wait for 50 sec</b></Alert>
+      )
+    }
   }, [])
- 
- 
+
+
   return (
     <Router>
 
