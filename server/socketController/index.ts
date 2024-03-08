@@ -9,7 +9,7 @@ function intializeScoketIO(httpserver: any, app: any) {
 
     const io = new Server(httpserver, {
         cors: {
-            origin: process.env.ORIGIN,
+            origin: [process.env.ORIGIN_1 as string,process.env.ORIGIN_2 as string] ,
             methods: ['GET', 'POST']
         },
     });

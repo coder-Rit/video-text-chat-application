@@ -1,4 +1,4 @@
-import { FriendInterface, siderStateInterface } from "./common";
+import { FriendInterface, selectMessageI, siderStateInterface } from "./common";
 import { friendChatI } from "./message";
 import { UserListInterface, userInterface } from "./user";
 
@@ -8,4 +8,5 @@ export interface rootState {
   siderState: siderStateInterface,
   selectedFriend:FriendInterface,
   chats:friendChatI,
+  selecteMessage:selectMessageI
 }

@@ -13,6 +13,7 @@ import { LoginAction } from '../../actions/userActions';
 
 //components
 import ProfileImage from './components/ProfileImage';
+import { toast } from 'sonner';
 
 const LOGIN = gql`
 query UserLogin($email: String!, $password: String!) {
@@ -44,7 +45,7 @@ const DummyUser = (props: any) => {
     const Display = useDisplay().getScreenWidth()
     let navigate = useNavigate();
     const Dispatch: any = useDispatch()
-
+ 
 
     const [loginUser, { loading, error, data }] = useLazyQuery(LOGIN, {
         variables: {
@@ -56,7 +57,13 @@ const DummyUser = (props: any) => {
 
 
     const directLogin = () => {
-        loginUser()
+        toast.promise(loginUser, {
+            loading: 'Loading...',
+            success: (data) => {
+                return `Loin succesfull`;
+            },
+            error: 'Error',
+        });
     }
 
     useEffect(() => {

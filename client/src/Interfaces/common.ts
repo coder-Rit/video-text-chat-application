@@ -10,7 +10,6 @@ export interface siderStateInterface {
   export interface  FriendInterface{
     isFriendSelected: boolean,
     idx:number,
-    selectedFriend:User
   }
 
 
@@ -36,3 +35,8 @@ export interface siderStateInterface {
   }
 
   
+  export interface selectMessageI {
+    isMessageSlected: boolean,
+    messageIndex: number,
+     
+  }

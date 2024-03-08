@@ -14,6 +14,7 @@ import { typingInter } from "../../Interfaces/common";
 import { userInterface } from '../../Interfaces/user';
 import useDisplay from '../../hooks/useDisplay';
 import { On_headerStatus } from '../../socket.io/lisnner';
+import socket from '../../socket.io';
 
 
 const ChatHeader = (props: any) => {
@@ -72,14 +73,22 @@ const ChatHeader = (props: any) => {
     }
   }
 
-  
+
   useEffect(() => {
-    if (user.friendList[idx - 1].lastSeen === "946681200000") {
-      setlastSeenState("online")
-    } else {
-      setlastSeenState(getLastSeenTimeString(user.friendList[idx - 1].lastSeen))
-    }
-  }, [idx])
+
+    socket.on("ONLINE_USER_LIST", (data:[string]) => {
+      console.log(data);
+      
+      if (data.includes(user.friendList[idx - 1].id as string)) {
+        setlastSeenState("online")
+      } else {
+        setlastSeenState(getLastSeenTimeString(user.friendList[idx - 1].lastSeen))
+      }
+    })
+ 
+  }, [socket,idx])
+
+
 
 
 
@@ -100,9 +109,9 @@ const ChatHeader = (props: any) => {
           }}
 
         >
-          <div><img className="chat_conversation-header-image" src={`https://api.multiavatar.com/${user.friendList[idx-1].userName}.png`} alt="" /></div>
+          <div><img className="chat_conversation-header-image" src={`https://api.multiavatar.com/${user.friendList[idx - 1].userName}.png`} alt="" /></div>
           <div className="chat_conversation-header-details">
-            <h3>{user.friendList[idx-1].firstName} {user.friendList[idx-1].lastName}  </h3>
+            <h3>{user.friendList[idx - 1].firstName} {user.friendList[idx - 1].lastName}  </h3>
             <span>
               {lastSeenState === "typing" ? <div className='typing '>
                 <span></span>

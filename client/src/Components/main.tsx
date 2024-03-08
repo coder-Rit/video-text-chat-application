@@ -41,6 +41,7 @@ const Main = () => {
         <>
             <Toaster richColors closeButton position="top-center" />
             <div className="--dark-theme" id="chat">
+                
                 {
                     screenWidth > 650 && <FriendsPannel   ></FriendsPannel>
                 }

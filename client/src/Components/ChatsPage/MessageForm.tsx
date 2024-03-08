@@ -36,7 +36,7 @@ const MessageForm = (props: any) => {
 
   //states
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
-  const { selectedFriend, isFriendSelected, idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
+  const {  isFriendSelected, idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
   const [text, setText] = useState<string>("");
   const [files, setfiles] = useState<FileList | null>()
   const [EmojiPiker, setEmojiPiker] = useState<boolean>(false)
@@ -101,7 +101,7 @@ const MessageForm = (props: any) => {
         uuid: "",
         msg:   encryptMessage(text) ,
         senderId: user.id as string,
-        receiverId: selectedFriend.id as string,
+        receiverId: user.friendList[idx-1].id as string,
         createdAt,
         type: "text"
       }
@@ -194,7 +194,7 @@ const MessageForm = (props: any) => {
       uuid: uuidv4(),
       msg: text,
       senderId: user.id as string,
-      receiverId: selectedFriend.id as string,
+      receiverId: user.friendList[idx-1].id as string,
       createdAt: "",
       type: selectedType,
       fileData: tempFile
@@ -265,7 +265,7 @@ const MessageForm = (props: any) => {
       emit_InitChat({
         msg: user.userName,
         senderId: user.id as string,
-        receiverId: selectedFriend.id as string,
+        receiverId: user.friendList[idx-1].id as string,
         createdAt: new Date().toISOString(),
       })
     }

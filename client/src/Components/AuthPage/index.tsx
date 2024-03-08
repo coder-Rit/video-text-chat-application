@@ -17,6 +17,7 @@ import LogInForm from "./LogInForm";
 import SocialMedia from "./components/SocialMedia";
 import axios from "axios";
 import { Alert } from "@mui/material";
+import Logo from "./Logo";
 
 let counted = false
 
@@ -93,11 +94,19 @@ const AuthPage = () => {
 
       <div className="background-gradient-dark">
         <div className="nameAndSocialMedia">
-          <div style={styles.titleStyle}>Charler</div>
-          <div>
+          <div style={styles.titleStyle}><Logo></Logo></div>
+          <div className='SocialMediaDiv'>
 
+
+            <div className="pageViewDiv">
+
+
+              {PageCount}
+
+              <VisibilityIcon></VisibilityIcon>
+            </div>
+            <SocialMedia></SocialMedia>
           </div>
-          <SocialMedia></SocialMedia>
         </div>
         <div className="form-users-div">
           <div style={styles.formContainerStyle}>
@@ -119,13 +128,7 @@ const AuthPage = () => {
           </div>
         </div>
 
-        <div className="pageViewDiv">
 
-
-          {PageCount}
-
-          <VisibilityIcon></VisibilityIcon>
-        </div>
 
       </div>
     </div>

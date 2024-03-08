@@ -37,24 +37,29 @@
   display: flex;
   flex-direction: column;
 }
+
 .dummyUsers {
   display: flex;
   gap: 1vw;
- }
-.hrLine{
+}
+
+.hrLine {
   height: 130%;
   width: 1px;
   margin: 20px;
   background-color: rgba(255, 255, 255, 0.29);
 }
-.flex{
+
+.flex {
   display: flex;
 }
-.form-users-div{
+
+.form-users-div {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+
 .login-input {
   width: 100%;
   padding: 10px;
@@ -91,75 +96,124 @@
   color: #777;
 }
 
-@media only screen and (max-width: 1000px){
-  .dummyUsers{
+@media only screen and (max-width: 1000px) {
+  .dummyUsers {
     flex-direction: column;
     width: max-content;
   }
-  .imageNname{
+
+  .imageNname {
     flex-direction: row;
   }
-  .login-div{
+
+  .login-div {
     width: 50px;
   }
-  .login-form-container{
+
+  .login-form-container {
     display: flex;
     gap: 10px;
     justify-content: space-between;
   }
-   
+
 }
 
-@media only screen and (max-width: 700px){
- .form-users-div{
-  flex-direction: column;
-  gap: 30px;
- }
- .hrLine{
-  width: 90vw;
-  height: 1px;
- }
- .dummyUsers{
-  width: 85vw;
-  gap: 10px ;
- }
-   
+@media only screen and (max-width: 700px) {
+  .form-users-div {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .hrLine {
+    width: 90vw;
+    height: 1px;
+  }
+
+  .dummyUsers {
+    width: 85vw;
+    gap: 10px;
+  }
+
 }
 
 
 /* SocialMediaDiv */
-.nameAndSocialMedia{
+.nameAndSocialMedia {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-bottom: 4vw;
 }
-.SocialMediaDiv{
+
+.SocialMediaDiv {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
 }
 
+.SocialMediaDiv>a {
+  display: flex;
+  align-items: center;
+}
 
 
 
 
-.pageViewDiv{
+.pageViewDiv {
   display: flex;
   justify-content: center;
   align-items: center;
-   
+
   width: 60px;
   height: 30px;
   background-color: rgba(255, 255, 255, 0.066);
   color: white;
   gap: 5px;
   font-size: 14px;
-  margin-top: 50px;
   border-radius: 5px;
   font-weight: bold;
   border: 1px solid rgba(255, 255, 255, 0.225);
   border-top: none;
   border-left: none;
+}
+
+.logoDiv {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.logoDiv>img {
+  width: 50px;
+  height: 50px;
+}
+.logoAnimation{
+  animation: LogoAnimation 2s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+
+}
+
+@keyframes LogoAnimation {
+  0% {
+    transform: translateY(5px) rotateZ(5deg);
+  }
+  
+  50% {
+    transform: translateY(-5px)rotateZ(-5deg);
+  }
+  
+  100% {
+    transform: translateY(5px)rotateZ(5deg);
+  }
+}
+
+.logoDiv>div {
+  display: flex;
+  flex-direction: column;
+}
+
+.logoName {}
+
+.logoLIne {
+  font-size: 10px;
 }

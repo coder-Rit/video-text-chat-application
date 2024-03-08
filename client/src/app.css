@@ -657,14 +657,9 @@ h3 {
     transition: all 0.2s;
 }
 
-.sidepanle_btns>div :hover {
-    background-color: var(--chat-button-hover-color);
-}
+ 
 
-.sidepanle_btns {
-    padding-top: 80px;
-}
-
+ 
 
 
 .sidepanle_heading {

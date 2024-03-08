@@ -25,12 +25,17 @@ export interface socketControllerI {
 
 function socketController(socket: Socket, io: any) {
 
-     
+
     async function userConnected(id: string) {
-        userBysocketId[socket.id as string] = id;
         socket.join(id)
-        console.log ("sockejoined by ", id)
-        await userUpdate(id, { lastSeen: "1999-12-31T23:00:00.000Z" })
+        if (!onlineUser.includes(id)) {
+            onlineUser.push(id)
+            userBysocketId[socket.id as string] = id;
+        }
+        io.emit("ONLINE_USER_LIST", onlineUser)
+        
+        console.log("socket joined by ", id)
+        await userUpdate(id, { lastSeen: new Date().toISOString() })
 
     }
 
@@ -54,7 +59,7 @@ function socketController(socket: Socket, io: any) {
 
         }
     }
-     
+
 
     function userStatus(data: typingInter) {
         const room = getRoomNameBydata(data.senderId, data.receiverId)
@@ -75,7 +80,8 @@ function socketController(socket: Socket, io: any) {
         if (updateMsg && updateMsg.fileData) {
             updateMsg.fileData.url = data.url;
         }
-
+        console.log(updateMsg);
+        
         saveMessage(updateMsg)
         delete UrlLessMsg[data.uuid]
     }
@@ -89,6 +95,8 @@ function socketController(socket: Socket, io: any) {
         })
 
         delete userBysocketId[socket.id]
+        io.emit("ONLINE_USER_LIST", onlineUser)
+
 
         //updateLastSeen
         try {

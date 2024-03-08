@@ -10,7 +10,7 @@ import { DotLottiePlayer } from '@dotlottie/react-player';
 import { userInterface } from '../../Interfaces/user';
 import { rootState } from '../../Interfaces';
 import { FriendInterface } from '../../Interfaces/common';
-import { friendChatI, messageI } from '../../Interfaces/message';
+import { fileI, friendChatI, messageI } from '../../Interfaces/message';
 import { updateUrl } from '../../actions/chatAction';
 import '@dotlottie/react-player/dist/index.css';
 
@@ -21,6 +21,7 @@ import MessageBox from './Components/MessageBox';
 import ImageComp from './Components/ImageComp';
 import { On_urlUpdate } from '../../socket.io/lisnner';
 import { decryptMessage } from '../../functions/cryptographer';
+import ImagePlayer from '../Players/ImagePlayer';
 
 
 
@@ -55,10 +56,10 @@ const ChatCard = (props: any) => {
 
   // map text
   function textMaper(data: messageI, idx: number) {
-    const de_msg =  decryptMessage(data.msg)
+    const de_msg = decryptMessage(data.msg)
 
     const main = <>
-    
+
       <span className='msgTxt'>{de_msg}</span>
       <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
     </>
@@ -104,7 +105,7 @@ const ChatCard = (props: any) => {
   // map images
   function imageMaper(data: messageI, idx: number) {
     const main = <>
-      <ImageComp fileData={data.fileData} ></ImageComp>
+      <ImageComp fileData={data.fileData as fileI} idx={idx} ></ImageComp>
       {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
       <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
     </>
@@ -161,6 +162,7 @@ const ChatCard = (props: any) => {
   return (
     <>
       {On_urlUpdate()}
+
       <motion.div className="chat__conversation-board" id='chatboard'
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -169,7 +171,6 @@ const ChatCard = (props: any) => {
         }}
         ref={props.chatboard}>
         {renderChats()}
-
         {
           (chats.length === 0) && <div
             className='Add_Friends_Lottie_Box'

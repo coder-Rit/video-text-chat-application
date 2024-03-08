@@ -20,28 +20,29 @@ import { FriendInterface } from "../../../Interfaces/common";
 import useDisplay, { useDisplayI } from "../../../hooks/useDisplay";
 import { friendChatI, messageI } from "../../../Interfaces/message";
 import "../index.css";
-import { User  } from '../../../Interfaces/user'
+import { User } from '../../../Interfaces/user'
 
 
 //components
 import ProfileImage from "../../AuthPage/components/ProfileImage";
 import { decryptMessage } from "../../../functions/cryptographer";
+import socket from "../../../socket.io";
 
 
 
 
 
 interface FriendComp_I {
-  index:number,
-  user:User,
-  goBack:(str:string)=>void,
-  lastMsg:messageI[]
+  index: number,
+  user: User,
+  goBack: (str: string) => void,
+  lastMsg: messageI[]
 
 }
 interface UsersComp_I {
-  index:number,
-  user:User,
-  goBack:(str:string)=>void
+  index: number,
+  user: User,
+  goBack: (str: string) => void
 }
 
 export const FriendComp = (props: FriendComp_I) => {
@@ -50,43 +51,47 @@ export const FriendComp = (props: FriendComp_I) => {
   //hooks
   const Dispatch: any = useDispatch();
   const Display: useDisplayI = useDisplay();
-
   const userDiv = useRef<HTMLInputElement>(null);
 
 
 
   //state
-  const { selectedFriend, isFriendSelected } = useSelector<
+  const { isFriendSelected ,idx} = useSelector<
     rootState,
     FriendInterface
   >((state) => state.selectedFriend);
+  const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
   const allChats = useSelector<rootState, friendChatI>((state) => state.chats);
 
   const [lastMsg, setlastMsg] = useState<string | null>(null);
+  const [online_users, setonline_users] = useState<[string]>([""]);
 
-   
+
+
 
   // functions
   const selectFriendFunc = () => {
-    Dispatch(selectFriend(props.user, props.index + 1));
+    Dispatch(selectFriend(props.index + 1));
 
     if (Display.getScreenWidth() < 1000) {
       props.goBack("index");
     }
   };
- 
 
-   
+
+
 
   useEffect(() => {
-    if (isFriendSelected && selectedFriend.id === props.user.id) {
+    if (isFriendSelected && user.friendList[idx-1].id as string === props.user.id) {
       userDiv.current?.classList.add("selectedUser");
       userDiv.current?.classList.remove("deselectedUser");
     } else {
       userDiv.current?.classList.remove("selectedUser");
       userDiv.current?.classList.add("deselectedUser");
     }
-  }, [selectedFriend]);
+  }, [idx]);
+
+
 
   useEffect(() => {
     if (allChats) {
@@ -111,6 +116,13 @@ export const FriendComp = (props: FriendComp_I) => {
     }
   }, [allChats]);
 
+  useEffect(() => {
+    socket.on("ONLINE_USER_LIST", (data) => {
+      setonline_users(data)
+    })
+  }, [socket])
+
+
   return (
     <motion.div
       className="user"
@@ -131,19 +143,19 @@ export const FriendComp = (props: FriendComp_I) => {
         ></ProfileImage>
       </div>
 
-        <div className="detailsDiv" onClick={selectFriendFunc}>
-          <span>{props.user.userName}</span>
+      <div className="detailsDiv" onClick={selectFriendFunc}>
+        <span>{props.user.userName}</span>
 
-          {lastMsg && <span className="lastMsg">{lastMsg}</span>}
-          {!lastMsg && (
-            <Skeleton
-              variant="text"
-              width={200}
-              sx={{ fontSize: "1rem", bgcolor: "#f3e5f5" }}
-            />
-          )}
-          {<div className={props.user.lastSeen==="946681200000"?"online":""}>{props.user.lastSeen==="946681200000"?"online":null}</div>}
-        </div>
+        {lastMsg && <span className="lastMsg">{lastMsg}</span>}
+        {!lastMsg && (
+          <Skeleton
+            variant="text"
+            width={200}
+            sx={{ fontSize: "1rem", bgcolor: "#f3e5f5" }}
+          />
+        )}
+        {<div className={online_users.includes(props.user.id as string) ? "online" : ""}>{online_users.includes(props.user.id as string) ? "online" : null}</div>}
+      </div>
 
 
     </motion.div>
@@ -164,7 +176,7 @@ export const UsersComp = (props: UsersComp_I) => {
 
   //state
   const { user } = useSelector<rootState, userInterface>((state) => state.user);
- 
+
   const [actionState, SetactionState] = useState<string>("");
 
   // queries
@@ -203,9 +215,9 @@ export const UsersComp = (props: UsersComp_I) => {
     }
   }, [data]);
 
-  
 
-  
+
+
 
   return (
     <motion.div
@@ -215,7 +227,7 @@ export const UsersComp = (props: UsersComp_I) => {
       animate={{ opacity: 1, x: 0 }}
       transition={{
         duration: 0.5,
-        delay: 0.1 *props.index,
+        delay: 0.1 * props.index,
         ease: "easeInOut", // You
       }}
     >
@@ -228,32 +240,32 @@ export const UsersComp = (props: UsersComp_I) => {
       </div>
 
 
-        <div className="detailsDiv_findUser">
-          <div>
-            <span>{props.user.userName}</span>
-            <div> </div>
-          </div>
-
-          <span >
-            {user.friendList.filter(
-              (data: any) => data.id === props.user.id
-            )[0] ? (
-              <span
-                className="squareIcones icone-red"
-                onClick={() => updateFriend(props.user.id as string, "Removed")}
-              >
-                <RemoveIcon></RemoveIcon>
-              </span>
-            ) : (
-              <span
-                className="squareIcones icone-white"
-                onClick={() => updateFriend(props.user.id as string, "Added")}
-              >
-                <AddIcon></AddIcon>
-              </span>
-            )}
-          </span>
+      <div className="detailsDiv_findUser">
+        <div>
+          <span>{props.user.userName}</span>
+          <div> </div>
         </div>
+
+        <span >
+          {user.friendList.filter(
+            (data: any) => data.id === props.user.id
+          )[0] ? (
+            <span
+              className="squareIcones icone-red"
+              onClick={() => updateFriend(props.user.id as string, "Removed")}
+            >
+              <RemoveIcon></RemoveIcon>
+            </span>
+          ) : (
+            <span
+              className="squareIcones icone-white"
+              onClick={() => updateFriend(props.user.id as string, "Added")}
+            >
+              <AddIcon></AddIcon>
+            </span>
+          )}
+        </span>
+      </div>
     </motion.div>
   )
 }

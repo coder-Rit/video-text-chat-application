@@ -160,6 +160,9 @@ const FriendsPannel = () => {
             <div className="grid-item">
                 <div className="sidepanle">
                     <div className='sidepanle_btns'>
+                        {
+                            Dispaly.getScreenWidth() > 1000 && <div   className='zIndex2'> <img className='icone-as-btn logoAnimation'  src="./images/charlarX32.png"  alt="" /> </div>
+                        }
                         <div ref={profile} className='zIndex2' onClick={() => setopenSiderState("profile")}><PersonIcon></PersonIcon></div>
                         <div ref={friends} className='zIndex2' onClick={() => setopenSiderState("friends")}><PeopleIcon></PeopleIcon></div>
                         {

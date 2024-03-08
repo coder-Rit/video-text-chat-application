@@ -21,6 +21,7 @@ interface MessageDocument extends messageI, Document { }
 const messageSchema = new Schema<MessageDocument>({
   createdAt: {
     type: Date,
+    required:true
   },
   msg: {
     type: String
@@ -28,20 +29,21 @@ const messageSchema = new Schema<MessageDocument>({
   senderId: mongoose.Schema.ObjectId,
   receiverId: mongoose.Schema.ObjectId,
   type: {
-    type: String
+    type: String,
+    required:true
   },
   fileData: {
     url: {
-      type: String
+      type: String 
     },
     mimeType: {
-      type: String
+      type: String 
     },
     fileName: {
-      type: String
+      type: String 
     },
     fileSize: {
-      type: Number
+      type: Number 
     }
   }
 

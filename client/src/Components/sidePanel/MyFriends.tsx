@@ -35,9 +35,9 @@ const MyFriends = (props: sidePanle_I) => {
     const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
     const allChats = useSelector<rootState, friendChatI>((state) => state.chats);
 
-    const [friendList, setfriendList] = useState<(string|undefined)[]>([])
+    const [friendList, setfriendList] = useState<(string | undefined)[]>([])
 
-    const [loadInitialChats, { data:chatData }] = useLazyQuery(LOAD_ALL_CHATS, {
+    const [loadInitialChats, { data: chatData }] = useLazyQuery(LOAD_ALL_CHATS, {
         onCompleted: ({ loadInitialChats }) => {
             let allChats = {}
             loadInitialChats.map((data: any) => {
@@ -59,7 +59,7 @@ const MyFriends = (props: sidePanle_I) => {
         }
     })
 
-    const [GetOnlineStatus, { data:statusData,loading,error }] = useLazyQuery(GET_USER_STATUS)
+    const [GetOnlineStatus, { data: statusData, loading, error }] = useLazyQuery(GET_USER_STATUS)
 
 
 
@@ -92,22 +92,22 @@ const MyFriends = (props: sidePanle_I) => {
 
 
     useEffect(() => {
-        if (idx&&friendList) {
+        if (idx && friendList) {
             GetOnlineStatus({
                 variables: {
-                    ids:friendList
+                    ids: friendList
                 },
                 fetchPolicy: 'no-cache',
             })
         }
-    }, [idx,friendList])
+    }, [idx, friendList])
 
     useEffect(() => {
         if (statusData) {
-             Dispatch(updateUsersStatus(statusData.getOnlineStatus,user))
+            Dispatch(updateUsersStatus(statusData.getOnlineStatus, user))
         }
     }, [statusData])
-    
+
 
 
     return (

@@ -18,7 +18,7 @@ import axios from "axios";
 
 dotenv.config({ path: "./config/config.env" });
 
- 
+
 
 
 
@@ -33,7 +33,7 @@ async function init() {
   //cors halder
   app.use(cors({
     credentials: true,
-    origin: process.env.ORIGIN
+    origin: [process.env.ORIGIN_1 as string,process.env.ORIGIN_2 as string] 
   }))
   app.use(express.json());
 
@@ -64,7 +64,7 @@ async function init() {
     intializeScoketIO(httpserver, app)
   });
 
-  
+
   schedule.scheduleJob('*/59 * * * * *', async function () {
 
     axios.get(`https://api.multiavatar.com/Binx%20Bond.svg`).then(data => console.log("🍏🍏 server refresh 🍏🍏")

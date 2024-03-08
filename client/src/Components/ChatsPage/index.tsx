@@ -4,7 +4,6 @@ import { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { motion } from "framer-motion"
-import { toast } from "sonner";
 import { useLazyQuery } from "@apollo/client";
 
 //utils
@@ -21,7 +20,8 @@ import MessageForm from "./MessageForm";
 import ChatHeader from "./ChatHeader";
 import DefaultCart from "./Components/DefaultCart";
 import ChatCard from "./ChatCard";
-  
+import ImagePlayer from "../Players/ImagePlayer";
+
 
 
 
@@ -30,7 +30,7 @@ const SCROLL_THRESHOLD = 100
 
 
 
-const ChatsPage = (props:any) => {
+const ChatsPage = (props: any) => {
 
   // hooks
   const chatboard = useRef<HTMLDivElement>(null)
@@ -49,7 +49,7 @@ const ChatsPage = (props:any) => {
     },
   })
 
- 
+
 
 
   // load chats as selected user change
@@ -66,22 +66,16 @@ const ChatsPage = (props:any) => {
   }, [idx])
 
 
-  // toast(login)
-  useEffect(() => {
 
-    if (sessionStorage.getItem('login') === "true") {
-      toast.success("Log In Successful")
-    }
 
-  }, [])
 
- 
 
 
 
   return (
     <>
 
+      <ImagePlayer></ImagePlayer>
 
       {
         isAuthenticated && idx && <motion.div
@@ -95,8 +89,8 @@ const ChatsPage = (props:any) => {
         >
 
           <ChatHeader                        ></ChatHeader>
-          <ChatCard   chatboard={chatboard}></ChatCard>
-          <MessageForm   chatboard={chatboard}></MessageForm>
+          <ChatCard chatboard={chatboard}></ChatCard>
+          <MessageForm chatboard={chatboard}></MessageForm>
 
         </motion.div>
       }
