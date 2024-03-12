@@ -79,7 +79,7 @@ const ChatCard = (props: any) => {
     if (forReceiver) {
       main = <>
         <FileComp For="downloadable_file" fileData={data.fileData}></FileComp>
-        {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
+        {data.msg !== "" && <span className='msgTxt'>{decryptMessage(data.msg)}</span>}
         <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
       </>
     } else {
@@ -90,7 +90,7 @@ const ChatCard = (props: any) => {
       } else {
         main = <>
           <FileComp For="downloadable_file" fileData={data.fileData}></FileComp>
-          {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
+          {data.msg !== "" && <span className='msgTxt'>{decryptMessage(data.msg)}</span>}
           <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
         </>
       }
@@ -106,7 +106,7 @@ const ChatCard = (props: any) => {
   function imageMaper(data: messageI, idx: number) {
     const main = <>
       <ImageComp fileData={data.fileData as fileI} idx={idx} ></ImageComp>
-      {data.msg !== "" && <span className='msgTxt'>{data.msg}</span>}
+      {data.msg !== "" && <span className='msgTxt'>{decryptMessage(data.msg)}</span>}
       <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
     </>
 

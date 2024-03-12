@@ -15,7 +15,9 @@ const FileComp = (props: any) => {
 
 
 
-
+  const set_fileCaption =()=>{
+    props.set_fileCaption(props.index + 1)
+  }
 
 
 
@@ -28,6 +30,15 @@ const FileComp = (props: any) => {
 
   }, [mimeType])
 
+  useEffect(() => {
+
+    if (props.index ===0) {
+      set_fileCaption()
+    }
+    
+  }, [])
+  
+
 
 
   if (props.For === "preview") {
@@ -36,7 +47,7 @@ const FileComp = (props: any) => {
       <>
 
 
-        <div style={{ backgroundColor: props.fileCaption - 1 === props.index ? "rgba(255, 255, 255, 0.081)" : "rgba(0, 0,0, 0)" }} onClick={() => props.set_fileCaption(props.index + 1)}>
+        <div style={{ backgroundColor: props.fileCaption - 1 === props.index ? "rgba(255, 255, 255, 0.081)" : "rgba(0, 0,0, 0)" }} onClick={set_fileCaption }>
           <div className={`FileDisplay FileDisplay_Specific  ${imageUrl} `}>
 
             <span className="RemoveCircleOutlineIcon" onClick={() => {

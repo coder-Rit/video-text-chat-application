@@ -8,8 +8,11 @@ import { FriendInterface, selectMessageI } from "../../Interfaces/common";
 import { fileI, friendChatI } from "../../Interfaces/message";
 import { useEffect, useState } from "react";
 import { userInterface } from "../../Interfaces/user";
+import { motion } from "framer-motion";
+
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { decryptMessage } from "../../functions/cryptographer";
 const ImagePlayer = () => {
 
     const Dispatch = useDispatch()
@@ -31,30 +34,30 @@ const ImagePlayer = () => {
         Dispatch(selectNotMessage())
     }
 
-    const helper =(val:number)=>{
+    const helper = (val: number) => {
         if (allChats[user.friendList[idx - 1].id as string][val].type === "img") {
             set_currentMessageIndex(val)
             set_currentCaption(allChats[user.friendList[idx - 1].id as string][val].msg)
-           setlocalFileData(allChats[user.friendList[idx - 1].id as string][val].fileData)
-           return true
-       }
-       return false
+            setlocalFileData(allChats[user.friendList[idx - 1].id as string][val].fileData)
+            return true
+        }
+        return false
     }
 
 
     const searchLeft = () => {
         let current = currentMessageIndex;
-        
-            while (current > 0) {
-                current--;
-                if (helper(current)) {
-                    break;
-                }
+
+        while (current > 0) {
+            current--;
+            if (helper(current)) {
+                break;
+            }
         }
     }
     const searchRight = () => {
         let current = currentMessageIndex;
-        while (current < allChats[user.friendList[idx - 1].id as string].length-1) {
+        while (current < allChats[user.friendList[idx - 1].id as string].length - 1) {
             current++;
             if (helper(current)) {
                 break;
@@ -75,11 +78,11 @@ const ImagePlayer = () => {
 
     }, [messageIndex])
 
-    useEffect(()=>{
+    useEffect(() => {
 
-        window.addEventListener("keydown",(event)=>{
+        window.addEventListener("keydown", (event) => {
             console.log(event);
-            
+
             if ((event as KeyboardEvent).keyCode === 38) {
                 searchLeft()
             }
@@ -87,7 +90,7 @@ const ImagePlayer = () => {
                 searchRight()
             }
         })
-    },[window])
+    }, [window])
 
 
 
@@ -95,7 +98,14 @@ const ImagePlayer = () => {
 
     return (
 
-        isMessageSlected ? <div className="image-player-div">
+        isMessageSlected ? <motion.div className="image-player-div"
+        initial={{ opacity: 0, scaleX: 0.8, scaleY:0.8 }}
+        animate={{ opacity: 1, scaleX: 1, scaleY:1  }}
+        transition={{
+          duration: 0.1,
+          ease: "easeInOut", // You
+        }}
+        >
 
             <div className="image-player-button-div">
                 <div></div>
@@ -107,13 +117,13 @@ const ImagePlayer = () => {
                 <img className="image-player-image" src={localFileData?.url} alt="" />
             </div>
             <div className="image-player-contro-caption">
-            <h4 className="image-player-Imagecaption">{currentCaption}</h4>
-            <div className="image-player-contro-div">
-                <div><ChevronLeftIcon fontSize="large" onClick={searchLeft}  className="pointer"></ChevronLeftIcon></div>
-                <div><ChevronRightIcon fontSize="large" onClick={searchRight} onKeyDown={searchRight}  className="pointer" ></ChevronRightIcon></div>
+                <h4 className="image-player-Imagecaption">{decryptMessage(currentCaption)}</h4>
+                <div className="image-player-contro-div">
+                    <div><ChevronLeftIcon fontSize="large" onClick={searchLeft} className="pointer"></ChevronLeftIcon></div>
+                    <div><ChevronRightIcon fontSize="large" onClick={searchRight} onKeyDown={searchRight} className="pointer" ></ChevronRightIcon></div>
+                </div>
             </div>
-            </div>
-        </div> : <></>
+        </motion.div> : <></>
     )
 }
 

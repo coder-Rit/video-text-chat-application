@@ -36,19 +36,18 @@ const MessageForm = (props: any) => {
 
   //states
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
-  const {  isFriendSelected, idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
+  const { isFriendSelected, idx } = useSelector<rootState, FriendInterface>((state) => state.selectedFriend);
   const [text, setText] = useState<string>("");
   const [files, setfiles] = useState<FileList | null>()
   const [EmojiPiker, setEmojiPiker] = useState<boolean>(false)
   const [SelectFileState, setSelectFileState] = useState<boolean>(false)
   const [selectedType, setselectedType] = useState<'doc' | 'img' | 'text'>("text")
   const [fileUrls, setfileUrls] = useState<fileUrl[]>([]);
-  const [progresspercent, setProgresspercent] = useState<number>(0);
   const [FilesQ, setFilesQ] = useState<FilesQI[]>([]);
   const [previewFileList, setpreviewFileList] = useState<any>([]);
   const [fileCaption, set_fileCaption] = useState<number>(0);
 
-  
+
 
   //upload files
   const uploadFiles = (file: File, uuid: string) => {
@@ -62,7 +61,6 @@ const MessageForm = (props: any) => {
       (snapshot) => {
         const progress =
           Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-        setProgresspercent(progress);
       },
       (error) => {
         alert(error);
@@ -90,18 +88,18 @@ const MessageForm = (props: any) => {
 
 
     if (!isFriendSelected) return;
+
     const createdAt = new Date().toISOString()
 
     // for text
-    if (selectedType === "text") {
-
+    if (selectedType === "text" && text) {
 
 
       const msg: messageI = {
         uuid: "",
-        msg:   encryptMessage(text) ,
+        msg: encryptMessage(text),
         senderId: user.id as string,
-        receiverId: user.friendList[idx-1].id as string,
+        receiverId: user.friendList[idx - 1].id as string,
         createdAt,
         type: "text"
       }
@@ -114,13 +112,23 @@ const MessageForm = (props: any) => {
 
     if (selectedType === "doc" || selectedType === "img") {
 
+
+      if (previewFileList.length === 0) return;
+
+
       let fileArray: any = []
       const messageArray = FilesQ.map(data => {
         fileArray.push({ file: data.bufferFile, uuid: data.msg.uuid })
         delete data.bufferFile
-        data.msg.createdAt = createdAt
+        data.msg.createdAt = createdAt;
+        if (data.msg.msg) {
+          data.msg.msg = encryptMessage(data.msg.msg)
+        }
+ 
         return data.msg
       })
+      console.log(fileArray);
+      
 
       Dispatch(appendMsg(messageArray[0].receiverId as string, messageArray));
       emit_exchangeMessage(messageArray)
@@ -131,6 +139,7 @@ const MessageForm = (props: any) => {
         uploadFiles(msgData.file as File, msgData.uuid)
       }
 
+      set_fileCaption(0)
 
     }
 
@@ -194,7 +203,7 @@ const MessageForm = (props: any) => {
       uuid: uuidv4(),
       msg: text,
       senderId: user.id as string,
-      receiverId: user.friendList[idx-1].id as string,
+      receiverId: user.friendList[idx - 1].id as string,
       createdAt: "",
       type: selectedType,
       fileData: tempFile
@@ -265,7 +274,7 @@ const MessageForm = (props: any) => {
       emit_InitChat({
         msg: user.userName,
         senderId: user.id as string,
-        receiverId: user.friendList[idx-1].id as string,
+        receiverId: user.friendList[idx - 1].id as string,
         createdAt: new Date().toISOString(),
       })
     }
@@ -312,7 +321,7 @@ const MessageForm = (props: any) => {
   return (
 
     <>
- 
+
 
       <motion.form onSubmit={onSubmit}
         initial={{ opacity: 0, y: 150 }}

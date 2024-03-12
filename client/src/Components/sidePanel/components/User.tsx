@@ -56,7 +56,7 @@ export const FriendComp = (props: FriendComp_I) => {
 
 
   //state
-  const { isFriendSelected ,idx} = useSelector<
+  const { isFriendSelected, idx } = useSelector<
     rootState,
     FriendInterface
   >((state) => state.selectedFriend);
@@ -82,7 +82,7 @@ export const FriendComp = (props: FriendComp_I) => {
 
 
   useEffect(() => {
-    if (isFriendSelected && user.friendList[idx-1].id as string === props.user.id) {
+    if (isFriendSelected && user.friendList[idx - 1].id as string === props.user.id) {
       userDiv.current?.classList.add("selectedUser");
       userDiv.current?.classList.remove("deselectedUser");
     } else {
