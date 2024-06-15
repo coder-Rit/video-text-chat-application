@@ -1,6 +1,6 @@
 //packages
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useMutation } from "@apollo/client";
 import { useSelector } from "react-redux";
@@ -14,7 +14,7 @@ import AddIcon from "@mui/icons-material/Add";
 //utils
 import { rootState } from "../../../Interfaces";
 import { userInterface } from "../../../Interfaces/user";
-import { removeFriend, updateFriendList } from "../../../actions/userActions";
+import { removeFriend, updateFriendList, updateOnlineStatus } from "../../../actions/userActions";
 import { selectFriend } from "../../../actions/selectAction";
 import { FriendInterface } from "../../../Interfaces/common";
 import useDisplay, { useDisplayI } from "../../../hooks/useDisplay";
@@ -27,6 +27,7 @@ import { User } from '../../../Interfaces/user'
 import ProfileImage from "../../AuthPage/components/ProfileImage";
 import { decryptMessage } from "../../../functions/cryptographer";
 import socket from "../../../socket.io";
+import UserOnline from "./UserOnline";
 
 
 
@@ -45,7 +46,9 @@ interface UsersComp_I {
   goBack: (str: string) => void
 }
 
-export const FriendComp = (props: FriendComp_I) => {
+
+
+export const FriendComp = memo((props: FriendComp_I) => {
 
 
   //hooks
@@ -62,11 +65,7 @@ export const FriendComp = (props: FriendComp_I) => {
   >((state) => state.selectedFriend);
   const { user, isAuthenticated } = useSelector<rootState, userInterface>((state) => state.user);
   const allChats = useSelector<rootState, friendChatI>((state) => state.chats);
-
   const [lastMsg, setlastMsg] = useState<string | null>(null);
-  const [online_users, setonline_users] = useState<[string]>([""]);
-
-
 
 
   // functions
@@ -116,11 +115,12 @@ export const FriendComp = (props: FriendComp_I) => {
     }
   }, [allChats]);
 
+ 
+
   useEffect(() => {
-    socket.on("ONLINE_USER_LIST", (data) => {
-      setonline_users(data)
-    })
-  }, [socket])
+    console.log("rerenderd");
+  }, [])
+
 
 
   return (
@@ -154,13 +154,13 @@ export const FriendComp = (props: FriendComp_I) => {
             sx={{ fontSize: "1rem", bgcolor: "#f3e5f5" }}
           />
         )}
-        {<div className={online_users.includes(props.user.id as string) ? "online" : ""}>{online_users.includes(props.user.id as string) ? "online" : null}</div>}
+          {/* <UserOnline lastSeen={props.user.lastSeen}></UserOnline> */}
       </div>
 
 
     </motion.div>
   )
-}
+})
 
 
 

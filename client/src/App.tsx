@@ -16,6 +16,7 @@ import Main from "./Components/main";
 import AuthPage from "./Components/AuthPage";
 import { toast } from "sonner";
 import { Alert } from "@mui/material";
+import Page404 from "./utils/Page404";
 
 
 
@@ -52,6 +53,7 @@ function App() {
       <Routes>
         <Route index element={<AuthPage />} />
         <Route path="chatt" element={<Main />} />
+        <Route path="*" element={<Page404 />} />
       </Routes>
     </Router>
   )

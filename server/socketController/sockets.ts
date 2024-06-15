@@ -1,14 +1,15 @@
 import { Server, Socket } from "socket.io";
 import { messageI, messageModel } from "../model/messageModel";
 import { UserModel } from "../model/userModel";
-import { friendChatI, onlineStatusChecker_I, typingInter } from "../utils/helpers";
-import { getRoomNameBydata, saveMessage, userUpdate } from "../utils/functions";
+import { SET_DELIVERY_STATUS_I, friendChatI, onlineStatus, onlineStatusChecker_I, typingInter } from "../utils/helpers";
+import { getRoomNameBydata, saveMessage, updateMessageStatus, userUpdate } from "../utils/functions";
 
 
 
 
+const onlineUser = new Set();
 
-let onlineUser: string[] = []
+// let onlineUser: string = new Set();
 let userBysocketId: any = {
 
 }
@@ -28,28 +29,25 @@ function socketController(socket: Socket, io: any) {
 
     async function userConnected(id: string) {
         socket.join(id)
-        if (!onlineUser.includes(id)) {
-            onlineUser.push(id)
-            userBysocketId[socket.id as string] = id;
-        }
-        io.emit("ONLINE_USER_LIST", onlineUser)
-        
-        console.log("socket joined by ", id)
-        await userUpdate(id, { lastSeen: new Date().toISOString() })
-
+        onlineUser.add(id);
+        userBysocketId[socket.id as string] = id;
+         console.log("socket joined by ", id)
     }
 
 
     function initializeChat(data: messageI) {
         let room = getRoomNameBydata(data.senderId, data.receiverId)
         socket.join(room)
+        io.in(room).emit('CHAT_INITIATED', data)
     }
 
 
 
     function exchangeMessage(data: messageI[]) {
-
         io.in(data[0].receiverId).emit('recive_msg', data)
+
+        let Ack_data = data.map((m) => m.uuid)
+        io.in(data[0].senderId).emit('DELIVERY_OUT', { uuidList: Ack_data, receiverId: data[0].receiverId, senderId: data[0].senderId, next_status: "out" })
         if (data[0].type === "text") {
             saveMessage(data[0])
         } else {
@@ -61,15 +59,26 @@ function socketController(socket: Socket, io: any) {
     }
 
 
-    function userStatus(data: typingInter) {
-        const room = getRoomNameBydata(data.senderId, data.receiverId)
+    function isTyping(data: typingInter) {
 
-        if (data.state === "typing") {
-            io.in(room).emit('is_typing_started', data)
+        if (data.state) {
+            io.in(data.receiverId).emit('IS_TYPING', true)
         } else {
-            io.in(room).emit('is_typing_started', data)
+            io.in(data.receiverId).emit('IS_TYPING', false)
         }
     }
+
+
+    function isOnline(data: onlineStatus) {
+        io.in(data.myId).emit('GET_ONLINE_STATUS', onlineUser.has(data.friendId))
+        
+    }
+
+    function heIsOffline(data: string) {
+        io.emit('HE_IS_OFFLINE', data)
+        
+    }
+
 
     function updateURL(data: any) {
 
@@ -81,22 +90,28 @@ function socketController(socket: Socket, io: any) {
             updateMsg.fileData.url = data.url;
         }
         console.log(updateMsg);
-        
+
         saveMessage(updateMsg)
         delete UrlLessMsg[data.uuid]
+    }
+
+
+    function deliveryStatus(data: SET_DELIVERY_STATUS_I) {
+
+        updateMessageStatus(data.uuidList,data.next_status);
+        io.in(data.senderId).emit('DELIVERY_OUT', data)
+
     }
 
     async function disconnect() {
         console.log(socket.id, " is disconnected");
         const disconnectedUser = userBysocketId[socket.id]
 
-        onlineUser = onlineUser.filter(data => {
-            return data !== disconnectedUser
-        })
+        onlineUser.delete(disconnectedUser);
 
         delete userBysocketId[socket.id]
-        io.emit("ONLINE_USER_LIST", onlineUser)
-
+        heIsOffline(disconnectedUser);
+ 
 
         //updateLastSeen
         try {
@@ -112,8 +127,10 @@ function socketController(socket: Socket, io: any) {
         initializeChat,
         userConnected,
         exchangeMessage,
-        userStatus,
+        isTyping,
         updateURL,
+        deliveryStatus,
+        isOnline,
         disconnect
     }
 

@@ -40,7 +40,7 @@ async function init() {
 
   //connect to database
   connectToDatabase();
-
+    
   app.get("/", (req, res) => {
     res.send("working fine")
   })
@@ -64,14 +64,7 @@ async function init() {
     intializeScoketIO(httpserver, app)
   });
 
-
-  schedule.scheduleJob('*/59 * * * * *', async function () {
-
-    axios.get(`https://api.multiavatar.com/Binx%20Bond.svg`).then(data => console.log("🍏🍏 server refresh 🍏🍏")
-    )
-
-  });
+   
 }
-
-
+ 
 init()

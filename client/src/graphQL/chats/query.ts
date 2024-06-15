@@ -18,6 +18,7 @@ query LoadInitialChats($friendIds: [ID], $myId: ID) {
   loadInitialChats(friendIds: $friendIds, myId: $myId) {
     friendId
     chats {
+      uuid
       type
       senderId
       receiverId
@@ -35,11 +36,13 @@ query GetChats($friendId: ID, $myId: ID, $load: Int) {
   getChats(friendId: $friendId, myId: $myId, load: $load) {
     friendId
     chats {
+      uuid
       senderId
       receiverId
       msg
       createdAt
       id
+      delivery
       fileData {
         mimeType
         fileSize

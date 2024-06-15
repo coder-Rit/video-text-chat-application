@@ -438,13 +438,20 @@ body {
     animation-delay: 0.3s;
 }
 
+.msgDeliveryDiv{
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    padding: 10px;
+    padding-top: 2px;
+    gap: 4px;
+}
+
 .msgTime {
     color: #54575c;
     font-size: 8px;
     font-weight: bold;
-    text-align: right;
-    padding: 10px;
-    padding-top: 2px;
+    
 
 }
 

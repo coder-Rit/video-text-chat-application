@@ -18,12 +18,6 @@ import { GET_USER_STATUS, LOAD_ALL_CHATS } from '../../graphQL/chats/query';
 //components
 import GoBack from '../../Components/AuthPage/components/GoBack';
 import { FriendComp } from './components/User';
-import { updateUsersStatus } from '../../actions/userActions';
-
-
-
-
-
 
 
 
@@ -91,22 +85,22 @@ const MyFriends = (props: sidePanle_I) => {
 
 
 
-    useEffect(() => {
-        if (idx && friendList) {
-            GetOnlineStatus({
-                variables: {
-                    ids: friendList
-                },
-                fetchPolicy: 'no-cache',
-            })
-        }
-    }, [idx, friendList])
+    // useEffect(() => {
+    //     if (idx && friendList) {
+    //         GetOnlineStatus({
+    //             variables: {
+    //                 ids: friendList
+    //             },
+    //             fetchPolicy: 'no-cache',
+    //         })
+    //     }
+    // }, [idx, friendList])
 
-    useEffect(() => {
-        if (statusData) {
-            Dispatch(updateUsersStatus(statusData.getOnlineStatus, user))
-        }
-    }, [statusData])
+    // useEffect(() => {
+    //     if (statusData) {
+    //         Dispatch(updateUsersStatus(statusData.getOnlineStatus, user))
+    //     }
+    // }, [statusData])
 
 
 
@@ -118,17 +112,31 @@ const MyFriends = (props: sidePanle_I) => {
 
 
                 {
-                    user.friendList && user.friendList.length !== 0 && user.friendList.map((data: User, index) => {
+                    user.friendList &&
+                    user.friendList.length !== 0 &&
+                    user.friendList
+                        .filter(data => allChats[data.id as string] && data.lastSeen) // Filter out friends without last message or.lastSeen
+                        .sort((a, b) => {
+                            // Sort friends based on.lastSeen or any other relevant criteria
+                            return new Date(b.lastSeen).getTime() - new Date(a.lastSeen).getTime();
+                        })
+                        .map((data: User, index) => {
+                            const friendLastMsg = allChats[data.id as string];
+                            if (!friendLastMsg) return null; // Skip rendering if last message not available
 
-
-                        return (
-                            <div key={index}>
-                                <FriendComp index={index} goBack={props.goBack} lastMsg={allChats[data.id as string]} user={data}
-                                ></FriendComp>
-                            </div>
-                        )
-                    })
+                            return (
+                                <div key={index}>
+                                    <FriendComp
+                                        index={index}
+                                        goBack={props.goBack}
+                                        lastMsg={friendLastMsg}
+                                        user={data}
+                                    />
+                                </div>
+                            );
+                        })
                 }
+
 
                 {
                     (!user.friendList || user.friendList.length === 0) && <div

@@ -19,10 +19,15 @@ import LoadingFile from './Components/LoadingFile';
 import FileComp from './Components/FileComp';
 import MessageBox from './Components/MessageBox';
 import ImageComp from './Components/ImageComp';
-import { On_urlUpdate } from '../../socket.io/lisnner';
+import { On_ReciveDeliverOut, On_chat_intitalted, On_urlUpdate } from '../../socket.io/lisnner';
 import { decryptMessage } from '../../functions/cryptographer';
 import ImagePlayer from '../Players/ImagePlayer';
+import DeliveryStatus from './Components/DeliveryStatus';
+import { emit_messageAcknowlegment } from '../../socket.io/emiters';
 
+let optimizer: any = {
+
+}
 
 
 const ChatCard = (props: any) => {
@@ -55,32 +60,46 @@ const ChatCard = (props: any) => {
   }
 
   // map text
-  function textMaper(data: messageI, idx: number) {
+  function textMaper(data: messageI, idx: number, isIam_sender: boolean) {
     const de_msg = decryptMessage(data.msg)
 
     const main = <>
 
       <span className='msgTxt'>{de_msg}</span>
-      <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
+      <div>
+        <div className='msgDeliveryDiv'>
+          <span className='msgTime'>{formatTimeFromISOString(data.createdAt)} </span>
+          {
+            isIam_sender && <DeliveryStatus delivery={data.delivery} ></DeliveryStatus>
+          }
+
+        </div>
+
+
+
+      </div>
     </>
 
 
-    return <MessageBox main={main} res={data.senderId === user.id} idx={idx} ></MessageBox>
+    return <MessageBox main={main} res={isIam_sender} idx={idx}  ></MessageBox>
   }
 
   // map file 
-  function fileMaper(data: messageI, idx: number) {
-
-
-    let forReceiver = data.senderId === user.id
+  function fileMaper(data: messageI, idx: number, isIam_sender: boolean) {
 
     let main = <></>
 
-    if (forReceiver) {
+    if (isIam_sender) {
       main = <>
         <FileComp For="downloadable_file" fileData={data.fileData}></FileComp>
         {data.msg !== "" && <span className='msgTxt'>{decryptMessage(data.msg)}</span>}
-        <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
+        <div className='msgDeliveryDiv'>
+          <span className='msgTime'>{formatTimeFromISOString(data.createdAt)} </span>
+          {
+            isIam_sender && <DeliveryStatus delivery={data.delivery} ></DeliveryStatus>
+          }
+
+        </div>
       </>
     } else {
       if (data.fileData?.url === "") {
@@ -91,40 +110,88 @@ const ChatCard = (props: any) => {
         main = <>
           <FileComp For="downloadable_file" fileData={data.fileData}></FileComp>
           {data.msg !== "" && <span className='msgTxt'>{decryptMessage(data.msg)}</span>}
-          <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
+          <div className='msgDeliveryDiv'>
+            <span className='msgTime'>{formatTimeFromISOString(data.createdAt)} </span>
+            {
+              isIam_sender && <DeliveryStatus delivery={data.delivery} ></DeliveryStatus>
+            }
+
+          </div>
         </>
       }
 
     }
 
-    return <MessageBox main={main} res={forReceiver} idx={idx} ></MessageBox>
+    return <MessageBox main={main} res={isIam_sender} idx={idx}   ></MessageBox>
 
 
   }
 
   // map images
-  function imageMaper(data: messageI, idx: number) {
+  function imageMaper(data: messageI, idx: number, isIam_sender: boolean) {
     const main = <>
       <ImageComp fileData={data.fileData as fileI} idx={idx} ></ImageComp>
       {data.msg !== "" && <span className='msgTxt'>{decryptMessage(data.msg)}</span>}
-      <span className='msgTime'>{formatTimeFromISOString(data.createdAt)}</span>
+      <div className='msgDeliveryDiv'>
+        <span className='msgTime'>{formatTimeFromISOString(data.createdAt)} </span>
+        {
+          isIam_sender && <DeliveryStatus delivery={data.delivery} ></DeliveryStatus>
+        }
+
+      </div>
     </>
 
-    return <MessageBox main={main} res={data.senderId === user.id} idx={idx} ></MessageBox>
+    return <MessageBox main={main} res={isIam_sender} idx={idx}   ></MessageBox>
 
 
   }
 
   // message dispencor based on type
+  // const renderChats = () => {
+  //   // Render only the last `visibleChats` number of chats
+  //   return isAuthenticated && chats.map((data, idx: number) => {
+
+
+  //     if (data.type === 'text') {
+
+  //       return textMaper(data, idx);
+  //     } else if (data.type === 'doc') {
+  //       return fileMaper(data, idx);
+  //     } else {
+  //       return imageMaper(data, idx);
+  //     }
+  //   });
+  // };
+
   const renderChats = () => {
     // Render only the last `visibleChats` number of chats
     return isAuthenticated && chats.map((data, idx: number) => {
-      if (data.type === 'text') {
-        return textMaper(data, idx);
-      } else if (data.type === 'doc') {
-        return fileMaper(data, idx);
+      // Generate key based on type and index
+      const key = `${data.type} ${data.delivery} ${idx} ${data.fileData ? data.fileData?.url : null}`;
+      const isIam_sender = data.senderId === user.id
+
+      // Check if optimized rendering is available, otherwise render as usual
+      if (optimizer[key]) {
+        return optimizer[key];
       } else {
-        return imageMaper(data, idx);
+        // Render chat based on its type
+        if (!isIam_sender && data.delivery !== "seen") {
+            emit_messageAcknowlegment({ uuidList: [data.uuid], receiverId: data.receiverId, senderId: data.senderId, next_status: "seen" })
+        }
+
+        let chatComponent;
+        if (data.type === 'text') {
+          chatComponent = textMaper(data, idx, isIam_sender);
+        } else if (data.type === 'doc') {
+          chatComponent = fileMaper(data, idx, isIam_sender);
+        } else {
+          chatComponent = imageMaper(data, idx, isIam_sender);
+        }
+
+        // Cache the rendered component
+        optimizer[key] = chatComponent;
+
+        return chatComponent;
       }
     });
   };
@@ -142,7 +209,8 @@ const ChatCard = (props: any) => {
 
     if (idx) {
       const friendIdx = user.friendList[idx - 1].id as string
-      const chats = allChats[friendIdx]
+      const chats = allChats[friendIdx];
+      
 
       if (chats) {
         setChats(chats)
@@ -162,6 +230,8 @@ const ChatCard = (props: any) => {
   return (
     <>
       {On_urlUpdate()}
+      {On_ReciveDeliverOut()}
+      {On_chat_intitalted()}
 
       <motion.div className="chat__conversation-board" id='chatboard'
         initial={{ opacity: 0, x: 20 }}
@@ -171,6 +241,7 @@ const ChatCard = (props: any) => {
         }}
         ref={props.chatboard}>
         {renderChats()}
+
         {
           (chats.length === 0) && <div
             className='Add_Friends_Lottie_Box'

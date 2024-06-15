@@ -43,9 +43,9 @@ const ChatsPage = (props: any) => {
 
   // queries
   const [getChats, { data }] = useLazyQuery(GET_CHATS, {
+    fetchPolicy: 'no-cache', // Disables caching
     onCompleted: (data) => {
       Dispatch(chatInit(data.getChats.friendId as string, data.getChats.chats as messageI[]))
-
     },
   })
 

@@ -37,7 +37,7 @@ const DefaultCart = () => {
         speed={1.5}
       >
       </DotLottiePlayer>
-      <p>End-to-End Encryption Charler</p>
+      <p>End-to-End Encryption With Charlar</p>
     </motion.div>
   );
 };

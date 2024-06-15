@@ -8,7 +8,8 @@ import {
   LOGOUT_USER_REQUEST,
   USER_LIST,
   DELETE_FRIEND,
-  UPDATE_USER_STATUS
+  UPDATE_USER_STATUS,
+  UPDATE_FRIEND_LIST
 } from "../constants/userConstants";
 import Cookies from "js-cookie";
 export const register = (userData,success) => (dispatch) => {
@@ -78,6 +79,10 @@ export const removeFriend = (index) => (dispatch) => {
 };
 
 
+
+
+
+
 export const updateUsersStatus=(statusList,user)=>(dispatch)=>{
   let temp_statusList = statusList
   let temp_user = JSON.parse(JSON.stringify(user))
@@ -99,5 +104,25 @@ export const updateUsersStatus=(statusList,user)=>(dispatch)=>{
   } 
 
    dispatch({ type: UPDATE_USER_STATUS, payload: temp_user  });
+
+}
+
+
+export const updateOnlineStatus=(onlineUsersList, friendList)=>(dispatch)=>{
+    //  console.log(onlineUsersList,friendList);
+
+    const newFriendList =  friendList.map(friend=>{
+      let temp_friend = JSON.parse(JSON.stringify(friend))
+
+      if (onlineUsersList.includes(friend.id)) {
+        temp_friend.lastSeen = "online"
+      }else{
+        temp_friend.lastSeen = friend.lastSeen
+      }
+      return temp_friend
+      
+     })
+  
+    dispatch({ type: UPDATE_FRIEND_LIST, payload: newFriendList  });
 
 }

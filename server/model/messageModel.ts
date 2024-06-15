@@ -14,11 +14,15 @@ interface messageI {
   receiverId: string,
   createdAt: Date,
   type: "doc" | "img" | "text",
+  delivery: "seen" | "unseen" | "delivered" | "out" 
   fileData?: fileIdI
 }
 interface MessageDocument extends messageI, Document { }
 
 const messageSchema = new Schema<MessageDocument>({
+  uuid:{
+    type: String
+  },
   createdAt: {
     type: Date,
     required:true
@@ -28,6 +32,10 @@ const messageSchema = new Schema<MessageDocument>({
   },
   senderId: mongoose.Schema.ObjectId,
   receiverId: mongoose.Schema.ObjectId,
+  delivery:{
+    type:String,
+    default:"out"
+  },
   type: {
     type: String,
     required:true

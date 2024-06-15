@@ -15,7 +15,11 @@ import { userInterface } from '../../Interfaces/user';
 import useDisplay from '../../hooks/useDisplay';
 import { On_headerStatus } from '../../socket.io/lisnner';
 import socket from '../../socket.io';
+import { emit_is_Online } from '../../socket.io/emiters';
 
+
+
+const stack: string[] = [];
 
 const ChatHeader = (props: any) => {
 
@@ -74,19 +78,71 @@ const ChatHeader = (props: any) => {
   }
 
 
+
+ 
+
+
+  function headerState(lastSeenState: string) {
+
+
+    return lastSeenState && <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.5,
+        ease: 'easeInOut', // You 
+      }}
+
+    >
+      <div className={`${lastSeenState}`}>{lastSeenState}</div>
+    </motion.div>;
+  }
+
+
+
   useEffect(() => {
 
-    socket.on("ONLINE_USER_LIST", (data:[string]) => {
-      console.log(data);
-      
-      if (data.includes(user.friendList[idx - 1].id as string)) {
+    if (idx) {
+      emit_is_Online({
+        myId: user.id as string,
+        friendId: user.friendList[idx - 1].id as string,
+        state: "nointng"
+      })
+    }
+
+  }, [idx])
+
+
+
+  useEffect(() => {
+
+    socket.on('GET_ONLINE_STATUS', (data: boolean) => {
+      if (data) {
         setlastSeenState("online")
       } else {
         setlastSeenState(getLastSeenTimeString(user.friendList[idx - 1].lastSeen))
       }
     })
- 
-  }, [socket,idx])
+
+    socket.on('IS_TYPING', (data: boolean) => {
+
+      if (data) {
+        setlastSeenState("typing")
+      } else {
+        setlastSeenState("online")
+      }
+    })
+
+    socket.on('HE_IS_OFFLINE', (data: string) => {
+      if (user.friendList[idx - 1].id === data) {
+        setlastSeenState("last seen now")
+      }
+    })
+
+  }, [socket])
+
+
+
 
 
 
@@ -95,9 +151,8 @@ const ChatHeader = (props: any) => {
 
   return (
     <>
-      {
-        On_headerStatus({ setlastSeenState })
-      }
+      {/* <On_headerStatus setlastSeenState={setlastSeenState}   /> */}
+
       {
         idx && <motion.div
           className="chat_conversation-header"
@@ -113,12 +168,11 @@ const ChatHeader = (props: any) => {
           <div className="chat_conversation-header-details">
             <h3>{user.friendList[idx - 1].firstName} {user.friendList[idx - 1].lastName}  </h3>
             <span>
-              {lastSeenState === "typing" ? <div className='typing '>
+              {lastSeenState === "typing" ? <div className='typing'>
                 <span></span>
                 <span></span>
                 <span></span>
-              </div> : <div className={`${lastSeenState}`}>{lastSeenState}</div>
-
+              </div> : headerState(lastSeenState)
               }
 
 

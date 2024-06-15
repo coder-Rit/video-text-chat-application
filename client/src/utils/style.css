@@ -1,0 +1,51 @@
+@import 'https://fonts.googleapis.com/css?family=VT323';
+ 
+
+ 
+.bsod> p, .link {
+  font: normal 20px/1.25rem "VT323", monospace;
+}
+
+.neg {
+  font: normal 2.75rem/1.05em "VT323", monospace;
+}
+
+ 
+
+ 
+
+.badcontainer {
+  margin: auto;
+  background: #0414a7;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+ 
+.bsod .neg {
+  text-align: center;
+  color: #0414a7;
+}
+.bsod .neg .bg {
+  background: #aaaaaa;
+  padding: 0 15px 2px 13px;
+}
+.bsod .title {
+  margin-bottom: 50px;
+}
+.bsod .nav {
+  margin-top: 35px;
+  text-align: center;
+}
+.bsod .nav .link {
+  text-decoration: none;
+  padding: 0 9px 2px 8px;
+}
+.bsod .nav .link:hover, .bsod .nav .link:focus {
+  background: #aaaaaa;
+  color: #0414a7;
+}

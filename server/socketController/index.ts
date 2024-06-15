@@ -17,12 +17,13 @@ function intializeScoketIO(httpserver: any, app: any) {
     io.on('connection', (socket: Socket) => {
         console.log(`User connected ${socket.id}`);
         const CS = socketController(socket, io)
-
         socket.on('USER_CONNECTED', (data) => CS.userConnected(data.id))
         socket.on('startChat', (data) => CS.initializeChat(data))
         socket.on('send_msg', (data) => CS.exchangeMessage(data))
-        socket.on('is_typing_started', (data) => CS.userStatus(data))
+        socket.on('IS_TYPING', (data) => CS.isTyping(data))
+        socket.on('GET_ONLINE_STATUS', (data) => CS.isOnline(data))
         socket.on('UPDATE_URL', (data) => CS.updateURL(data))
+        socket.on('SEND_MSG_ACKNOWLEGMENT', (data) => CS.deliveryStatus(data))
         socket.on('disconnect', async () => CS.disconnect())
 
     });

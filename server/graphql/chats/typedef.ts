@@ -13,14 +13,22 @@ export const typeDefs = `#graphql
     text
     doc
   }
+  enum DeliveryTYpe {
+   seen
+   unseen  
+   delivered 
+   out
+  }
 
   type MessageT {
+    uuid:String
     id: ID
     msg: String
     senderId: ID
     receiverId: ID 
     createdAt: String
     type: MessageType
+    delivery:DeliveryTYpe
     fileData: FileT
   }
 

@@ -12,7 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { rootState } from "../../Interfaces";
 import { userInterface } from "../../Interfaces/user";
 import { FriendInterface } from "../../Interfaces/common";
-import { FilesQI, fileI, fileUrl, friendChatI, headerStatusI, messageI, urlUpdateObjectI } from "../../Interfaces/message";
+import { FilesQI, fileI, fileUrl, friendChatI, TypeingStatus, messageI, urlUpdateObjectI } from "../../Interfaces/message";
 import { appendMsg, updateUrl } from "../../actions/chatAction";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../Firebase/Firebase";
@@ -22,7 +22,7 @@ import EmojiComp from "./Components/EmojiComp";
 import SelectFileType from "./Components/SelectFileType";
 import { v4 as uuidv4 } from 'uuid';
 import FileComp from "./Components/FileComp";
-import { emit_InitChat, emit_exchangeMessage, emit_headerStatus, emit_urlUpdator } from "../../socket.io/emiters";
+import { emit_InitChat, emit_exchangeMessage, emit_is_Typing, emit_urlUpdator } from "../../socket.io/emiters";
 import { On_exchangeMessage } from "../../socket.io/lisnner";
 import { encryptMessage } from "../../functions/cryptographer";
 
@@ -96,11 +96,12 @@ const MessageForm = (props: any) => {
 
 
       const msg: messageI = {
-        uuid: "",
+        uuid: uuidv4(),
         msg: encryptMessage(text),
         senderId: user.id as string,
         receiverId: user.friendList[idx - 1].id as string,
         createdAt,
+        delivery:"processing",
         type: "text"
       }
       Dispatch(appendMsg(msg.receiverId as string, [msg]));
@@ -124,11 +125,11 @@ const MessageForm = (props: any) => {
         if (data.msg.msg) {
           data.msg.msg = encryptMessage(data.msg.msg)
         }
- 
+
         return data.msg
       })
       console.log(fileArray);
-      
+
 
       Dispatch(appendMsg(messageArray[0].receiverId as string, messageArray));
       emit_exchangeMessage(messageArray)
@@ -206,6 +207,7 @@ const MessageForm = (props: any) => {
       receiverId: user.friendList[idx - 1].id as string,
       createdAt: "",
       type: selectedType,
+      delivery:"out",
       fileData: tempFile
     }
 
@@ -270,7 +272,6 @@ const MessageForm = (props: any) => {
 
     if (isAuthenticated && idx
     ) {
-
       emit_InitChat({
         msg: user.userName,
         senderId: user.id as string,
@@ -287,18 +288,17 @@ const MessageForm = (props: any) => {
 
   // send typing state
   useEffect(() => {
-    if (isAuthenticated && idx
-    ) {
-      let headerStatus: headerStatusI = {
+    if (isAuthenticated && idx ) {
+      let headerStatus: TypeingStatus = {
         senderId: user.id as string,
         receiverId: user.friendList[idx - 1].id as string,
-        state: "typing"
+        state: true
       }
       if (text !== "") {
-        emit_headerStatus(headerStatus)
+        emit_is_Typing(headerStatus)
       } else {
-        headerStatus.state = user.friendList[idx - 1].lastSeen
-        emit_headerStatus(headerStatus)
+        headerStatus.state = false
+        emit_is_Typing(headerStatus)
       }
     }
   }, [text])
@@ -313,6 +313,13 @@ const MessageForm = (props: any) => {
     }
 
   }, [previewFileList])
+
+  useEffect(() => {
+   
+      setText("")
+    
+  }, [idx])
+  
 
 
 

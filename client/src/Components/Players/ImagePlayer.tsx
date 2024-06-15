@@ -81,8 +81,6 @@ const ImagePlayer = () => {
     useEffect(() => {
 
         window.addEventListener("keydown", (event) => {
-            console.log(event);
-
             if ((event as KeyboardEvent).keyCode === 38) {
                 searchLeft()
             }

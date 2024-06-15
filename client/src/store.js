@@ -15,7 +15,7 @@ const combinedReducer = combineReducers({
   chats: chatReducer,
   selecteMessage: selectMessage,
 });
-let initalState = {};
+let initalState = {}; 
 
 const middleWare = [thunk];
 

@@ -13,8 +13,16 @@ export interface messageI {
   receiverId: string,
   createdAt: string,
   type: "doc" | "img" | "text",
+  delivery: "seen" | "unseen" | "processing" | "out" 
   fileData?: fileI
 
+}
+
+export interface SET_DELIVERY_STATUS_I {
+  uuidList: string[]
+  senderId: string,
+  receiverId: string,
+  next_status: string
 }
 
 
@@ -41,12 +49,17 @@ export interface urlUpdateObjectI {
   receiverId: string,
 }
 
-export interface headerStatusI {
+export interface TypeingStatus{
   senderId: string,
   receiverId: string,
-  state: string,
+  state: boolean,
 }
 
+export interface onlineStatus {
+  myId: string,
+  friendId: string,
+  state: string
+}
 
 
 

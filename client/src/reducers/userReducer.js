@@ -11,6 +11,7 @@ import {
   OPEN_SIDER,
   CLOSE_SIDER,
   DELETE_FRIEND,
+  UPDATE_FRIEND_LIST,
   UPDATE_USER_STATUS
 } from "../constants/userConstants";
 
@@ -52,6 +53,15 @@ export const userReducer = (state = { user: {} }, action) => {
       return {
         ...state,
         user:action.payload
+      }
+      
+    case UPDATE_FRIEND_LIST :
+      return {
+        ...state,
+        user:{
+          ...state.user,
+          friendList:action.payload
+        }
       }
 
     case CLEAR_ERRORS:
