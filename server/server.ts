@@ -1,23 +1,21 @@
 import { createServer } from "http";
+import { availableParallelism } from 'node:os';
+import process from 'node:process';
 
 import express, { Express } from "express";
 import { expressMiddleware } from "@apollo/server/express4";
 import cors from "cors";
 import dotenv from 'dotenv';
-import schedule from "node-schedule";
-
 
 import createApolloGraphqlServer, { MyContext } from "./graphql";
-import intializeScoketIO from "./socketController";
+import intializeScoketIO from "./services/Socket.io";
 import connectToDatabase from "./config/dataBase";
 import userRouter from "./router/userRouter"
 import pageCountRouter from "./router/pageCountRouter"
 import cluster from 'cluster';
-import os from 'os';
-import axios from "axios";
+import Socketio from "./services/Socket.io";
 
 dotenv.config({ path: "./config/config.env" });
-
 
 
 
@@ -60,11 +58,33 @@ async function init() {
   const httpserver = createServer(app);
   httpserver.listen(PORT, async () => {
     console.log(` 🔌🔌 Server started at PORT:${PORT} 🔌🔌 `);
-    //intialize Scoket.io
-    intializeScoketIO(httpserver, app)
   });
+  //intialize Scoket.io
+  const socketWithPubSub = new Socketio(httpserver);
 
-   
+  socketWithPubSub.listeners();
+  
 }
- 
-init()
+
+
+
+const numCPUs = availableParallelism();
+// const numCPUs = 1;
+
+if (cluster.isPrimary) {
+  console.log(`Primary ${process.pid} is running`);
+
+  // Fork workers.
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+  });
+} else {
+
+  init()
+
+  console.log(`Worker ${process.pid} started`);
+}
